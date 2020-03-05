@@ -7,7 +7,7 @@
         "log_level": "INFO",
         "manage_roles": false,
         "profile_name": "serverless",
-        "project_name": "tr-05-serverless-pulsedive",
+        "project_name": "tr-pulsedive-relay",
         "runtime": "python3.7",
         "s3_bucket": "zappa-tr-pulsedive-relay"
     }
