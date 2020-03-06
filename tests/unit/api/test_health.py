@@ -55,6 +55,7 @@ def pd_api_response():
 def test_health_call_with_invalid_jwt_failure(route, client, invalid_jwt):
     response = client.post(route, headers=headers(invalid_jwt))
     assert response.status_code == HTTPStatus.FORBIDDEN
+<<<<<<< HEAD
     assert response.json["message"] == "Invalid Authorization Bearer JWT."
 
 
@@ -74,3 +75,10 @@ def test_health_call_success(route, client, pd_api_request, valid_jwt):
 
     assert response.status_code == HTTPStatus.OK
     assert response.get_json() == expected_payload
+=======
+
+
+def test_health_call_success(route, client, valid_jwt):
+    response = client.post(route, headers=headers(valid_jwt))
+    assert response.status_code == HTTPStatus.OK
+>>>>>>> develop
