@@ -13,13 +13,6 @@ def get_jwt():
         raise Forbidden('Invalid Authorization Bearer JWT.')
 
 
-def join_url(base, *parts):
-    return '/'.join(
-        [base.rstrip('/')] +
-        [part.strip('/') for part in parts]
-    )
-
-
 def get_json(schema):
     """
     Parse the incoming request's data as JSON.

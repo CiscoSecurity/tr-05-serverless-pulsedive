@@ -1,7 +1,7 @@
 import requests
 from flask import Blueprint, current_app
 
-from api.utils import get_jwt, jsonify_data, join_url, jsonify_errors
+from api.utils import get_jwt, jsonify_data, jsonify_errors
 
 health_api = Blueprint('health', __name__)
 
