@@ -5,20 +5,19 @@ from werkzeug.exceptions import Forbidden, BadRequest
 
 
 def get_jwt():
-    """
-    Parse the incoming request's Authorization Bearer JWT for some credentials.
-    Validate its signature against the application's secret key.
-    Note. This function is just an example of how one can read and check
-    anything before passing to an API endpoint, and thus it may be modified in
-    any way, replaced by another function, or even removed from the module.
-    """
-
     try:
         scheme, token = request.headers['Authorization'].split()
         assert scheme.lower() == 'bearer'
         return jwt.decode(token, current_app.config['SECRET_KEY'])
     except (KeyError, ValueError, AssertionError, JoseError):
         raise Forbidden('Invalid Authorization Bearer JWT.')
+
+
+def join_url(base, *parts):
+    return '/'.join(
+        [base.rstrip('/')] +
+        [part.strip('/') for part in parts]
+    )
 
 
 def get_json(schema):
@@ -42,3 +41,16 @@ def get_json(schema):
 
 def jsonify_data(data):
     return jsonify({'data': data})
+
+
+def jsonify_errors(error):
+    error['code'] = error.pop('status').lower()
+    error.pop('details', None)
+
+    # According to the official documentation, an error here means that the
+    # corresponding TR module is in an incorrect state and needs to be
+    # reconfigured:
+    # https://visibility.amp.cisco.com/help/alerts-errors-warnings.
+    error['type'] = 'fatal'
+
+    return jsonify({'errors': [error]})
