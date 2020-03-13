@@ -16,9 +16,21 @@ def route(request):
     return request.param
 
 
-def test_enrich_call_without_jwt_failure(route, client):
-    response = client.post(route)
-    assert response.status_code == HTTPStatus.FORBIDDEN
+@fixture(scope='module')
+def valid_json():
+    return [{'type': 'domain', 'value': 'cisco.com'}]
+
+
+def test_enrich_call_without_jwt_success(route, client, valid_json):
+    response = client.post(route, json=valid_json)
+    assert response.status_code == HTTPStatus.OK
+
+
+def test_enrich_call_without_jwt_but_invalid_json_failure(route,
+                                                          client,
+                                                          invalid_json):
+    response = client.post(route, json=invalid_json)
+    assert response.status_code == HTTPStatus.BAD_REQUEST
 
 
 def test_enrich_call_with_invalid_jwt_failure(route, client, invalid_jwt):
@@ -39,11 +51,6 @@ def test_enrich_call_with_valid_jwt_but_invalid_json_failure(route,
                            headers=headers(valid_jwt),
                            json=invalid_json)
     assert response.status_code == HTTPStatus.BAD_REQUEST
-
-
-@fixture(scope='module')
-def valid_json():
-    return [{'type': 'domain', 'value': 'cisco.com'}]
 
 
 def test_enrich_call_success(route, client, valid_jwt, valid_json):

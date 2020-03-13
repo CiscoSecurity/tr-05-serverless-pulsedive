@@ -10,15 +10,21 @@ health_api = Blueprint('health', __name__)
 def health():
     key = get_jwt().get('key')
 
-    if key is None:
-        return None
+    url = f'{current_app.config["API_URL"]}info.php?iid=2'
 
-    url = f'{current_app.config["API_URL"]}info.php?iid=2&key={key}'
+    if key:
+        url += f'&key={key}'
 
     response = requests.get(url)
 
     if response.ok:
-        return jsonify_data({'status': 'ok'})
+        if response.json().get('error'):
+            message = response.json()['error']
+            code = current_app.config['API_ERRORS'].get(message, 'unknown')
+            return jsonify_errors(code, message)
+        else:
+            return jsonify_data({'status': 'ok'})
     else:
-        error = response.json()['error']
-        return jsonify_errors(error)
+        code = response.reason
+        message = 'The Pulsedive API error.'
+        return jsonify_errors(code, message)

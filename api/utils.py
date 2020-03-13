@@ -9,7 +9,9 @@ def get_jwt():
         scheme, token = request.headers['Authorization'].split()
         assert scheme.lower() == 'bearer'
         return jwt.decode(token, current_app.config['SECRET_KEY'])
-    except (KeyError, ValueError, AssertionError, JoseError):
+    except KeyError:
+        return {'key': None}
+    except (ValueError, AssertionError, JoseError):
         raise Forbidden('Invalid Authorization Bearer JWT.')
 
 
@@ -36,14 +38,9 @@ def jsonify_data(data):
     return jsonify({'data': data})
 
 
-def jsonify_errors(error):
-    error['code'] = error.pop('status').lower()
-    error.pop('details', None)
-
-    # According to the official documentation, an error here means that the
-    # corresponding TR module is in an incorrect state and needs to be
-    # reconfigured:
-    # https://visibility.amp.cisco.com/help/alerts-errors-warnings.
-    error['type'] = 'fatal'
-
+def jsonify_errors(code, message):
+    error = {'code': code.lower(),
+             'type': 'fatal',
+             'message': message,
+             }
     return jsonify({'errors': [error]})
