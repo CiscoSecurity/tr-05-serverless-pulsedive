@@ -5,14 +5,16 @@ from werkzeug.exceptions import BadRequest
 
 
 def get_jwt():
+    key, error = None, None
     try:
         scheme, token = request.headers['Authorization'].split()
         assert scheme.lower() == 'bearer'
-        return jwt.decode(token, current_app.config['SECRET_KEY'])
+        key = jwt.decode(token, current_app.config['SECRET_KEY'])['key']
     except KeyError:
-        return {'key': None}
+        pass
     except (ValueError, AssertionError, JoseError):
-        return {'error': 'Invalid Authorization Bearer JWT.'}
+        error = 'Invalid Authorization Bearer JWT.'
+    return key, error
 
 
 def get_json(schema):
