@@ -5,6 +5,10 @@ from authlib.jose import jwt
 from pytest import fixture
 
 from .utils import headers
+from tests.unit.payloads_for_tests import (
+    EXPECTED_PAYLOAD_FORBIDDEN,
+    EXPECTED_PAYLOAD_REQUEST_TIMOUT
+)
 
 
 def routes():
@@ -44,15 +48,7 @@ def test_health_call_without_jwt_failure(route, client, pd_api_request):
     expected_url = get_expected_url(client, valid_jwt=None)
     pd_api_request.assert_called_once_with(expected_url)
 
-    expected_payload = {
-        "errors": [
-            {
-                "code": "request_timeout",
-                "message": "Request(s) still processing.",
-                "type": "fatal",
-            }
-        ]
-    }
+    expected_payload = EXPECTED_PAYLOAD_REQUEST_TIMOUT
 
     assert response.status_code == HTTPStatus.OK
     assert response.get_json() == expected_payload
@@ -97,8 +93,8 @@ def pd_api_response(ok):
 
 def test_health_call_with_invalid_jwt_failure(route, client, invalid_jwt):
     response = client.post(route, headers=headers(invalid_jwt))
-    assert response.status_code == HTTPStatus.FORBIDDEN
-    assert response.json["message"] == "Invalid Authorization Bearer JWT."
+    expected_payload = EXPECTED_PAYLOAD_FORBIDDEN
+    assert response.get_json() == expected_payload
 
 
 def test_health_call_success(route, client, pd_api_request, valid_jwt):
@@ -121,15 +117,7 @@ def test_health_call_failure(route, client, pd_api_request, valid_jwt):
     expected_url = get_expected_url(client, valid_jwt)
     pd_api_request.assert_called_once_with(expected_url)
 
-    expected_payload = {
-        "errors": [
-            {
-                "code": "request_timeout",
-                "message": "Request(s) still processing.",
-                "type": "fatal",
-            }
-        ]
-    }
+    expected_payload = EXPECTED_PAYLOAD_REQUEST_TIMOUT
 
     assert response.status_code == HTTPStatus.OK
     assert response.get_json() == expected_payload

@@ -40,11 +40,6 @@ def test_respond_call_without_jwt_but_invalid_json_failure(route,
     assert response.status_code == HTTPStatus.BAD_REQUEST
 
 
-def test_respond_call_with_invalid_jwt_failure(route, client, invalid_jwt):
-    response = client.post(route, headers=headers(invalid_jwt))
-    assert response.status_code == HTTPStatus.FORBIDDEN
-
-
 @fixture(scope='module')
 def invalid_json(route):
     if route.endswith('/observables'):

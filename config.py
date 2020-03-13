@@ -10,9 +10,9 @@ class Config(object):
 
     API_URL = 'https://pulsedive.com/api/'
 
-    API_ERRORS = {
+    API_ERRORS_STANDARDISATION = {
         "Results limited to one page \
-        (15,000 records) for free API.": "resource_exhausted",
-        "Indicator not found.": "not_found",
-        "Request(s) still processing.": "request_timeout",
+        (15,000 records) for free API.": "resource exhausted",
+        "Indicator not found.": "not found",
+        "Request(s) still processing.": "request timeout",
     }

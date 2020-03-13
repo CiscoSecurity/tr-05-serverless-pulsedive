@@ -8,20 +8,24 @@ health_api = Blueprint('health', __name__)
 
 @health_api.route('/health', methods=['POST'])
 def health():
-    key = get_jwt().get('key')
+
+    key, error = get_jwt().get('key'), get_jwt().get('error')
 
     url = f'{current_app.config["API_URL"]}info.php?iid=2'
 
     if key:
         url += f'&key={key}'
+    if error:
+        return jsonify_errors('Forbidden', error)
 
     response = requests.get(url)
 
     if response.ok:
-        if response.json().get('error'):
-            message = response.json()['error']
-            code = current_app.config['API_ERRORS'].get(message, 'unknown')
-            return jsonify_errors(code, message)
+        error = response.json().get('error')
+        if error:
+            code = current_app.config['API_ERRORS_STANDARDISATION']\
+                .get(error, 'unknown')
+            return jsonify_errors(code, error)
         else:
             return jsonify_data({'status': 'ok'})
     else:
