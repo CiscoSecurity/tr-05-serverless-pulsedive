@@ -2,8 +2,6 @@ from http import HTTPStatus
 
 from pytest import fixture
 
-from .utils import headers
-
 
 def routes():
     yield '/respond/observables'
@@ -15,52 +13,17 @@ def route(request):
     return request.param
 
 
-@fixture(scope="module")
-def valid_json(route):
-    if route.endswith("/observables"):
-        return [{"type": "domain", "value": "cisco.com"}]
-
-    if route.endswith("/trigger"):
-        return {
-            "action-id": "valid-action-id",
-            "observable_type": "domain",
-            "observable_value": "cisco.com",
-        }
-
-
-def test_respond_call_without_jwt_success(route, client, valid_json):
-    response = client.post(route, json=valid_json)
-    assert response.status_code == HTTPStatus.OK
-
-
-def test_respond_call_without_jwt_but_invalid_json_failure(route,
-                                                           client,
-                                                           invalid_json):
-    response = client.post(route, json=invalid_json)
-    assert response.status_code == HTTPStatus.BAD_REQUEST
-
-
 @fixture(scope='module')
-def invalid_json(route):
+def expected_payload(route):
     if route.endswith('/observables'):
-        return [{'type': 'unknown', 'value': ''}]
+        return {'data': []}
 
     if route.endswith('/trigger'):
-        return {'action_id': 'invalid_action_id',
-                'observable_type': 'unknown',
-                'observable_value': None}
+        return {'data': {'status': 'failure'}}
 
 
-def test_respond_call_with_valid_jwt_but_invalid_json_failure(route,
-                                                              client,
-                                                              valid_jwt,
-                                                              invalid_json):
-    response = client.post(route,
-                           headers=headers(valid_jwt),
-                           json=invalid_json)
-    assert response.status_code == HTTPStatus.BAD_REQUEST
+def test_respond_call_success(route, client, expected_payload):
+    response = client.post(route)
 
-
-def test_respond_call_success(route, client, valid_jwt, valid_json):
-    response = client.post(route, headers=headers(valid_jwt), json=valid_json)
     assert response.status_code == HTTPStatus.OK
+    assert response.get_json() == expected_payload

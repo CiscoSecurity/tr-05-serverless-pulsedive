@@ -3,6 +3,7 @@ from http import HTTPStatus
 from pytest import fixture
 
 from .utils import headers
+from tests.unit.payloads_for_tests import EXPECTED_PAYLOAD_INVALID_INPUT
 
 
 def routes():
@@ -30,7 +31,7 @@ def test_enrich_call_without_jwt_but_invalid_json_failure(route,
                                                           client,
                                                           invalid_json):
     response = client.post(route, json=invalid_json)
-    assert response.status_code == HTTPStatus.BAD_REQUEST
+    assert response.get_json() == EXPECTED_PAYLOAD_INVALID_INPUT
 
 
 @fixture(scope='module')
@@ -45,7 +46,7 @@ def test_enrich_call_with_valid_jwt_but_invalid_json_failure(route,
     response = client.post(route,
                            headers=headers(valid_jwt),
                            json=invalid_json)
-    assert response.status_code == HTTPStatus.BAD_REQUEST
+    assert response.get_json() == EXPECTED_PAYLOAD_INVALID_INPUT
 
 
 def test_enrich_call_success(route, client, valid_jwt, valid_json):

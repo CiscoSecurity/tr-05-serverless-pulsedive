@@ -1,20 +1,45 @@
 from authlib.jose import jwt
 from authlib.jose.errors import JoseError
 from flask import request, current_app, jsonify
-from werkzeug.exceptions import BadRequest
+
+
+class BaseError(Exception):
+    def __init__(self, code, message):
+        self.code = code
+        self.message = message
+
+
+class JwtBaseError(BaseError):
+    def __init__(self, message):
+        super().__init__('permission denied', message)
+
+
+class UnexpectedPulsediveBaseError(BaseError):
+    def __init__(self, message):
+        code = current_app.config['API_ERRORS_STANDARDISATION']\
+                    .get(message, 'unknown')
+        super().__init__(code, message)
+
+
+class StandardHttpBaseError(BaseError):
+    def __init__(self, code):
+        super().__init__(code, 'The Pulsedive API error.')
+
+
+class InvalidInputBaseError(BaseError):
+    def __init__(self, message):
+        super().__init__("invalid argument", message)
 
 
 def get_jwt():
-    key, error = None, None
     try:
         scheme, token = request.headers['Authorization'].split()
         assert scheme.lower() == 'bearer'
-        key = jwt.decode(token, current_app.config['SECRET_KEY'])['key']
+        return jwt.decode(token, current_app.config['SECRET_KEY'])
     except KeyError:
-        pass
+        return {'key': None}
     except (ValueError, AssertionError, JoseError):
-        error = 'Invalid Authorization Bearer JWT.'
-    return key, error
+        raise JwtBaseError('Invalid Authorization Bearer JWT.')
 
 
 def get_json(schema):
@@ -31,7 +56,7 @@ def get_json(schema):
     message = schema.validate(data)
 
     if message:
-        raise BadRequest(message)
+        raise InvalidInputBaseError(message)
 
     return data
 
@@ -40,9 +65,9 @@ def jsonify_data(data):
     return jsonify({'data': data})
 
 
-def jsonify_errors(code, message):
-    error = {'code': code.lower(),
+def jsonify_errors(err):
+    error = {'code': err.code.lower(),
              'type': 'fatal',
-             'message': message,
+             'message': err.message,
              }
     return jsonify({'errors': [error]})
