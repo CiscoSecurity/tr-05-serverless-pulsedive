@@ -2,8 +2,8 @@ import requests
 from flask import Blueprint, current_app
 
 from api.utils import (get_jwt, jsonify_data,
-                       UnexpectedPulsediveBaseError,
-                       StandardHttpBaseError)
+                       UnexpectedPulsediveError,
+                       StandardHttpError)
 
 health_api = Blueprint('health', __name__)
 
@@ -22,9 +22,9 @@ def health():
     if response.ok:
         error = response.json().get('error')
         if error:
-            raise UnexpectedPulsediveBaseError(error)
+            raise UnexpectedPulsediveError(error)
         else:
             return jsonify_data({'status': 'ok'})
     else:
         code = response.reason
-        raise StandardHttpBaseError(code)
+        raise StandardHttpError(code)

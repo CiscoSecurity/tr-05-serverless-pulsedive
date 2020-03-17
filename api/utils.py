@@ -14,19 +14,19 @@ class JwtBaseError(BaseError):
         super().__init__('permission denied', message)
 
 
-class UnexpectedPulsediveBaseError(BaseError):
+class UnexpectedPulsediveError(BaseError):
     def __init__(self, message):
         code = current_app.config['API_ERRORS_STANDARDISATION']\
                     .get(message, 'unknown')
         super().__init__(code, message)
 
 
-class StandardHttpBaseError(BaseError):
+class StandardHttpError(BaseError):
     def __init__(self, code):
         super().__init__(code, 'The Pulsedive API error.')
 
 
-class InvalidInputBaseError(BaseError):
+class InvalidInputError(BaseError):
     def __init__(self, message):
         super().__init__("invalid argument", message)
 
@@ -56,7 +56,7 @@ def get_json(schema):
     message = schema.validate(data)
 
     if message:
-        raise InvalidInputBaseError(message)
+        raise InvalidInputError(message)
 
     return data
 
