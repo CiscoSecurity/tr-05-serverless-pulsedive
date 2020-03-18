@@ -1,9 +1,9 @@
 import requests
 from flask import Blueprint, current_app
 
-from api.utils import (get_jwt, jsonify_data,
-                       UnexpectedPulsediveError,
-                       StandardHttpError)
+from api.errors import (UnexpectedPulsediveError,
+                        StandardHttpError)
+from api.utils import get_jwt, jsonify_data
 
 health_api = Blueprint('health', __name__)
 

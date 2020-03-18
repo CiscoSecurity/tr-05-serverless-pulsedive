@@ -2,33 +2,7 @@ from authlib.jose import jwt
 from authlib.jose.errors import JoseError
 from flask import request, current_app, jsonify
 
-
-class BaseError(Exception):
-    def __init__(self, code, message):
-        self.code = code
-        self.message = message
-
-
-class JwtBaseError(BaseError):
-    def __init__(self, message):
-        super().__init__('permission denied', message)
-
-
-class UnexpectedPulsediveError(BaseError):
-    def __init__(self, message):
-        code = current_app.config['API_ERRORS_STANDARDISATION']\
-                    .get(message, 'unknown')
-        super().__init__(code, message)
-
-
-class StandardHttpError(BaseError):
-    def __init__(self, code):
-        super().__init__(code, 'The Pulsedive API error.')
-
-
-class InvalidInputError(BaseError):
-    def __init__(self, message):
-        super().__init__("invalid argument", message)
+from api.errors import JwtError, InvalidInputError
 
 
 def get_jwt():
@@ -39,7 +13,7 @@ def get_jwt():
     except KeyError:
         return {'key': None}
     except (ValueError, AssertionError, JoseError):
-        raise JwtBaseError('Invalid Authorization Bearer JWT.')
+        raise JwtError('Invalid Authorization Bearer JWT.')
 
 
 def get_json(schema):

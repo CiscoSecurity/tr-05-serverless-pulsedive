@@ -4,7 +4,9 @@ from api.enrich import enrich_api
 from api.health import health_api
 from api.respond import respond_api
 
-from api.utils import BaseError, jsonify_errors
+from api.errors import TRFormattedError
+from api.utils import jsonify_errors
+
 
 app = Flask(__name__)
 
@@ -29,7 +31,7 @@ def handle_error(exception):
     return response, code
 
 
-@app.errorhandler(BaseError)
+@app.errorhandler(TRFormattedError)
 def handle_pusledive_errors(error):
     return jsonify_errors(error)
 

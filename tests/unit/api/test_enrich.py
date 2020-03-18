@@ -3,7 +3,8 @@ from http import HTTPStatus
 from pytest import fixture
 
 from .utils import headers
-from tests.unit.payloads_for_tests import EXPECTED_PAYLOAD_INVALID_INPUT
+from tests.unit.payloads_for_tests import (EXPECTED_PAYLOAD_INVALID_INPUT,
+                                           EXPECTED_PAYLOAD_FORBIDDEN)
 
 
 def routes():
@@ -20,6 +21,11 @@ def route(request):
 @fixture(scope='module')
 def valid_json():
     return [{'type': 'domain', 'value': 'cisco.com'}]
+
+
+def test_enrich_call_with_invalid_jwt_failure(route, client, invalid_jwt):
+    response = client.post(route, headers=headers(invalid_jwt))
+    assert response.get_json() == EXPECTED_PAYLOAD_FORBIDDEN
 
 
 def test_enrich_call_without_jwt_success(route, client, valid_json):
