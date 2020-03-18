@@ -23,8 +23,7 @@ def health():
         error = response.json().get('error')
         if error:
             raise UnexpectedPulsediveError(error)
-        else:
-            return jsonify_data({'status': 'ok'})
     else:
-        code = response.reason
-        raise StandardHttpError(code)
+        raise StandardHttpError(response)
+
+    return jsonify_data({'status': 'ok'})

@@ -33,7 +33,7 @@ def handle_error(exception):
 
 @app.errorhandler(TRFormattedError)
 def handle_pusledive_errors(error):
-    return jsonify_errors(error)
+    return jsonify_errors(error.json)
 
 
 if __name__ == '__main__':

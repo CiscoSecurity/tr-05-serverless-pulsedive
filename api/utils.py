@@ -39,9 +39,5 @@ def jsonify_data(data):
     return jsonify({'data': data})
 
 
-def jsonify_errors(err):
-    error = {'code': err.code.lower(),
-             'type': 'fatal',
-             'message': err.message,
-             }
+def jsonify_errors(error):
     return jsonify({'errors': [error]})
