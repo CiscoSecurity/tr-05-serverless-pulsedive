@@ -7,7 +7,7 @@ class TRFormattedError(Exception):
     @property
     def json(self):
         return {'type': self.type_,
-                'code': self.code,
+                'code': self.code.lower(),
                 'message': self.message}
 
 
