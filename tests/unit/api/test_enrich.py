@@ -3,6 +3,8 @@ from http import HTTPStatus
 from pytest import fixture
 
 from .utils import headers
+from tests.unit.payloads_for_tests import (EXPECTED_PAYLOAD_INVALID_INPUT,
+                                           EXPECTED_PAYLOAD_FORBIDDEN)
 
 
 def routes():
@@ -16,14 +18,26 @@ def route(request):
     return request.param
 
 
-def test_enrich_call_without_jwt_failure(route, client):
-    response = client.post(route)
-    assert response.status_code == HTTPStatus.FORBIDDEN
+@fixture(scope='module')
+def valid_json():
+    return [{'type': 'domain', 'value': 'cisco.com'}]
 
 
 def test_enrich_call_with_invalid_jwt_failure(route, client, invalid_jwt):
     response = client.post(route, headers=headers(invalid_jwt))
-    assert response.status_code == HTTPStatus.FORBIDDEN
+    assert response.get_json() == EXPECTED_PAYLOAD_FORBIDDEN
+
+
+def test_enrich_call_without_jwt_success(route, client, valid_json):
+    response = client.post(route, json=valid_json)
+    assert response.status_code == HTTPStatus.OK
+
+
+def test_enrich_call_without_jwt_but_invalid_json_failure(route,
+                                                          client,
+                                                          invalid_json):
+    response = client.post(route, json=invalid_json)
+    assert response.get_json() == EXPECTED_PAYLOAD_INVALID_INPUT
 
 
 @fixture(scope='module')
@@ -38,12 +52,7 @@ def test_enrich_call_with_valid_jwt_but_invalid_json_failure(route,
     response = client.post(route,
                            headers=headers(valid_jwt),
                            json=invalid_json)
-    assert response.status_code == HTTPStatus.BAD_REQUEST
-
-
-@fixture(scope='module')
-def valid_json():
-    return [{'type': 'domain', 'value': 'cisco.com'}]
+    assert response.get_json() == EXPECTED_PAYLOAD_INVALID_INPUT
 
 
 def test_enrich_call_success(route, client, valid_jwt, valid_json):

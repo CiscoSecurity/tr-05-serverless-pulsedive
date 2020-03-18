@@ -1,6 +1,6 @@
 from functools import partial
 
-from marshmallow import ValidationError, Schema, fields, INCLUDE
+from marshmallow import ValidationError, Schema, fields
 
 
 def validate_string(value, *, choices=None):
@@ -16,6 +16,9 @@ def validate_string(value, *, choices=None):
 
 OBSERVABLE_TYPE_CHOICES = (
     'amp_computer_guid',
+    'certificate_common_name',
+    'certificate_issuer',
+    'certificate_serial',
     'cisco_mid',
     'device',
     'domain',
@@ -36,11 +39,17 @@ OBSERVABLE_TYPE_CHOICES = (
     'ngfw_name',
     'odns_identity',
     'odns_identity_label',
+    'orbital_node_id',
     'pki_serial',
+    'process_name',
+    'registry_key',
+    'registry_name',
+    'registry_path',
     'sha1',
     'sha256',
     'url',
     'user',
+    'user_agent',
 )
 
 
@@ -53,22 +62,3 @@ class ObservableSchema(Schema):
         validate=validate_string,
         required=True,
     )
-
-
-class ActionFormParamsSchema(Schema):
-    action_id = fields.String(
-        data_key='action-id',
-        validate=validate_string,
-        required=True,
-    )
-    observable_type = fields.String(
-        validate=partial(validate_string, choices=OBSERVABLE_TYPE_CHOICES),
-        required=True,
-    )
-    observable_value = fields.String(
-        validate=validate_string,
-        required=True,
-    )
-
-    class Meta:
-        unknown = INCLUDE

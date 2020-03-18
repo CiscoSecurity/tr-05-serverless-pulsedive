@@ -23,10 +23,12 @@ def client(secret_key):
 
 
 @fixture(scope='session')
-def valid_jwt(secret_key):
+def valid_jwt(client):
     header = {'alg': 'HS256'}
 
-    payload = {'username': 'arozlyva', 'superuser': False}
+    payload = {'key': 'my_key_for_pulsedive'}
+
+    secret_key = client.application.secret_key
 
     return jwt.encode(header, payload, secret_key).decode('ascii')
 
