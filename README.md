@@ -57,7 +57,5 @@ pip install -U -r use-requirements.txt
 export URL=<...>
 export JWT=<...>
 http POST "${URL}"/health Authorization:"Bearer ${JWT}"
-http POST "${URL}"/deliberate/observables Authorization:"Bearer ${JWT}" < observables.json
 http POST "${URL}"/observe/observables Authorization:"Bearer ${JWT}" < observables.json
-http POST "${URL}"/refer/observables Authorization:"Bearer ${JWT}" < observables.json
 ```

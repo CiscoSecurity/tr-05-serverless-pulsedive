@@ -10,9 +10,9 @@ health_api = Blueprint('health', __name__)
 
 @health_api.route('/health', methods=['POST'])
 def health():
-    key = get_jwt().get('key')
+    key = get_jwt().get('key') or ''
 
-    url = url_for("info.php", "iid=2", key)
+    url = url_for("iid=2", key)
 
     response = requests.get(url)
 

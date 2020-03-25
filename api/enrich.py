@@ -2,32 +2,21 @@ from collections import defaultdict
 from functools import partial
 from datetime import datetime
 
-from flask import Blueprint, request, current_app
+from flask import Blueprint, current_app
 import requests
 
 from api.schemas import ObservableSchema
-from api.errors import (InvalidInputError,
-                        UnexpectedPulsediveError,
-                        StandardHttpError)
+from api.errors import (
+    UnexpectedPulsediveError,
+    StandardHttpError
+)
 
 from api.utils import (url_for, get_jwt,
                        jsonify_data, get_json)
 
 enrich_api = Blueprint('enrich', __name__)
 
-observables_schema = ObservableSchema(many=True)
 get_observables = partial(get_json, schema=ObservableSchema(many=True))
-
-
-def validate_relay_input():
-    relay_input = request.get_json(force=True, silent=True, cache=False)
-
-    error = observables_schema.validate(relay_input) or None
-    if error:
-        relay_input = None
-        raise InvalidInputError(error)
-
-    return relay_input
 
 
 def group_observables(relay_input):
@@ -51,11 +40,12 @@ def group_observables(relay_input):
     return observables
 
 
-def get_pulsedive_output(observables, key):
+def get_pulsedive_output(observables):
     output = []
+    key = get_jwt().get('key') or ''
+
     for observable in observables:
-        url = url_for('info.php',
-                      f'indicator={observable}',
+        url = url_for(f'indicator={observable}',
                       key)
 
         response = requests.get(url)
@@ -118,15 +108,14 @@ def deliberate_observables():
 
 @enrich_api.route('/observe/observables', methods=['POST'])
 def observe_observables():
-    relay_input = validate_relay_input()
+    relay_input = get_observables()
 
     observables = group_observables(relay_input)
 
     if not observables:
         return jsonify_data({})
 
-    key = get_jwt().get('key')
-    pulsedive_output = get_pulsedive_output(observables, key)
+    pulsedive_output = get_pulsedive_output(observables)
 
     time_now = datetime.utcnow()
 
