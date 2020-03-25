@@ -11,8 +11,10 @@ from api.errors import (
     StandardHttpError
 )
 
-from api.utils import (url_for, get_jwt,
-                       jsonify_data, get_json)
+from api.utils import (
+    url_for, get_jwt,
+    jsonify_data, get_json
+)
 
 enrich_api = Blueprint('enrich', __name__)
 
