@@ -44,7 +44,7 @@ def group_observables(relay_input):
 
 def get_pulsedive_output(observables):
     output = []
-    key = get_jwt().get('key') or ''
+    key = get_jwt().get('key')
 
     for observable in observables:
         url = url_for(f'indicator={observable}',

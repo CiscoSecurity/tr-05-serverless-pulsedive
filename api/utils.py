@@ -18,7 +18,7 @@ def get_jwt():
         assert scheme.lower() == 'bearer'
         return jwt.decode(token, current_app.config['SECRET_KEY'])
     except KeyError:
-        return {'key': None}
+        return {'key': ''}
     except (ValueError, AssertionError, JoseError):
         raise JwtError('Invalid Authorization Bearer JWT.')
 
