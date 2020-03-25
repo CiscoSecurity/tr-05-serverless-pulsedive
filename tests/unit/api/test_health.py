@@ -22,9 +22,13 @@ def route(request):
 
 def get_expected_url(client, valid_jwt):
     app = client.application
-    url = f'{app.config["API_URL"]}info.php?iid=2'
+    key = ''
     if valid_jwt:
-        url += f'&key={jwt.decode(valid_jwt, app.config["SECRET_KEY"])["key"]}'
+        key = jwt.decode(valid_jwt, app.config["SECRET_KEY"])["key"]
+    url = app.config["API_URL"].format(
+        query='iid=2',
+        key=key
+    )
     return url
 
 

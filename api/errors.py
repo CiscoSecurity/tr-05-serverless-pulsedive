@@ -12,9 +12,8 @@ class TRFormattedError(Exception):
 
 
 API_ERRORS_STANDARDISATION = {
-    "Results limited to one page \
-    (15,000 records) for free API.": "resource exhausted",
-    "Indicator not found.": "not found",
+    ("Results limited to one page "
+     "(15,000 records) for free API."): "resource exhausted",
     "Request(s) still processing.": "request timeout",
 }
 

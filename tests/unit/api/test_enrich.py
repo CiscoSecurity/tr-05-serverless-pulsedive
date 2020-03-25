@@ -23,8 +23,14 @@ def valid_json():
     return [{'type': 'domain', 'value': 'cisco.com'}]
 
 
-def test_enrich_call_with_invalid_jwt_failure(route, client, invalid_jwt):
-    response = client.post(route, headers=headers(invalid_jwt))
+def test_enrich_call_with_invalid_jwt_failure(route,
+                                              client,
+                                              invalid_jwt,
+                                              valid_json):
+
+    response = client.post(route,
+                           headers=headers(invalid_jwt),
+                           json=valid_json)
     assert response.get_json() == EXPECTED_PAYLOAD_FORBIDDEN
 
 
