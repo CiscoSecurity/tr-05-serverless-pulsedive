@@ -1,6 +1,6 @@
 from collections import defaultdict
 from functools import partial
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask import Blueprint, current_app
 import requests
@@ -19,6 +19,8 @@ from api.utils import (
 enrich_api = Blueprint('enrich', __name__)
 
 get_observables = partial(get_json, schema=ObservableSchema(many=True))
+
+STORAGE_PERIOD = timedelta(days=3*365/12)
 
 
 def group_observables(relay_input):
@@ -66,7 +68,7 @@ def get_pulsedive_output(observables):
     return output
 
 
-def extract_verdicts(outputs, start_time):
+def extract_verdicts(outputs):
     docs = []
 
     for output in outputs:
@@ -75,8 +77,14 @@ def extract_verdicts(outputs, start_time):
         disposition, disposition_name \
             = current_app.config["PULSEDIVE_API_THREAT_TYPES"].get(score)
 
-        valid_time = {  # ToDo: ask Michael about time
-            'start_time': start_time.isoformat() + 'Z'
+        start_time = datetime.strptime(output['stamp_seen'],
+                                       '%Y-%m-%d %H:%M:%S')
+
+        end_time = start_time + STORAGE_PERIOD
+
+        valid_time = {
+            'start_time': start_time.isoformat() + 'Z',
+            'end_time': end_time.isoformat() + 'Z'
         }
 
         observable = {
@@ -103,8 +111,7 @@ def format_docs(docs):
 
 @enrich_api.route('/deliberate/observables', methods=['POST'])
 def deliberate_observables():
-    _ = get_jwt()
-    _ = get_observables()
+    # Not implemented
     return jsonify_data({})
 
 
@@ -119,9 +126,7 @@ def observe_observables():
 
     pulsedive_output = get_pulsedive_output(observables)
 
-    time_now = datetime.utcnow()
-
-    verdicts = extract_verdicts(pulsedive_output, time_now)
+    verdicts = extract_verdicts(pulsedive_output)
 
     relay_output = {}
 
@@ -133,6 +138,5 @@ def observe_observables():
 
 @enrich_api.route('/refer/observables', methods=['POST'])
 def refer_observables():
-    _ = get_jwt()
-    _ = get_observables()
+    # Not implemented
     return jsonify_data([])
