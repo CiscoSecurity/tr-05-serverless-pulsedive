@@ -20,7 +20,7 @@ enrich_api = Blueprint('enrich', __name__)
 
 get_observables = partial(get_json, schema=ObservableSchema(many=True))
 
-STORAGE_PERIOD = timedelta(3*365/12)
+STORAGE_PERIOD = timedelta(days=3*365/12)
 
 
 def group_observables(relay_input):
