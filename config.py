@@ -21,9 +21,10 @@ class Config(object):
         'type': 'verdict',
     }
 
-    PULSEDIVE_API_THREAT_TYPES = {  # ToDo: ask Michael about UI and API Values
-        'none': (5, 'Unknown'),
+    PULSEDIVE_API_THREAT_TYPES = {
+        'none': (1, 'Clean'),
         'unknown': (5, 'Unknown'),
+        'retired': (5, 'Unknown'),
         'low': (3, 'Suspicious'),
         'medium': (3, 'Suspicious'),
         'high': (2, 'Malicious'),

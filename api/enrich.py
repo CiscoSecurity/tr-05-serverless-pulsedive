@@ -74,17 +74,24 @@ def extract_verdicts(outputs):
     for output in outputs:
         score = output['risk']
 
+        if output['retired']:
+            score = 'retired'
+
         disposition, disposition_name \
             = current_app.config["PULSEDIVE_API_THREAT_TYPES"].get(score)
 
         start_time = datetime.strptime(output['stamp_seen'],
                                        '%Y-%m-%d %H:%M:%S')
 
-        end_time = start_time + STORAGE_PERIOD
+        if output['stamp_retired']:
+            end_time = datetime.strptime(output['stamp_retired'],
+                                         '%Y-%m-%d %H:%M:%S')
+        else:
+            end_time = start_time + STORAGE_PERIOD
 
         valid_time = {
             'start_time': start_time.isoformat() + 'Z',
-            'end_time': end_time.isoformat() + 'Z'
+            'end_time': end_time.isoformat() + 'Z',
         }
 
         observable = {

@@ -66,7 +66,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           },
           "type": "verdict",
           "valid_time": {
-            "end_time": "2020-02-12T09:36:17Z",
+            "end_time": "2020-02-16T09:53:53Z",
             "start_time": "2019-11-13T03:36:17Z"
           }
         }
