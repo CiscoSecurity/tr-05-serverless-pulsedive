@@ -74,7 +74,7 @@ def extract_verdicts(outputs):
     for output in outputs:
         score = output['risk']
 
-        if output['retired']:
+        if output['retired'] and score == 'none':
             score = 'retired'
 
         disposition, disposition_name \
