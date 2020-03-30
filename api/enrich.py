@@ -1,6 +1,7 @@
 from collections import defaultdict
 from functools import partial
 from datetime import datetime, timedelta
+from uuid import uuid4
 
 from flask import Blueprint, current_app
 import requests
@@ -19,8 +20,6 @@ from api.utils import (
 enrich_api = Blueprint('enrich', __name__)
 
 get_observables = partial(get_json, schema=ObservableSchema(many=True))
-
-STORAGE_PERIOD = timedelta(days=3*365/12)
 
 
 def group_observables(relay_input):
@@ -48,11 +47,16 @@ def get_pulsedive_output(observables):
     output = []
     key = get_jwt().get('key')
 
+    header = {
+        'User-Agent': ('Cisco Threat Response Integrations '
+                       '<tr-integrations-support@cisco.com>'),
+    }
+
     for observable in observables:
         url = url_for(f'indicator={observable}',
                       key)
 
-        response = requests.get(url)
+        response = requests.get(url, headers=header)
 
         error = response.json().get('error')
         if error == "Indicator not found.":
@@ -68,48 +72,76 @@ def get_pulsedive_output(observables):
     return output
 
 
-def extract_verdicts(outputs):
-    docs = []
+def get_valid_time(output):
+    start_time = datetime.strptime(output['stamp_seen'],
+                                   '%Y-%m-%d %H:%M:%S')
 
-    for output in outputs:
-        score = output['risk']
+    if output['stamp_retired']:
+        end_time = datetime.strptime(output['stamp_retired'],
+                                     '%Y-%m-%d %H:%M:%S')
+    else:
+        end_time = start_time + timedelta(days=3*365/12)
 
-        if output['retired'] and score == 'none':
-            score = 'retired'
+    valid_time = {
+        'start_time': start_time.isoformat() + 'Z',
+        'end_time': end_time.isoformat() + 'Z',
+                }
 
-        disposition, disposition_name \
-            = current_app.config["PULSEDIVE_API_THREAT_TYPES"].get(score)
+    return valid_time
 
-        start_time = datetime.strptime(output['stamp_seen'],
-                                       '%Y-%m-%d %H:%M:%S')
 
-        if output['stamp_retired']:
-            end_time = datetime.strptime(output['stamp_retired'],
-                                         '%Y-%m-%d %H:%M:%S')
-        else:
-            end_time = start_time + STORAGE_PERIOD
+def extract_verdict(output):
+    score = output['risk']
 
-        valid_time = {
-            'start_time': start_time.isoformat() + 'Z',
-            'end_time': end_time.isoformat() + 'Z',
-        }
+    if output['retired'] and score == 'none':
+        score = 'retired'
 
-        observable = {
-            'value': output['indicator'],
-            'type': output['type']
-        }
+    type_mapping = current_app.config["PULSEDIVE_API_THREAT_TYPES"][score]
 
-        doc = {
-            'observable': observable,
-            'disposition': disposition,
-            'disposition_name': disposition_name,
-            'valid_time': valid_time,
-            **current_app.config['CTIM_VERDICT_DEFAULTS']
-        }
+    observable = {
+        'value': output['indicator'],
+        'type': output['type']
+    }
 
-        docs.append(doc)
+    doc = {
+        'observable': observable,
+        'disposition': type_mapping['disposition'],
+        'disposition_name': type_mapping['disposition_name'],
+        'valid_time': get_valid_time(output),
+        **current_app.config['CTIM_VERDICT_DEFAULTS']
+    }
 
-    return docs
+    return doc
+
+
+def extract_judgement(output):
+    score = output['risk']
+
+    if output['retired'] and score == 'none':
+        score = 'retired'
+
+    type_mapping = current_app.config["PULSEDIVE_API_THREAT_TYPES"][score]
+
+    observable = {
+        'value': output['indicator'],
+        'type': output['type']
+    }
+
+    judgement_id = f'transient:{uuid4()}'
+
+    doc = {
+        'id': judgement_id,
+        'observable': observable,
+        'disposition': type_mapping['disposition'],
+        'disposition_name': type_mapping['disposition_name'],
+        'severity': type_mapping['severity'],
+        'valid_time': get_valid_time(output),
+        'source_uri': current_app.config['UI_URL'].format(
+            iid=output['iid']),
+        **current_app.config['CTIM_JUDGEMENT_DEFAULTS']
+    }
+
+    return doc
 
 
 def format_docs(docs):
@@ -131,12 +163,17 @@ def observe_observables():
     if not observables:
         return jsonify_data({})
 
-    pulsedive_output = get_pulsedive_output(observables)
+    pulsedive_outputs = get_pulsedive_output(observables)
 
-    verdicts = extract_verdicts(pulsedive_output)
-
+    verdicts = []
+    judgements = []
+    for output in pulsedive_outputs:
+        verdicts.append(extract_verdict(output))
+        judgements.append(extract_judgement(output))
     relay_output = {}
 
+    if judgements:
+        relay_output['judgements'] = format_docs(judgements)
     if verdicts:
         relay_output['verdicts'] = format_docs(verdicts)
 
