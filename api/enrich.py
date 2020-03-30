@@ -1,6 +1,7 @@
 from collections import defaultdict
 from functools import partial
 from datetime import datetime, timedelta
+from uuid import uuid4
 
 from flask import Blueprint, current_app
 import requests
@@ -77,7 +78,7 @@ def extract_verdicts(outputs):
         if output['retired'] and score == 'none':
             score = 'retired'
 
-        disposition, disposition_name \
+        disposition, disposition_name, _ \
             = current_app.config["PULSEDIVE_API_THREAT_TYPES"].get(score)
 
         start_time = datetime.strptime(output['stamp_seen'],
@@ -112,6 +113,57 @@ def extract_verdicts(outputs):
     return docs
 
 
+def extract_judgements(outputs):
+
+    docs = []
+
+    for output in outputs:
+        score = output['risk']
+
+        if output['retired'] and score == 'none':
+            score = 'retired'
+
+        disposition, disposition_name,  severity \
+            = current_app.config["PULSEDIVE_API_THREAT_TYPES"].get(score)
+
+        start_time = datetime.strptime(output['stamp_seen'],
+                                       '%Y-%m-%d %H:%M:%S')
+
+        if output['stamp_retired']:
+            end_time = datetime.strptime(output['stamp_retired'],
+                                         '%Y-%m-%d %H:%M:%S')
+        else:
+            end_time = start_time + STORAGE_PERIOD
+
+        valid_time = {
+            'start_time': start_time.isoformat() + 'Z',
+            'end_time': end_time.isoformat() + 'Z',
+        }
+
+        observable = {
+            'value': output['indicator'],
+            'type': output['type']
+        }
+
+    judgement_id = f'transient:{uuid4()}'
+
+    doc = {
+        'id': judgement_id,
+        'observable': observable,
+        'disposition': disposition,
+        'disposition_name': disposition_name,
+        'severity': severity,
+        'valid_time': valid_time,
+        'source_uri': current_app.config['UI_URL'].format(
+            iid=output['iid']),
+        **current_app.config['CTIM_JUDGEMENT_DEFAULTS']
+    }
+
+    docs.append(doc)
+
+    return docs
+
+
 def format_docs(docs):
     return {'count': len(docs), 'docs': docs}
 
@@ -134,9 +186,12 @@ def observe_observables():
     pulsedive_output = get_pulsedive_output(observables)
 
     verdicts = extract_verdicts(pulsedive_output)
+    judgements = extract_judgements(pulsedive_output)
 
     relay_output = {}
 
+    if judgements:
+        relay_output['judgements'] = format_docs(judgements)
     if verdicts:
         relay_output['verdicts'] = format_docs(verdicts)
 

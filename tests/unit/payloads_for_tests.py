@@ -54,6 +54,30 @@ EXPECTED_PAYLOAD_INVALID_INPUT = {
 
 EXPECTED_PAYLOAD_OBSERVE = {
   "data": {
+    "judgements": {
+      "count": 1,
+      "docs": [
+        {
+          "confidence": "Medium",
+          "disposition": 5,
+          "disposition_name": "Unknown",
+          "observable": {
+            "type": "domain",
+            "value": "cisco.com"
+          },
+          "priority": 85,
+          "schema_version": "1.0.14",
+          "severity": "Unknown",
+          "source": "Pulsedive",
+          "source_uri": "https://pulsedive.com/indicator/?iid=3658835",
+          "type": "judgement",
+          "valid_time": {
+            "end_time": "2020-02-16T09:53:53Z",
+            "start_time": "2019-11-13T03:36:17Z"
+          }
+        }
+      ]
+    },
     "verdicts": {
       "count": 1,
       "docs": [

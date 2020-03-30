@@ -104,6 +104,10 @@ def test_enrich_call_without_jwt_success(any_route,
         verdicts = data['data']['verdicts']
         assert verdicts['count'] == 1
 
+        judgements = data['data']['judgements']
+        assert judgements['count'] == 1
+        assert judgements['docs'][0].pop('id')
+
         assert data == expected_payload
     else:
         response = client.post(any_route)
@@ -150,6 +154,10 @@ def test_enrich_call_success(any_route,
 
         assert response.status_code == HTTPStatus.OK
         assert verdicts['count'] == 1
+
+        judgements = data['data']['judgements']
+        assert judgements['count'] == 1
+        assert judgements['docs'][0].pop('id')
 
         assert data == expected_payload
     else:
