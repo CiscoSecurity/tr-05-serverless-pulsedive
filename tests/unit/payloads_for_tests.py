@@ -66,7 +66,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
             "value": "cisco.com"
           },
           "priority": 85,
-          "schema_version": "1.0.14",
+          "schema_version": "1.0.16",
           "severity": "Unknown",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/indicator/?iid=3658835",

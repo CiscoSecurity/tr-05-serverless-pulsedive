@@ -69,99 +69,91 @@ def get_pulsedive_output(observables):
     return output
 
 
-def extract_verdicts(outputs):
-    docs = []
+def extract_verdict(output):
+    score = output['risk']
 
-    for output in outputs:
-        score = output['risk']
+    if output['retired'] and score == 'none':
+        score = 'retired'
 
-        if output['retired'] and score == 'none':
-            score = 'retired'
+    type_mapping = current_app.config["PULSEDIVE_API_THREAT_TYPES"][score]
+    disposition = type_mapping['disposition']
+    disposition_name = type_mapping['disposition_name']
 
-        disposition, disposition_name, _ \
-            = current_app.config["PULSEDIVE_API_THREAT_TYPES"].get(score)
+    start_time = datetime.strptime(output['stamp_seen'],
+                                   '%Y-%m-%d %H:%M:%S')
 
-        start_time = datetime.strptime(output['stamp_seen'],
-                                       '%Y-%m-%d %H:%M:%S')
+    if output['stamp_retired']:
+        end_time = datetime.strptime(output['stamp_retired'],
+                                     '%Y-%m-%d %H:%M:%S')
+    else:
+        end_time = start_time + STORAGE_PERIOD
 
-        if output['stamp_retired']:
-            end_time = datetime.strptime(output['stamp_retired'],
-                                         '%Y-%m-%d %H:%M:%S')
-        else:
-            end_time = start_time + STORAGE_PERIOD
+    valid_time = {
+        'start_time': start_time.isoformat() + 'Z',
+        'end_time': end_time.isoformat() + 'Z',
+    }
 
-        valid_time = {
-            'start_time': start_time.isoformat() + 'Z',
-            'end_time': end_time.isoformat() + 'Z',
-        }
+    observable = {
+        'value': output['indicator'],
+        'type': output['type']
+    }
 
-        observable = {
-            'value': output['indicator'],
-            'type': output['type']
-        }
+    doc = {
+        'observable': observable,
+        'disposition': disposition,
+        'disposition_name': disposition_name,
+        'valid_time': valid_time,
+        **current_app.config['CTIM_VERDICT_DEFAULTS']
+    }
 
-        doc = {
-            'observable': observable,
-            'disposition': disposition,
-            'disposition_name': disposition_name,
-            'valid_time': valid_time,
-            **current_app.config['CTIM_VERDICT_DEFAULTS']
-        }
-
-        docs.append(doc)
-
-    return docs
+    return doc
 
 
-def extract_judgements(outputs):
+def extract_judgement(output):
+    score = output['risk']
 
-    docs = []
+    if output['retired'] and score == 'none':
+        score = 'retired'
 
-    for output in outputs:
-        score = output['risk']
+    type_mapping = current_app.config["PULSEDIVE_API_THREAT_TYPES"][score]
+    disposition = type_mapping['disposition']
+    disposition_name = type_mapping['disposition_name']
+    severity = type_mapping['severity']
 
-        if output['retired'] and score == 'none':
-            score = 'retired'
+    start_time = datetime.strptime(output['stamp_seen'],
+                                   '%Y-%m-%d %H:%M:%S')
 
-        disposition, disposition_name,  severity \
-            = current_app.config["PULSEDIVE_API_THREAT_TYPES"].get(score)
+    if output['stamp_retired']:
+        end_time = datetime.strptime(output['stamp_retired'],
+                                     '%Y-%m-%d %H:%M:%S')
+    else:
+        end_time = start_time + STORAGE_PERIOD
 
-        start_time = datetime.strptime(output['stamp_seen'],
-                                       '%Y-%m-%d %H:%M:%S')
+    valid_time = {
+        'start_time': start_time.isoformat() + 'Z',
+        'end_time': end_time.isoformat() + 'Z',
+    }
 
-        if output['stamp_retired']:
-            end_time = datetime.strptime(output['stamp_retired'],
-                                         '%Y-%m-%d %H:%M:%S')
-        else:
-            end_time = start_time + STORAGE_PERIOD
+    observable = {
+        'value': output['indicator'],
+        'type': output['type']
+    }
 
-        valid_time = {
-            'start_time': start_time.isoformat() + 'Z',
-            'end_time': end_time.isoformat() + 'Z',
-        }
+    judgement_id = f'transient:{uuid4()}'
 
-        observable = {
-            'value': output['indicator'],
-            'type': output['type']
-        }
+    doc = {
+        'id': judgement_id,
+        'observable': observable,
+        'disposition': disposition,
+        'disposition_name': disposition_name,
+        'severity': severity,
+        'valid_time': valid_time,
+        'source_uri': current_app.config['UI_URL'].format(
+            iid=output['iid']),
+        **current_app.config['CTIM_JUDGEMENT_DEFAULTS']
+    }
 
-        judgement_id = f'transient:{uuid4()}'
-
-        doc = {
-            'id': judgement_id,
-            'observable': observable,
-            'disposition': disposition,
-            'disposition_name': disposition_name,
-            'severity': severity,
-            'valid_time': valid_time,
-            'source_uri': current_app.config['UI_URL'].format(
-                iid=output['iid']),
-            **current_app.config['CTIM_JUDGEMENT_DEFAULTS']
-        }
-
-        docs.append(doc)
-
-    return docs
+    return doc
 
 
 def format_docs(docs):
@@ -183,11 +175,13 @@ def observe_observables():
     if not observables:
         return jsonify_data({})
 
-    pulsedive_output = get_pulsedive_output(observables)
+    pulsedive_outputs = get_pulsedive_output(observables)
 
-    verdicts = extract_verdicts(pulsedive_output)
-    judgements = extract_judgements(pulsedive_output)
-
+    verdicts = []
+    judgements = []
+    for output in pulsedive_outputs:
+        verdicts.append(extract_verdict(output))
+        judgements.append(extract_judgement(output))
     relay_output = {}
 
     if judgements:

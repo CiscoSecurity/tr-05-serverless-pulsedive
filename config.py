@@ -25,18 +25,46 @@ class Config(object):
 
     CTIM_JUDGEMENT_DEFAULTS = {
         'type': 'judgement',
-        'schema_version': '1.0.14',
+        'schema_version': '1.0.16',
         'source': 'Pulsedive',
         'confidence': 'Medium',
         'priority': 85,
     }
 
     PULSEDIVE_API_THREAT_TYPES = {
-        'none': (1, 'Clean', 'None'),
-        'unknown': (5, 'Unknown', 'Unknown'),
-        'retired': (5, 'Unknown', 'Unknown'),
-        'low': (3, 'Suspicious', 'Low'),
-        'medium': (3, 'Suspicious', 'Medium'),
-        'high': (2, 'Malicious', 'High'),
-        'critical': (2, 'Malicious', 'High'),
+      "none": {
+        "disposition": 1,
+        "disposition_name": "Clean",
+        "severity": "None"
+      },
+      "unknown": {
+        "disposition": 5,
+        "disposition_name": "Unknown",
+        "severity": "Unknown"
+      },
+      "retired": {
+        "disposition": 5,
+        "disposition_name": "Unknown",
+        "severity": "Unknown"
+      },
+      "low": {
+        "disposition": 3,
+        "disposition_name": "Suspicious",
+        "severity": "Low"
+      },
+      "medium": {
+        "disposition": 3,
+        "disposition_name": "Suspicious",
+        "severity": "Medium"
+      },
+      "high": {
+        "disposition": 2,
+        "disposition_name": "Malicious",
+        "severity": "High"
+      },
+      "critical": {
+        "disposition": 2,
+        "disposition_name": "Malicious",
+        "severity": "High"
+      }
     }
