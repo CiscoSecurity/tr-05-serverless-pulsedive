@@ -49,11 +49,16 @@ def get_pulsedive_output(observables):
     output = []
     key = get_jwt().get('key')
 
+    header = {
+        'User-Agent': ('Cisco Threat Response Integrations '
+                       '<tr-integrations-support@cisco.com>'),
+    }
+
     for observable in observables:
         url = url_for(f'indicator={observable}',
                       key)
 
-        response = requests.get(url)
+        response = requests.get(url, headers=header)
 
         error = response.json().get('error')
         if error == "Indicator not found.":
