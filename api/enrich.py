@@ -21,8 +21,6 @@ enrich_api = Blueprint('enrich', __name__)
 
 get_observables = partial(get_json, schema=ObservableSchema(many=True))
 
-STORAGE_PERIOD = timedelta(days=3*365/12)
-
 
 def group_observables(relay_input):
     # Leave only unique (value, type) pairs grouped by value.
@@ -74,6 +72,24 @@ def get_pulsedive_output(observables):
     return output
 
 
+def get_valid_time(output):
+    start_time = datetime.strptime(output['stamp_seen'],
+                                   '%Y-%m-%d %H:%M:%S')
+
+    if output['stamp_retired']:
+        end_time = datetime.strptime(output['stamp_retired'],
+                                     '%Y-%m-%d %H:%M:%S')
+    else:
+        end_time = start_time + timedelta(days=3*365/12)
+
+    valid_time = {
+        'start_time': start_time.isoformat() + 'Z',
+        'end_time': end_time.isoformat() + 'Z',
+                }
+
+    return valid_time
+
+
 def extract_verdict(output):
     score = output['risk']
 
@@ -84,20 +100,6 @@ def extract_verdict(output):
     disposition = type_mapping['disposition']
     disposition_name = type_mapping['disposition_name']
 
-    start_time = datetime.strptime(output['stamp_seen'],
-                                   '%Y-%m-%d %H:%M:%S')
-
-    if output['stamp_retired']:
-        end_time = datetime.strptime(output['stamp_retired'],
-                                     '%Y-%m-%d %H:%M:%S')
-    else:
-        end_time = start_time + STORAGE_PERIOD
-
-    valid_time = {
-        'start_time': start_time.isoformat() + 'Z',
-        'end_time': end_time.isoformat() + 'Z',
-    }
-
     observable = {
         'value': output['indicator'],
         'type': output['type']
@@ -107,7 +109,7 @@ def extract_verdict(output):
         'observable': observable,
         'disposition': disposition,
         'disposition_name': disposition_name,
-        'valid_time': valid_time,
+        'valid_time': get_valid_time(output),
         **current_app.config['CTIM_VERDICT_DEFAULTS']
     }
 
@@ -125,20 +127,6 @@ def extract_judgement(output):
     disposition_name = type_mapping['disposition_name']
     severity = type_mapping['severity']
 
-    start_time = datetime.strptime(output['stamp_seen'],
-                                   '%Y-%m-%d %H:%M:%S')
-
-    if output['stamp_retired']:
-        end_time = datetime.strptime(output['stamp_retired'],
-                                     '%Y-%m-%d %H:%M:%S')
-    else:
-        end_time = start_time + STORAGE_PERIOD
-
-    valid_time = {
-        'start_time': start_time.isoformat() + 'Z',
-        'end_time': end_time.isoformat() + 'Z',
-    }
-
     observable = {
         'value': output['indicator'],
         'type': output['type']
@@ -152,7 +140,7 @@ def extract_judgement(output):
         'disposition': disposition,
         'disposition_name': disposition_name,
         'severity': severity,
-        'valid_time': valid_time,
+        'valid_time': get_valid_time(output),
         'source_uri': current_app.config['UI_URL'].format(
             iid=output['iid']),
         **current_app.config['CTIM_JUDGEMENT_DEFAULTS']
