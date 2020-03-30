@@ -14,16 +14,16 @@ from ctrlibrary.threatresponse.enrich import enrich_observe_observables
 def test_positive_verdict(module_headers, observable, observable_type,
                           disposition_name, disposition):
     """Perform testing for enrich observe observables endpoint to get
-    verdicts for observable from Cybercrime-Tracker
+    verdicts for observable from Pulsedive
 
-    ID: CCTRI-813-700a7520-6454-485c-8daf-f876c6e57602
+    ID: CCTRI-817-d09f2644-567e-479c-a57c-142a68204acf
 
     Steps:
         1. Send request to enrich deliberate observable endpoint
 
     Expectedresults:
         1. Check that data in response body contains expected verdicts for
-            observable from Cybercrime-Tracker
+            observable from Pulsedive
 
     Importance: Critical
     """
