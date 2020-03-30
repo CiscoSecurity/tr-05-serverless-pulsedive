@@ -97,8 +97,6 @@ def extract_verdict(output):
         score = 'retired'
 
     type_mapping = current_app.config["PULSEDIVE_API_THREAT_TYPES"][score]
-    disposition = type_mapping['disposition']
-    disposition_name = type_mapping['disposition_name']
 
     observable = {
         'value': output['indicator'],
@@ -107,8 +105,8 @@ def extract_verdict(output):
 
     doc = {
         'observable': observable,
-        'disposition': disposition,
-        'disposition_name': disposition_name,
+        'disposition': type_mapping['disposition'],
+        'disposition_name': type_mapping['disposition_name'],
         'valid_time': get_valid_time(output),
         **current_app.config['CTIM_VERDICT_DEFAULTS']
     }
@@ -123,9 +121,6 @@ def extract_judgement(output):
         score = 'retired'
 
     type_mapping = current_app.config["PULSEDIVE_API_THREAT_TYPES"][score]
-    disposition = type_mapping['disposition']
-    disposition_name = type_mapping['disposition_name']
-    severity = type_mapping['severity']
 
     observable = {
         'value': output['indicator'],
@@ -137,9 +132,9 @@ def extract_judgement(output):
     doc = {
         'id': judgement_id,
         'observable': observable,
-        'disposition': disposition,
-        'disposition_name': disposition_name,
-        'severity': severity,
+        'disposition': type_mapping['disposition'],
+        'disposition_name': type_mapping['disposition_name'],
+        'severity': type_mapping['severity'],
         'valid_time': get_valid_time(output),
         'source_uri': current_app.config['UI_URL'].format(
             iid=output['iid']),
