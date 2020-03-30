@@ -145,21 +145,21 @@ def extract_judgements(outputs):
             'type': output['type']
         }
 
-    judgement_id = f'transient:{uuid4()}'
+        judgement_id = f'transient:{uuid4()}'
 
-    doc = {
-        'id': judgement_id,
-        'observable': observable,
-        'disposition': disposition,
-        'disposition_name': disposition_name,
-        'severity': severity,
-        'valid_time': valid_time,
-        'source_uri': current_app.config['UI_URL'].format(
-            iid=output['iid']),
-        **current_app.config['CTIM_JUDGEMENT_DEFAULTS']
-    }
+        doc = {
+            'id': judgement_id,
+            'observable': observable,
+            'disposition': disposition,
+            'disposition_name': disposition_name,
+            'severity': severity,
+            'valid_time': valid_time,
+            'source_uri': current_app.config['UI_URL'].format(
+                iid=output['iid']),
+            **current_app.config['CTIM_JUDGEMENT_DEFAULTS']
+        }
 
-    docs.append(doc)
+        docs.append(doc)
 
     return docs
 
