@@ -54,6 +54,21 @@ EXPECTED_PAYLOAD_INVALID_INPUT = {
 
 EXPECTED_PAYLOAD_OBSERVE = {
   "data": {
+    "indicators": {
+        "count": 1,
+        "docs": [
+          {
+            "producer": "Pulsedive",
+            "schema_version": "1.0.16",
+            "source_uri": "https://pulsedive.com/indicator/?iid=3658835",
+            "type": "indicator",
+            "valid_time": {
+              "end_time": "2020-02-16T09:53:53Z",
+              "start_time": "2019-11-13T03:36:17Z"
+            }
+          }
+        ]
+      },
     "judgements": {
       "count": 1,
       "docs": [

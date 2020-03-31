@@ -31,6 +31,12 @@ class Config(object):
         'priority': 85,
     }
 
+    CTIM_INDICATOR_DEFAULTS = {
+        'type': 'indicator',
+        'producer': 'Pulsedive',
+        'schema_version': '1.0.16',
+    }
+
     PULSEDIVE_API_THREAT_TYPES = {
       "none": {
         "disposition": 1,

@@ -144,6 +144,18 @@ def extract_judgement(output):
     return doc
 
 
+def extract_indicator(output):
+    doc = {
+        'id': f'transient:{uuid4()}',
+        'valid_time': get_valid_time(output),
+        'source_uri': current_app.config['UI_URL'].format(
+            iid=output['iid']),
+        **current_app.config['CTIM_INDICATOR_DEFAULTS']
+    }
+
+    return doc
+
+
 def format_docs(docs):
     return {'count': len(docs), 'docs': docs}
 
@@ -167,15 +179,19 @@ def observe_observables():
 
     verdicts = []
     judgements = []
+    indicators = []
     for output in pulsedive_outputs:
         verdicts.append(extract_verdict(output))
         judgements.append(extract_judgement(output))
+        indicators.append(extract_indicator(output))
     relay_output = {}
 
     if judgements:
         relay_output['judgements'] = format_docs(judgements)
     if verdicts:
         relay_output['verdicts'] = format_docs(verdicts)
+    if indicators:
+        relay_output['indicators'] = format_docs(indicators)
 
     return jsonify_data(relay_output)
 
