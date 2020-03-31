@@ -5,9 +5,9 @@
   "name": "Pulsedive",
   "record": "relay-module.module/RelayModule+Custom+CS",
   "config": {
-    "url": "https://0iew8s3vgk.execute-api.eu-central-1.amazonaws.com/dev",
+    "url": "${URL}",
     "auth-type": "authorization-header",
-    "authorization-header": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiI0MWE4ZGU3OWM5YmVlNGVmNWUxY2YyNGQxNjAyZjczNWFiNWNmZTU0MDkzOTJkOGUxMzgyZDk3NmVlMDYzYzg1In0.jpgwsCsXdhTbE3tzK1htyuY_lSJ0LsJYNVB5ApTP6R0",
+    "authorization-header": "Bearer ${JWT}",
     "supported-apis": [
       "health",
       "observe/observables",
