@@ -138,7 +138,8 @@ def extract_judgement(output):
         'valid_time': get_valid_time(output),
         'source_uri': current_app.config['UI_URL'].format(
             iid=output['iid']),
-        **current_app.config['CTIM_JUDGEMENT_DEFAULTS']
+        **current_app.config['CTIM_JUDGEMENT_DEFAULTS'],
+        **current_app.config['SCHEMA_VERSION']
     }
 
     return doc
@@ -150,7 +151,8 @@ def extract_indicator(output):
         'valid_time': get_valid_time(output),
         'source_uri': current_app.config['UI_URL'].format(
             iid=output['iid']),
-        **current_app.config['CTIM_INDICATOR_DEFAULTS']
+        **current_app.config['CTIM_INDICATOR_DEFAULTS'],
+        **current_app.config['SCHEMA_VERSION']
     }
 
     return doc
