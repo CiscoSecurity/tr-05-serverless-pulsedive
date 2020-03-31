@@ -153,7 +153,7 @@ def extract_indicators(output):
             doc = {
                 'id': f'transient:{uuid4()}',
                 'valid_time': get_valid_time(output),
-                'description': riskfactor['description'],
+                'short_description': riskfactor['description'],
                 'producer': 'Pulsedive',
                 **current_app.config['CTIM_INDICATOR_DEFAULTS'],
                 **current_app.config['SCHEMA_VERSION']
@@ -172,10 +172,10 @@ def extract_indicators(output):
 
             doc = {
                 'id': f'transient:{uuid4()}',
-                'description': threat['name'],
+                'short_description': threat['name'],
                 'producer': 'Pulsedive',
                 'valid_time': {'start_time': start_time.isoformat() + 'Z'},
-                'tags': threat['category'],
+                'tags': [threat['category']],
                 'severity': type_mapping['severity'],
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"threat/?tid={threat['tid']}"),
@@ -191,9 +191,9 @@ def extract_indicators(output):
             doc = {
                 'id': f'transient:{uuid4()}',
                 'valid_time': {'start_time': start_time.isoformat() + 'Z'},
-                'description': feed['name'],
+                'short_description': feed['name'],
                 'producer': feed['organization'],
-                'tags': feed['category'],
+                'tags': [feed['category']],
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"feed/?fid={feed['fid']}"),
                 **current_app.config['CTIM_INDICATOR_DEFAULTS'],

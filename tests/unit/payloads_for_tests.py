@@ -58,7 +58,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
       "count": 5,
       "docs": [
         {
-          "description": "found in threat feeds",
+          "short_description": "found in threat feeds",
           "producer": "Pulsedive",
           "schema_version": "1.0.16",
           "tlp": "white",
@@ -69,7 +69,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           }
         },
         {
-          "description": "registration recently updated",
+          "short_description": "registration recently updated",
           "producer": "Pulsedive",
           "schema_version": "1.0.16",
           "tlp": "white",
@@ -80,12 +80,12 @@ EXPECTED_PAYLOAD_OBSERVE = {
           }
         },
         {
-          "description": "JS Crypto Miner",
+          "short_description": "JS Crypto Miner",
           "producer": "Pulsedive",
           "schema_version": "1.0.16",
           "severity": "Medium",
           "source_uri": "https://pulsedive.com/threat/?tid=108",
-          "tags": "abuse",
+          "tags": ["abuse"],
           "tlp": "white",
           "type": "indicator",
           "valid_time": {
@@ -93,12 +93,12 @@ EXPECTED_PAYLOAD_OBSERVE = {
           }
         },
         {
-          "description": "Kraken Botnet",
+          "short_description": "Kraken Botnet",
           "producer": "Pulsedive",
           "schema_version": "1.0.16",
           "severity": "Medium",
           "source_uri": "https://pulsedive.com/threat/?tid=9",
-          "tags": "malware",
+          "tags": ["malware"],
           "tlp": "white",
           "type": "indicator",
           "valid_time": {
@@ -106,11 +106,11 @@ EXPECTED_PAYLOAD_OBSERVE = {
           }
         },
         {
-          "description": "BBcan177 DNSBL",
+          "short_description": "BBcan177 DNSBL",
           "producer": "BBcan177",
           "schema_version": "1.0.16",
           "source_uri": "https://pulsedive.com/feed/?fid=13",
-          "tags": "general",
+          "tags": ["general"],
           "tlp": "white",
           "type": "indicator",
           "valid_time": {
