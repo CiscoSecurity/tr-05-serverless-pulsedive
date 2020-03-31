@@ -10,7 +10,7 @@ class Config(object):
 
     API_URL = 'https://pulsedive.com/api/info.php?{query}&key={key}'
 
-    UI_URL = "https://pulsedive.com/indicator/?iid={iid}"
+    UI_URL = "https://pulsedive.com/{query}"
 
     SCHEMA_VERSION = {
         'schema_version': '1.0.16'
@@ -32,11 +32,12 @@ class Config(object):
         'source': 'Pulsedive',
         'confidence': 'Medium',
         'priority': 85,
+        'tlp': 'white',
     }
 
     CTIM_INDICATOR_DEFAULTS = {
         'type': 'indicator',
-        'producer': 'Pulsedive',
+        'tlp': 'white',
     }
 
     PULSEDIVE_API_THREAT_TYPES = {

@@ -109,8 +109,9 @@ def test_enrich_call_without_jwt_success(any_route,
         assert judgements['docs'][0].pop('id')
 
         indicators = data['data']['indicators']
-        assert indicators['count'] == 1
-        assert indicators['docs'][0].pop('id')
+        assert indicators['count'] == 5
+        for indicator in indicators['docs']:
+            assert indicator.pop('id')
 
         assert data == expected_payload
     else:
@@ -164,8 +165,9 @@ def test_enrich_call_success(any_route,
         assert judgements['docs'][0].pop('id')
 
         indicators = data['data']['indicators']
-        assert indicators['count'] == 1
-        assert indicators['docs'][0].pop('id')
+        assert indicators['count'] == 5
+        for indicator in indicators['docs']:
+            assert indicator.pop('id')
 
         assert data == expected_payload
     else:
