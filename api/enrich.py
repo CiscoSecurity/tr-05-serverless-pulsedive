@@ -137,11 +137,67 @@ def extract_judgement(output):
         'severity': type_mapping['severity'],
         'valid_time': get_valid_time(output),
         'source_uri': current_app.config['UI_URL'].format(
-            iid=output['iid']),
+            query=f"indicator/?iid={output['iid']}"),
         **current_app.config['CTIM_JUDGEMENT_DEFAULTS']
     }
 
     return doc
+
+
+def extract_indicators(output):
+    docs = []
+
+    if output.get('riskfactors'):
+        for riskfactor in output['riskfactors']:
+            doc = {
+                'id': f'transient:{uuid4()}',
+                'valid_time': get_valid_time(output),
+                'short_description': riskfactor['description'],
+                'producer': 'Pulsedive',
+                **current_app.config['CTIM_INDICATOR_DEFAULTS']
+            }
+            docs.append(doc)
+
+    if output.get('threats'):
+        for threat in output['threats']:
+            score = output['risk']
+
+            type_mapping = \
+                current_app.config["PULSEDIVE_API_THREAT_TYPES"][score]
+
+            start_time = datetime.strptime(threat['stamp_linked'],
+                                           '%Y-%m-%d %H:%M:%S')
+
+            doc = {
+                'id': f'transient:{uuid4()}',
+                'short_description': threat['name'],
+                'producer': 'Pulsedive',
+                'valid_time': {'start_time': start_time.isoformat() + 'Z'},
+                'tags': [threat['category']],
+                'severity': type_mapping['severity'],
+                'source_uri': current_app.config['UI_URL'].format(
+                    query=f"threat/?tid={threat['tid']}"),
+                **current_app.config['CTIM_INDICATOR_DEFAULTS']
+            }
+            docs.append(doc)
+
+    if output.get('feeds'):
+        for feed in output['feeds']:
+            start_time = datetime.strptime(feed['stamp_linked'],
+                                           '%Y-%m-%d %H:%M:%S')
+            doc = {
+                'id': f'transient:{uuid4()}',
+                'valid_time': {'start_time': start_time.isoformat() + 'Z'},
+                'short_description': feed['name'],
+                'producer': feed['organization'],
+                'tags': [feed['category']],
+                'source_uri': current_app.config['UI_URL'].format(
+                    query=f"feed/?fid={feed['fid']}"),
+                **current_app.config['CTIM_INDICATOR_DEFAULTS']
+            }
+            docs.append(doc)
+
+    return docs
 
 
 def format_docs(docs):
@@ -167,15 +223,19 @@ def observe_observables():
 
     verdicts = []
     judgements = []
+    indicators = []
     for output in pulsedive_outputs:
         verdicts.append(extract_verdict(output))
         judgements.append(extract_judgement(output))
+        indicators += extract_indicators(output)
     relay_output = {}
 
     if judgements:
         relay_output['judgements'] = format_docs(judgements)
     if verdicts:
         relay_output['verdicts'] = format_docs(verdicts)
+    if indicators:
+        relay_output['indicators'] = format_docs(indicators)
 
     return jsonify_data(relay_output)
 

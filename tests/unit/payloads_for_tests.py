@@ -54,26 +54,92 @@ EXPECTED_PAYLOAD_INVALID_INPUT = {
 
 EXPECTED_PAYLOAD_OBSERVE = {
   "data": {
+    "indicators": {
+      "count": 5,
+      "docs": [
+        {
+          "short_description": "found in threat feeds",
+          "producer": "Pulsedive",
+          "schema_version": "1.0.16",
+          "tlp": "white",
+          "type": "indicator",
+          "valid_time": {
+            "end_time": "2020-06-30T20:47:36Z",
+            "start_time": "2020-03-31T14:47:36Z"
+          }
+        },
+        {
+          "short_description": "registration recently updated",
+          "producer": "Pulsedive",
+          "schema_version": "1.0.16",
+          "tlp": "white",
+          "type": "indicator",
+          "valid_time": {
+            "end_time": "2020-06-30T20:47:36Z",
+            "start_time": "2020-03-31T14:47:36Z"
+          }
+        },
+        {
+          "short_description": "JS Crypto Miner",
+          "producer": "Pulsedive",
+          "schema_version": "1.0.16",
+          "severity": "Medium",
+          "source_uri": "https://pulsedive.com/threat/?tid=108",
+          "tags": ["abuse"],
+          "tlp": "white",
+          "type": "indicator",
+          "valid_time": {
+            "start_time": "2018-08-06T03:44:07Z"
+          }
+        },
+        {
+          "short_description": "Kraken Botnet",
+          "producer": "Pulsedive",
+          "schema_version": "1.0.16",
+          "severity": "Medium",
+          "source_uri": "https://pulsedive.com/threat/?tid=9",
+          "tags": ["malware"],
+          "tlp": "white",
+          "type": "indicator",
+          "valid_time": {
+            "start_time": "2019-01-01T04:01:30Z"
+          }
+        },
+        {
+          "short_description": "BBcan177 DNSBL",
+          "producer": "BBcan177",
+          "schema_version": "1.0.16",
+          "source_uri": "https://pulsedive.com/feed/?fid=13",
+          "tags": ["general"],
+          "tlp": "white",
+          "type": "indicator",
+          "valid_time": {
+            "start_time": "2020-02-10T07:41:05Z"
+          }
+        }
+      ]
+    },
     "judgements": {
       "count": 1,
       "docs": [
         {
           "confidence": "Medium",
-          "disposition": 5,
-          "disposition_name": "Unknown",
+          "disposition": 3,
+          "disposition_name": "Suspicious",
           "observable": {
             "type": "domain",
-            "value": "cisco.com"
+            "value": "parkingcrew.net"
           },
           "priority": 85,
           "schema_version": "1.0.16",
-          "severity": "Unknown",
+          "severity": "Medium",
           "source": "Pulsedive",
-          "source_uri": "https://pulsedive.com/indicator/?iid=3658835",
+          "source_uri": "https://pulsedive.com/indicator/?iid=118",
+          "tlp": "white",
           "type": "judgement",
           "valid_time": {
-            "end_time": "2020-02-16T09:53:53Z",
-            "start_time": "2019-11-13T03:36:17Z"
+            "end_time": "2020-06-30T20:47:36Z",
+            "start_time": "2020-03-31T14:47:36Z"
           }
         }
       ]
@@ -82,16 +148,16 @@ EXPECTED_PAYLOAD_OBSERVE = {
       "count": 1,
       "docs": [
         {
-          "disposition": 5,
-          "disposition_name": "Unknown",
+          "disposition": 3,
+          "disposition_name": "Suspicious",
           "observable": {
             "type": "domain",
-            "value": "cisco.com"
+            "value": "parkingcrew.net"
           },
           "type": "verdict",
           "valid_time": {
-            "end_time": "2020-02-16T09:53:53Z",
-            "start_time": "2019-11-13T03:36:17Z"
+            "end_time": "2020-06-30T20:47:36Z",
+            "start_time": "2020-03-31T14:47:36Z"
           }
         }
       ]
@@ -107,87 +173,127 @@ PULSEDIVE_REQUEST_TIMOUT = {
 }
 
 PULSEDIVE_RESPONSE_MOCK = {
-    "iid": 3658835,
-    "type": "domain",
-    "indicator": "cisco.com",
-    "risk": "none",
-    "risk_recommended": "none",
-    "manualrisk": 0,
-    "retired": "No recent activity",
-    "stamp_added": "2018-12-01 16:33:36",
-    "stamp_updated": "2020-03-23 19:03:34",
-    "stamp_seen": "2019-11-13 03:36:17",
-    "stamp_probed": "2019-10-10 17:31:12",
-    "stamp_retired": "2020-02-16 09:53:53",
-    "recent": 0,
-    "riskfactors": [
-        {
-            "rfid": 58,
-            "description": "top 100k domain",
-            "risk": "none"
-        },
-        {
-            "rfid": 57,
-            "description": "top 10k domain",
-            "risk": "none"
-        },
-        {
-            "rfid": 59,
-            "description": "top 1k domain",
-            "risk": "none"
-        }
+  "iid": 118,
+  "type": "domain",
+  "indicator": "parkingcrew.net",
+  "risk": "medium",
+  "risk_recommended": "medium",
+  "manualrisk": 0,
+  "retired": "No recent activity",
+  "stamp_added": "2017-09-27 18:11:58",
+  "stamp_updated": "2020-03-31 15:12:55",
+  "stamp_seen": "2020-03-31 14:47:36",
+  "stamp_probed": "2020-03-31 14:47:39",
+  "stamp_retired": '',
+  "recent": 0,
+  "schema": {
+    "hosttype": "Host Type",
+    "port": "Port",
+    "protocol": "Protocol",
+    "technology": "Technology"
+  },
+  "riskfactors": [
+    {
+      "rfid": 60,
+      "description": "found in threat feeds",
+      "risk": "medium"
+    },
+    {
+      "rfid": 32,
+      "description": "registration recently updated",
+      "risk": "medium"
+    },
+  ],
+  "comments": [
+    {
+      "cid": 132266,
+      "uid": 559,
+      "username": "3ch0x2",
+      "title": "Cyber Investigator",
+      "comment": "",
+      "stamp_added": "2020-03-15 22:13:06",
+      "stamp_updated": "2020-03-31 14:47:36"
+    }
+  ],
+  "attributes": {
+    "hosttype": [
+      "Name Server"
     ],
-    "attributes": {
-        "port": [
-            "443",
-            "80"
-        ],
-        "protocol": [
-            "HTTP",
-            "HTTPS"
-        ],
-        "technology": [
-            "Google Analytics"
-        ]
+    "port": [
+      "443",
+      "53",
+      "80"
+    ],
+    "protocol": [
+      "DNS",
+      "HTTP",
+      "HTTPS"
+    ],
+    "technology": [
+      "Nginx"
+    ]
+  },
+  "properties": {
+    "dns": {
+      "A": "185.53.179.29",
+      "MNAME": "ns-1403.awsdns-47.org",
+      "MX": "62.116.130.8",
+      "NS": [
+        "ns-1403.awsdns-47.org",
+        "ns-2044.awsdns-63.co.uk",
+        "ns-252.awsdns-31.com",
+        "ns-547.awsdns-04.net"
+      ],
+      "RNAME": "hostmaster@parkingcrew.com",
+      "TXT": "v=spf1 -all"
     },
-    "properties": {
-        "cookies": {
-            "_fbp": "fb.1.1570728665676.877204079",
-            "_ga": "GA1.2.796428004.1570728666",
-            "_gcl_au": "1.1.1188910973.1570728665",
-            "_gid": "GA1.2.1408301629.1570728666",
-        },
-        "dns": {
-            "A": "72.163.4.185",
-            "AAAA": "2001:420:1101:1::185",
-            "MNAME": "ns1.cisco.com",
-            "MX": [
-                "rcdn-mx-01.cisco.com",
-                "alln-mx-01.cisco.com",
-                "aer-mx-01.cisco.com"
-            ],
-            "NS": [
-                "ns2.cisco.com",
-                "ns1.cisco.com",
-                "ns3.cisco.com"
-            ],
-            "RNAME": "postmaster@cisco.com",
-            "TXT": [
-                "926723159-3188410",
-                "v=spf1 redirect=spfa._spf.cisco.com",
-                "docusign=5e18de8e-36d0-4a8e-8e88-b7803423fa2f",
-                "facebook-domain-verification=qr2nigspzrpa96j1nd9criovuuwino",
-                "MS=ms35724259",
-                "docusign=95052c5f-a421-4594-9227-02ad2d86dfbe"
-            ]
-        },
-        "geo": {
-            "city": "San Jose",
-            "country": "United States of America",
-            "countrycode": "US",
-            "region": "CA"
-        },
+    "geo": {
+      "city": "REDACTED FOR PRIVACY",
+      "country": "Germany",
+      "countrycode": "DE",
+      "region": "DE"
     },
-    "umbrella_rank": 784,
-    "umbrella_domain": "cisco.com"
+    "http": {
+      "++code": "200",
+      "++status": "OK",
+      "connection": "keep-alive",
+      "Content-Encoding": "gzip",
+      "Content-Type": "text/html; charset=UTF-8",
+      "date": "Tue, 31 Mar 2020 14:43:33 GMT",
+      "Server": "nginx",
+      "transfer-encoding": "chunked",
+      "Vary": "Accept-Encoding",
+      "X-Check": "3c12dc4d54f8e22d666785b733b0052100c53444"
+    },
+    "whois": {
+      "++gdpr": "1",
+      "++privacy": "1"
+    }
+  },
+  "threats": [
+    {
+      "tid": 108,
+      "name": "JS Crypto Miner",
+      "category": "abuse",
+      "risk": "unknown",
+      "stamp_linked": "2018-08-06 03:44:07"
+    },
+    {
+      "tid": 9,
+      "name": "Kraken Botnet",
+      "category": "malware",
+      "risk": "unknown",
+      "stamp_linked": "2019-01-01 04:01:30"
+    },
+  ],
+  "feeds": [
+    {
+      "fid": 13,
+      "name": "BBcan177 DNSBL",
+      "category": "general",
+      "organization": "BBcan177",
+      "pricing": "free",
+      "stamp_linked": "2020-02-10 07:41:05"
+    }
+  ]
 }

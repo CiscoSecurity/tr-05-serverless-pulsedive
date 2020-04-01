@@ -10,7 +10,9 @@ class Config(object):
 
     API_URL = 'https://pulsedive.com/api/info.php?{query}&key={key}'
 
-    UI_URL = "https://pulsedive.com/indicator/?iid={iid}"
+    UI_URL = "https://pulsedive.com/{query}"
+
+    CTIM_SCHEMA_VERSION = '1.0.16'
 
     PULSEDIVE_OBSERVABLE_TYPES = {
         'url': 'URL',
@@ -25,10 +27,17 @@ class Config(object):
 
     CTIM_JUDGEMENT_DEFAULTS = {
         'type': 'judgement',
-        'schema_version': '1.0.16',
         'source': 'Pulsedive',
         'confidence': 'Medium',
         'priority': 85,
+        'tlp': 'white',
+        'schema_version': CTIM_SCHEMA_VERSION,
+    }
+
+    CTIM_INDICATOR_DEFAULTS = {
+        'type': 'indicator',
+        'tlp': 'white',
+        'schema_version': CTIM_SCHEMA_VERSION,
     }
 
     PULSEDIVE_API_THREAT_TYPES = {
