@@ -138,8 +138,7 @@ def extract_judgement(output):
         'valid_time': get_valid_time(output),
         'source_uri': current_app.config['UI_URL'].format(
             query=f"indicator/?iid={output['iid']}"),
-        **current_app.config['CTIM_JUDGEMENT_DEFAULTS'],
-        **current_app.config['SCHEMA_VERSION']
+        **current_app.config['CTIM_JUDGEMENT_DEFAULTS']
     }
 
     return doc
@@ -155,8 +154,7 @@ def extract_indicators(output):
                 'valid_time': get_valid_time(output),
                 'short_description': riskfactor['description'],
                 'producer': 'Pulsedive',
-                **current_app.config['CTIM_INDICATOR_DEFAULTS'],
-                **current_app.config['SCHEMA_VERSION']
+                **current_app.config['CTIM_INDICATOR_DEFAULTS']
             }
             docs.append(doc)
 
@@ -179,8 +177,7 @@ def extract_indicators(output):
                 'severity': type_mapping['severity'],
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"threat/?tid={threat['tid']}"),
-                **current_app.config['CTIM_INDICATOR_DEFAULTS'],
-                **current_app.config['SCHEMA_VERSION']
+                **current_app.config['CTIM_INDICATOR_DEFAULTS']
             }
             docs.append(doc)
 
@@ -196,8 +193,7 @@ def extract_indicators(output):
                 'tags': [feed['category']],
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"feed/?fid={feed['fid']}"),
-                **current_app.config['CTIM_INDICATOR_DEFAULTS'],
-                **current_app.config['SCHEMA_VERSION']
+                **current_app.config['CTIM_INDICATOR_DEFAULTS']
             }
             docs.append(doc)
 

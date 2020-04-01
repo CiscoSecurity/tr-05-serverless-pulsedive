@@ -12,9 +12,7 @@ class Config(object):
 
     UI_URL = "https://pulsedive.com/{query}"
 
-    SCHEMA_VERSION = {
-        'schema_version': '1.0.16'
-    }
+    CTIM_SCHEMA_VERSION = '1.0.16'
 
     PULSEDIVE_OBSERVABLE_TYPES = {
         'url': 'URL',
@@ -33,11 +31,13 @@ class Config(object):
         'confidence': 'Medium',
         'priority': 85,
         'tlp': 'white',
+        'schema_version': CTIM_SCHEMA_VERSION,
     }
 
     CTIM_INDICATOR_DEFAULTS = {
         'type': 'indicator',
         'tlp': 'white',
+        'schema_version': CTIM_SCHEMA_VERSION,
     }
 
     PULSEDIVE_API_THREAT_TYPES = {
