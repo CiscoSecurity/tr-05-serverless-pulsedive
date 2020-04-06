@@ -4,14 +4,14 @@ from ctrlibrary.core.utils import get_observables
 from ctrlibrary.threatresponse.enrich import enrich_observe_observables
 
 
-def test_positive_indicator_base(module_headers):
+def test_positive_indicator_details(module_headers):
     """Perform testing for enrich observe observables endpoint to get
-    indicators for observable from Pulsedive
+    indicator for observable from Pulsedive
 
     ID: CCTRI-910-22c91fdc-31e7-4951-993e-c2a90a92d434
 
     Steps:
-        1. Send request to enrich deliberate observable endpoint
+        1. Send request to enrich observe observables endpoint
 
     Expectedresults:
         1. Check that data in response body contains expected indicators for
@@ -56,14 +56,15 @@ def test_positive_indicator_base(module_headers):
      ('yizaiwl.cc', 'domain'),
      ('https://www.google.com/', 'url'))
 )
-def test_positive_indicators(module_headers, observable, observable_type):
+def test_positive_indicators_by_type(
+        module_headers, observable, observable_type):
     """Perform testing for enrich observe observables endpoint to get
-    indicators for observable from Pulsedive
+    indicators for observable different types from Pulsedive
 
     ID: CCTRI-910-db541ad9-22a2-469b-bb23-cceaab72b56d
 
     Steps:
-        1. Send request to enrich deliberate observable endpoint
+        1. Send request to enrich observe observables endpoint
 
     Expectedresults:
         1. Check that data in response body contains expected indicators for
