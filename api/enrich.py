@@ -212,8 +212,6 @@ def extract_indicators(output, unique_ids):
 def extract_sightings(output):
     docs = []
 
-    start_time = datetime.strptime(output['stamp_seen'],
-                                   '%Y-%m-%d %H:%M:%S')
     observable = {
         'value': output['indicator'],
         'type': output['type']
@@ -237,6 +235,10 @@ def extract_sightings(output):
 
     if output.get('riskfactors'):
         for riskfactor in output['riskfactors']:
+
+            start_time = datetime.strptime(output['stamp_seen'],
+                                           '%Y-%m-%d %H:%M:%S')
+
             doc = {
                 'id': f'transient:{uuid4()}',
                 'count': len(output['riskfactors']),
@@ -254,6 +256,10 @@ def extract_sightings(output):
 
     if output.get('threats'):
         for threat in output['threats']:
+
+            start_time = datetime.strptime(threat['stamp_linked'],
+                                           '%Y-%m-%d %H:%M:%S')
+
             doc = {
                 'id': f'transient:{uuid4()}',
                 'count': len(output['threats']),
@@ -272,6 +278,9 @@ def extract_sightings(output):
     if output.get('feeds'):
 
         for feed in output['feeds']:
+
+            start_time = datetime.strptime(feed['stamp_linked'],
+                                           '%Y-%m-%d %H:%M:%S')
             doc = {
                 'id': f'transient:{uuid4()}',
                 'count': len(output['feeds']),
