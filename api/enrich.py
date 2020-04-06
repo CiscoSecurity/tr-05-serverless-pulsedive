@@ -229,14 +229,11 @@ def extract_sightings(output):
 
     related = output['properties'].get('dns', {}).get('A')
     relations = {
-        'relations':
-            [{
                 'origin': 'Pulsedive Enrichment Module',
                 'related': {'type': 'ip', 'value': related},
                 'relation': 'Resolved_To',
                 'source': observable,
-            }]
-        }
+            }
 
     if output.get('riskfactors'):
         for riskfactor in output['riskfactors']:
@@ -245,14 +242,14 @@ def extract_sightings(output):
                 'count': len(output['riskfactors']),
                 'observables': [observable],
                 'observed_time': {'start_time': start_time.isoformat() + 'Z'},
-                'short_description': riskfactor['description'],
+                'description': riskfactor['description'],
                 'severity': type_mapping['severity'],
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"indicator/?iid={output['iid']}"),
                 **current_app.config['CTIM_SIGHTING_DEFAULTS']
             }
             if related:
-                doc.update(relations)
+                doc['relations'] = [relations]
             docs.append(doc)
 
     if output.get('threats'):
@@ -261,7 +258,7 @@ def extract_sightings(output):
                 'id': f'transient:{uuid4()}',
                 'count': len(output['threats']),
                 'observables': [observable],
-                'short_description': threat['name'],
+                'description': threat['name'],
                 'observed_time': {'start_time': start_time.isoformat() + 'Z'},
                 'severity': type_mapping['severity'],
                 'source_uri': current_app.config['UI_URL'].format(
@@ -269,7 +266,7 @@ def extract_sightings(output):
                 **current_app.config['CTIM_SIGHTING_DEFAULTS']
             }
             if related:
-                doc.update(relations)
+                doc['relations'] = [relations]
             docs.append(doc)
 
     if output.get('feeds'):
@@ -280,13 +277,13 @@ def extract_sightings(output):
                 'count': len(output['feeds']),
                 'observables': [observable],
                 'observed_time': {'start_time': start_time.isoformat() + 'Z'},
-                'short_description': feed['name'],
+                'description': feed['name'],
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"feed/?fid={feed['fid']}"),
                 **current_app.config['CTIM_SIGHTING_DEFAULTS']
             }
             if related:
-                doc.update(relations)
+                doc['relations'] = [relations]
             docs.append(doc)
 
     return docs
