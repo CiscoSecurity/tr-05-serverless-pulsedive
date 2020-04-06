@@ -193,7 +193,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           ],
           "schema_version": "1.0.16",
           "severity": "Medium",
-          "short_description": "found in threat feeds",
+          "description": "found in threat feeds",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/indicator/?iid=118",
           "type": "sighting"
@@ -226,7 +226,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           ],
           "schema_version": "1.0.16",
           "severity": "Medium",
-          "short_description": "registration recently updated",
+          "description": "registration recently updated",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/indicator/?iid=118",
           "type": "sighting"
@@ -259,7 +259,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           ],
           "schema_version": "1.0.16",
           "severity": "Medium",
-          "short_description": "JS Crypto Miner",
+          "description": "JS Crypto Miner",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/threat/?tid=108",
           "type": "sighting"
@@ -292,7 +292,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           ],
           "schema_version": "1.0.16",
           "severity": "Medium",
-          "short_description": "Kraken Botnet",
+          "description": "Kraken Botnet",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/threat/?tid=9",
           "type": "sighting"
@@ -324,7 +324,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
             }
           ],
           "schema_version": "1.0.16",
-          "short_description": "BBcan177 DNSBL",
+          "description": "BBcan177 DNSBL",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/feed/?fid=13",
           "type": "sighting"
