@@ -159,7 +159,8 @@ def extract_indicators(output, unique_ids):
             if riskfactor['rfid'] not in unique_ids['riskfactors'].keys():
                 generated_id = f'transient:{uuid4()}'
                 unique_ids['riskfactors'][riskfactor['rfid']] = {
-                    'indicator_id': generated_id
+                    'indicator_id': generated_id,
+                    'sightings_id': [],
                 }
                 doc = {
                     'id': generated_id,
@@ -175,7 +176,8 @@ def extract_indicators(output, unique_ids):
             if threat['tid'] not in unique_ids['threats'].keys():
                 generated_id = f'transient:{uuid4()}'
                 unique_ids['threats'][threat['tid']] = {
-                    'indicator_id': generated_id
+                    'indicator_id': generated_id,
+                    'sightings_id': [],
                 }
                 score = output['risk']
 
@@ -205,7 +207,8 @@ def extract_indicators(output, unique_ids):
             if feed['fid'] not in unique_ids['feeds'].keys():
                 generated_id = f'transient:{uuid4()}'
                 unique_ids['feeds'][feed['fid']] = {
-                    'indicator_id': generated_id
+                    'indicator_id': generated_id,
+                    'sightings_id': [],
                 }
                 start_time = datetime.strptime(feed['stamp_linked'],
                                                '%Y-%m-%d %H:%M:%S')
@@ -226,7 +229,7 @@ def extract_indicators(output, unique_ids):
     return docs
 
 
-def extract_sightings(output):
+def extract_sightings(output, unique_ids):
     docs = []
 
     observable = {
@@ -255,8 +258,13 @@ def extract_sightings(output):
 
             start_time = datetime.strptime(output['stamp_seen'],
                                            '%Y-%m-%d %H:%M:%S')
+
+            generated_id = f'transient:{uuid4()}'
+            unique_ids['riskfactors'][riskfactor['rfid']]['sightings_id'].\
+                append(generated_id)
+
             doc = {
-                'id': f'transient:{uuid4()}',
+                'id': generated_id,
                 'count': len(output['riskfactors']),
                 'observables': [observable],
                 'observed_time': {
@@ -278,8 +286,12 @@ def extract_sightings(output):
             start_time = datetime.strptime(threat['stamp_linked'],
                                            '%Y-%m-%d %H:%M:%S')
 
+            generated_id = f'transient:{uuid4()}'
+            unique_ids['threats'][threat['tid']]['sightings_id'].\
+                append(generated_id)
+
             doc = {
-                'id': f'transient:{uuid4()}',
+                'id': generated_id,
                 'count': len(output['threats']),
                 'observables': [observable],
                 'description': threat['name'],
@@ -301,8 +313,13 @@ def extract_sightings(output):
 
             start_time = datetime.strptime(feed['stamp_linked'],
                                            '%Y-%m-%d %H:%M:%S')
+
+            generated_id = f'transient:{uuid4()}'
+            unique_ids['feeds'][feed['fid']]['sightings_id'].\
+                append(generated_id)
+
             doc = {
-                'id': f'transient:{uuid4()}',
+                'id': generated_id,
                 'count': len(output['feeds']),
                 'observables': [observable],
                 'observed_time': {
@@ -350,7 +367,7 @@ def observe_observables():
         verdicts.append(extract_verdict(output))
         judgements.append(extract_judgement(output))
         indicators += extract_indicators(output, unique_ids)
-        sightings += extract_sightings(output)
+        sightings += extract_sightings(output, unique_ids)
     relay_output = {}
 
     if judgements:
