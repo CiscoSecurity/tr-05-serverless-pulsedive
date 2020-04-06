@@ -9,7 +9,7 @@ from ctrlibrary.threatresponse.enrich import enrich_observe_observables
     (('185.141.25.242', 'ip', 'Clean', 1, 'None'),
      ('yizaiwl.cc', 'domain', 'Malicious', 2, 'High'),
      ('208.91.197.91', 'ip', 'Suspicious', 3, 'Medium'),
-     ('5.79.66.145', 'ip', 'Unknown', 5, 'Unknown'))
+     ('https://www.google.com/', 'url', 'Unknown', 5, 'Unknown'))
 )
 def test_positive_judgement(module_headers, observable, observable_type,
                             disposition_name, disposition, severity):
@@ -19,7 +19,7 @@ def test_positive_judgement(module_headers, observable, observable_type,
     ID: CCTRI-908-94c4caa9-12c6-43cb-9777-cc6c9dcd289b
 
     Steps:
-        1. Send request to enrich deliberate observable endpoint
+        1. Send request to enrich observe observable endpoint
 
     Expectedresults:
         1. Check that data in response body contains expected judgements for
