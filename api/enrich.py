@@ -17,6 +17,9 @@ from api.utils import (
     jsonify_data, get_json
 )
 
+
+STORAGE_PERIOD = timedelta(days=3*365/12)
+
 enrich_api = Blueprint('enrich', __name__)
 
 get_observables = partial(get_json, schema=ObservableSchema(many=True))
@@ -72,6 +75,10 @@ def get_pulsedive_output(observables):
     return output
 
 
+def time_to_ctr_format(time):
+    return {'start_time': time.isoformat() + 'Z'}
+
+
 def get_valid_time(output):
     start_time = datetime.strptime(output['stamp_seen'],
                                    '%Y-%m-%d %H:%M:%S')
@@ -80,7 +87,7 @@ def get_valid_time(output):
         end_time = datetime.strptime(output['stamp_retired'],
                                      '%Y-%m-%d %H:%M:%S')
     else:
-        end_time = start_time + timedelta(days=3*365/12)
+        end_time = start_time + STORAGE_PERIOD
 
     valid_time = {
         'start_time': start_time.isoformat() + 'Z',
@@ -151,7 +158,9 @@ def extract_indicators(output, unique_ids):
         for riskfactor in output['riskfactors']:
             if riskfactor['rfid'] not in unique_ids['riskfactors'].keys():
                 generated_id = f'transient:{uuid4()}'
-                unique_ids['riskfactors'][riskfactor['rfid']] = generated_id
+                unique_ids['riskfactors'][riskfactor['rfid']] = {
+                    'indicator_id': generated_id
+                }
                 doc = {
                     'id': generated_id,
                     'valid_time': get_valid_time(output),
@@ -165,7 +174,9 @@ def extract_indicators(output, unique_ids):
         for threat in output['threats']:
             if threat['tid'] not in unique_ids['threats'].keys():
                 generated_id = f'transient:{uuid4()}'
-                unique_ids['threats'][threat['tid']] = generated_id
+                unique_ids['threats'][threat['tid']] = {
+                    'indicator_id': generated_id
+                }
                 score = output['risk']
 
                 type_mapping = \
@@ -178,7 +189,7 @@ def extract_indicators(output, unique_ids):
                     'id': generated_id,
                     'short_description': threat['name'],
                     'producer': 'Pulsedive',
-                    'valid_time': {'start_time': start_time.isoformat() + 'Z'},
+                    'valid_time': time_to_ctr_format(start_time),
                     'tags': [threat['category']],
                     'severity': type_mapping['severity'],
                     'source_uri': current_app.config['UI_URL'].format(
@@ -191,12 +202,14 @@ def extract_indicators(output, unique_ids):
         for feed in output['feeds']:
             if feed['fid'] not in unique_ids['feeds'].keys():
                 generated_id = f'transient:{uuid4()}'
-                unique_ids['feeds'][feed['fid']] = generated_id
+                unique_ids['feeds'][feed['fid']] = {
+                    'indicator_id': generated_id
+                }
                 start_time = datetime.strptime(feed['stamp_linked'],
                                                '%Y-%m-%d %H:%M:%S')
                 doc = {
                     'id': generated_id,
-                    'valid_time': {'start_time': start_time.isoformat() + 'Z'},
+                    'valid_time': time_to_ctr_format(start_time),
                     'short_description': feed['name'],
                     'producer': feed['organization'],
                     'tags': [feed['category']],
@@ -238,12 +251,11 @@ def extract_sightings(output):
 
             start_time = datetime.strptime(output['stamp_seen'],
                                            '%Y-%m-%d %H:%M:%S')
-
             doc = {
                 'id': f'transient:{uuid4()}',
                 'count': len(output['riskfactors']),
                 'observables': [observable],
-                'observed_time': {'start_time': start_time.isoformat() + 'Z'},
+                'observed_time': time_to_ctr_format(start_time),
                 'description': riskfactor['description'],
                 'severity': type_mapping['severity'],
                 'source_uri': current_app.config['UI_URL'].format(
@@ -265,7 +277,7 @@ def extract_sightings(output):
                 'count': len(output['threats']),
                 'observables': [observable],
                 'description': threat['name'],
-                'observed_time': {'start_time': start_time.isoformat() + 'Z'},
+                'observed_time': time_to_ctr_format(start_time),
                 'severity': type_mapping['severity'],
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"threat/?tid={threat['tid']}"),
@@ -285,7 +297,7 @@ def extract_sightings(output):
                 'id': f'transient:{uuid4()}',
                 'count': len(output['feeds']),
                 'observables': [observable],
-                'observed_time': {'start_time': start_time.isoformat() + 'Z'},
+                'observed_time': time_to_ctr_format(start_time),
                 'description': feed['name'],
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"feed/?fid={feed['fid']}"),
