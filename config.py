@@ -40,6 +40,13 @@ class Config(object):
         'schema_version': CTIM_SCHEMA_VERSION,
     }
 
+    CTIM_SIGHTING_DEFAULTS = {
+        'type': 'sighting',
+        'source': 'Pulsedive',
+        'confidence': 'Medium',
+        'schema_version': CTIM_SCHEMA_VERSION,
+    }
+
     PULSEDIVE_API_THREAT_TYPES = {
       "none": {
         "disposition": 1,

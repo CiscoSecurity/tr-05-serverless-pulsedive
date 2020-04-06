@@ -58,9 +58,9 @@ EXPECTED_PAYLOAD_OBSERVE = {
       "count": 5,
       "docs": [
         {
+          "producer": "Pulsedive",
+          "schema_version": "1.0.16",
           "short_description": "found in threat feeds",
-          "producer": "Pulsedive",
-          "schema_version": "1.0.16",
           "tlp": "white",
           "type": "indicator",
           "valid_time": {
@@ -69,9 +69,9 @@ EXPECTED_PAYLOAD_OBSERVE = {
           }
         },
         {
+          "producer": "Pulsedive",
+          "schema_version": "1.0.16",
           "short_description": "registration recently updated",
-          "producer": "Pulsedive",
-          "schema_version": "1.0.16",
           "tlp": "white",
           "type": "indicator",
           "valid_time": {
@@ -80,12 +80,14 @@ EXPECTED_PAYLOAD_OBSERVE = {
           }
         },
         {
-          "short_description": "JS Crypto Miner",
           "producer": "Pulsedive",
           "schema_version": "1.0.16",
           "severity": "Medium",
+          "short_description": "JS Crypto Miner",
           "source_uri": "https://pulsedive.com/threat/?tid=108",
-          "tags": ["abuse"],
+          "tags": [
+            "abuse"
+          ],
           "tlp": "white",
           "type": "indicator",
           "valid_time": {
@@ -93,12 +95,14 @@ EXPECTED_PAYLOAD_OBSERVE = {
           }
         },
         {
-          "short_description": "Kraken Botnet",
           "producer": "Pulsedive",
           "schema_version": "1.0.16",
           "severity": "Medium",
+          "short_description": "Kraken Botnet",
           "source_uri": "https://pulsedive.com/threat/?tid=9",
-          "tags": ["malware"],
+          "tags": [
+            "malware"
+          ],
           "tlp": "white",
           "type": "indicator",
           "valid_time": {
@@ -106,11 +110,13 @@ EXPECTED_PAYLOAD_OBSERVE = {
           }
         },
         {
-          "short_description": "BBcan177 DNSBL",
           "producer": "BBcan177",
           "schema_version": "1.0.16",
+          "short_description": "BBcan177 DNSBL",
           "source_uri": "https://pulsedive.com/feed/?fid=13",
-          "tags": ["general"],
+          "tags": [
+            "general"
+          ],
           "tlp": "white",
           "type": "indicator",
           "valid_time": {
@@ -141,6 +147,175 @@ EXPECTED_PAYLOAD_OBSERVE = {
             "end_time": "2020-06-30T20:47:36Z",
             "start_time": "2020-03-31T14:47:36Z"
           }
+        }
+      ]
+    },
+    "sightings": {
+      "count": 5,
+      "docs": [
+        {
+          "confidence": "Medium",
+          "count": 2,
+          "description": "found in threat feeds",
+          "observables": [
+            {
+              "type": "domain",
+              "value": "parkingcrew.net"
+            }
+          ],
+          "observed_time": {
+            "start_time": "2020-03-31T14:47:36Z"
+          },
+          "relations": [
+            {
+              "origin": "Pulsedive Enrichment Module",
+              "related": {
+                "type": "ip",
+                "value": "185.53.179.29"
+              },
+              "relation": "Resolved_To",
+              "source": {
+                "type": "domain",
+                "value": "parkingcrew.net"
+              }
+            }
+          ],
+          "schema_version": "1.0.16",
+          "severity": "Medium",
+          "source": "Pulsedive",
+          "source_uri": "https://pulsedive.com/indicator/?iid=118",
+          "type": "sighting"
+        },
+        {
+          "confidence": "Medium",
+          "count": 2,
+          "description": "registration recently updated",
+          "observables": [
+            {
+              "type": "domain",
+              "value": "parkingcrew.net"
+            }
+          ],
+          "observed_time": {
+            "start_time": "2020-03-31T14:47:36Z"
+          },
+          "relations": [
+            {
+              "origin": "Pulsedive Enrichment Module",
+              "related": {
+                "type": "ip",
+                "value": "185.53.179.29"
+              },
+              "relation": "Resolved_To",
+              "source": {
+                "type": "domain",
+                "value": "parkingcrew.net"
+              }
+            }
+          ],
+          "schema_version": "1.0.16",
+          "severity": "Medium",
+          "source": "Pulsedive",
+          "source_uri": "https://pulsedive.com/indicator/?iid=118",
+          "type": "sighting"
+        },
+        {
+          "confidence": "Medium",
+          "count": 2,
+          "description": "JS Crypto Miner",
+          "observables": [
+            {
+              "type": "domain",
+              "value": "parkingcrew.net"
+            }
+          ],
+          "observed_time": {
+            "start_time": "2018-08-06T03:44:07Z"
+          },
+          "relations": [
+            {
+              "origin": "Pulsedive Enrichment Module",
+              "related": {
+                "type": "ip",
+                "value": "185.53.179.29"
+              },
+              "relation": "Resolved_To",
+              "source": {
+                "type": "domain",
+                "value": "parkingcrew.net"
+              }
+            }
+          ],
+          "schema_version": "1.0.16",
+          "severity": "Medium",
+          "source": "Pulsedive",
+          "source_uri": "https://pulsedive.com/threat/?tid=108",
+          "type": "sighting"
+        },
+        {
+          "confidence": "Medium",
+          "count": 2,
+          "description": "Kraken Botnet",
+          "observables": [
+            {
+              "type": "domain",
+              "value": "parkingcrew.net"
+            }
+          ],
+          "observed_time": {
+            "start_time": "2019-01-01T04:01:30Z"
+          },
+          "relations": [
+            {
+              "origin": "Pulsedive Enrichment Module",
+              "related": {
+                "type": "ip",
+                "value": "185.53.179.29"
+              },
+              "relation": "Resolved_To",
+              "source": {
+                "type": "domain",
+                "value": "parkingcrew.net"
+              }
+            }
+          ],
+          "schema_version": "1.0.16",
+          "severity": "Medium",
+          "source": "Pulsedive",
+          "source_uri": "https://pulsedive.com/threat/?tid=9",
+          "type": "sighting"
+        },
+        {
+          "confidence": "Medium",
+          "count": 1,
+          "description": "BBcan177 DNSBL",
+          "observables": [
+            {
+              "type": "domain",
+              "value": "parkingcrew.net"
+            }
+          ],
+          "observed_time": {
+            "start_time": "2020-02-10T07:41:05Z"
+          },
+          "relations": [
+            {
+              "origin": "Pulsedive Enrichment Module",
+              "related": {
+                "type": "ip",
+                "value": "185.53.179.29"
+              },
+              "relation": "Resolved_To",
+              "source": {
+                "type": "domain",
+                "value": "parkingcrew.net"
+              }
+            }
+          ],
+          "schema_version": "1.0.16",
+          "source": "Pulsedive",
+          "source_uri": "https://pulsedive.com/feed/?fid=13",
+          "type": "sighting"
         }
       ]
     },
