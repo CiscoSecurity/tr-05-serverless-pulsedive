@@ -113,6 +113,11 @@ def test_enrich_call_without_jwt_success(any_route,
         for indicator in indicators['docs']:
             assert indicator.pop('id')
 
+        sightings = data['data']['sightings']
+        assert sightings['count'] == 5
+        for sighting in sightings['docs']:
+            assert sighting.pop('id')
+
         assert data == expected_payload
     else:
         response = client.post(any_route)
@@ -168,6 +173,11 @@ def test_enrich_call_success(any_route,
         assert indicators['count'] == 5
         for indicator in indicators['docs']:
             assert indicator.pop('id')
+
+        sightings = data['data']['sightings']
+        assert sightings['count'] == 5
+        for sighting in sightings['docs']:
+            assert sighting.pop('id')
 
         assert data == expected_payload
     else:

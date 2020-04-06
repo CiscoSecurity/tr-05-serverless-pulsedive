@@ -161,6 +161,175 @@ EXPECTED_PAYLOAD_OBSERVE = {
           }
         }
       ]
+    },
+    "sightings": {
+      "count": 5,
+      "docs": [
+        {
+          "confidence": "Medium",
+          "count": 2,
+          "observables": [
+            {
+              "type": "domain",
+              "value": "parkingcrew.net"
+            }
+          ],
+          "observed_time": {
+            "start_time": "2020-03-31T14:47:36Z"
+          },
+          "relations": [
+            {
+              "origin": "Pulsedive Enrichment Module",
+              "related": {
+                "type": "ip",
+                "value": "185.53.179.29"
+              },
+              "relation": "Resolved_To",
+              "source": {
+                "type": "domain",
+                "value": "parkingcrew.net"
+              }
+            }
+          ],
+          "schema_version": "1.0.16",
+          "severity": "Medium",
+          "short_description": "found in threat feeds",
+          "source": "Pulsedive",
+          "source_uri": "https://pulsedive.com/indicator/?iid=118",
+          "type": "sighting"
+        },
+        {
+          "confidence": "Medium",
+          "count": 2,
+          "observables": [
+            {
+              "type": "domain",
+              "value": "parkingcrew.net"
+            }
+          ],
+          "observed_time": {
+            "start_time": "2020-03-31T14:47:36Z"
+          },
+          "relations": [
+            {
+              "origin": "Pulsedive Enrichment Module",
+              "related": {
+                "type": "ip",
+                "value": "185.53.179.29"
+              },
+              "relation": "Resolved_To",
+              "source": {
+                "type": "domain",
+                "value": "parkingcrew.net"
+              }
+            }
+          ],
+          "schema_version": "1.0.16",
+          "severity": "Medium",
+          "short_description": "registration recently updated",
+          "source": "Pulsedive",
+          "source_uri": "https://pulsedive.com/indicator/?iid=118",
+          "type": "sighting"
+        },
+        {
+          "confidence": "Medium",
+          "count": 2,
+          "observables": [
+            {
+              "type": "domain",
+              "value": "parkingcrew.net"
+            }
+          ],
+          "observed_time": {
+            "start_time": "2020-03-31T14:47:36Z"
+          },
+          "relations": [
+            {
+              "origin": "Pulsedive Enrichment Module",
+              "related": {
+                "type": "ip",
+                "value": "185.53.179.29"
+              },
+              "relation": "Resolved_To",
+              "source": {
+                "type": "domain",
+                "value": "parkingcrew.net"
+              }
+            }
+          ],
+          "schema_version": "1.0.16",
+          "severity": "Medium",
+          "short_description": "JS Crypto Miner",
+          "source": "Pulsedive",
+          "source_uri": "https://pulsedive.com/threat/?tid=108",
+          "type": "sighting"
+        },
+        {
+          "confidence": "Medium",
+          "count": 2,
+          "observables": [
+            {
+              "type": "domain",
+              "value": "parkingcrew.net"
+            }
+          ],
+          "observed_time": {
+            "start_time": "2020-03-31T14:47:36Z"
+          },
+          "relations": [
+            {
+              "origin": "Pulsedive Enrichment Module",
+              "related": {
+                "type": "ip",
+                "value": "185.53.179.29"
+              },
+              "relation": "Resolved_To",
+              "source": {
+                "type": "domain",
+                "value": "parkingcrew.net"
+              }
+            }
+          ],
+          "schema_version": "1.0.16",
+          "severity": "Medium",
+          "short_description": "Kraken Botnet",
+          "source": "Pulsedive",
+          "source_uri": "https://pulsedive.com/threat/?tid=9",
+          "type": "sighting"
+        },
+        {
+          "confidence": "Medium",
+          "count": 1,
+          "observables": [
+            {
+              "type": "domain",
+              "value": "parkingcrew.net"
+            }
+          ],
+          "observed_time": {
+            "start_time": "2020-03-31T14:47:36Z"
+          },
+          "relations": [
+            {
+              "origin": "Pulsedive Enrichment Module",
+              "related": {
+                "type": "ip",
+                "value": "185.53.179.29"
+              },
+              "relation": "Resolved_To",
+              "source": {
+                "type": "domain",
+                "value": "parkingcrew.net"
+              }
+            }
+          ],
+          "schema_version": "1.0.16",
+          "short_description": "BBcan177 DNSBL",
+          "source": "Pulsedive",
+          "source_uri": "https://pulsedive.com/feed/?fid=13",
+          "type": "sighting"
+        }
+      ]
     }
   }
 }
