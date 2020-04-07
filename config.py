@@ -47,6 +47,12 @@ class Config(object):
         'schema_version': CTIM_SCHEMA_VERSION,
     }
 
+    CTIM_RELATIONSHIP_DEFAULTS = {
+        'type': 'relationship',
+        'tlp': 'white',
+        'schema_version': CTIM_SCHEMA_VERSION,
+    }
+
     PULSEDIVE_API_THREAT_TYPES = {
       "none": {
         "disposition": 1,
