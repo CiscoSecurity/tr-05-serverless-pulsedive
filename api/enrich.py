@@ -220,6 +220,14 @@ def extract_indicators(output, unique_ids):
     return docs
 
 
+def get_relationship(source_ref, target_ref, relationship_type):
+    return {
+            'source_ref': source_ref,
+            'target_ref': target_ref,
+            'relationship_type': relationship_type,
+            }
+
+
 def extract_sightings(output, unique_indicator_ids, sightings_relationship):
     docs = []
 
@@ -253,11 +261,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
             generated_id = f'transient:{uuid4()}'
             ind_id = unique_indicator_ids['riskfactors'][riskfactor['rfid']]
             sightings_relationship.append(
-                {
-                    'source_ref': generated_id,
-                    'target_ref': ind_id,
-                    'relationship_type': 'sighting-of'
-                }
+                get_relationship(generated_id, ind_id, 'sighting-of')
             )
 
             doc = {
@@ -287,11 +291,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
 
             ind_id = unique_indicator_ids['threats'][threat['tid']]
             sightings_relationship.append(
-                {
-                    'source_ref': generated_id,
-                    'target_ref': ind_id,
-                    'relationship_type': 'sighting-of'
-                }
+                get_relationship(generated_id, ind_id, 'sighting-of')
             )
 
             doc = {
@@ -322,11 +322,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
 
             ind_id = unique_indicator_ids['feeds'][feed['fid']]
             sightings_relationship.append(
-                {
-                    'source_ref': generated_id,
-                    'target_ref': ind_id,
-                    'relationship_type': 'member-of'
-                }
+                get_relationship(generated_id, ind_id, 'member-of')
             )
 
             doc = {
