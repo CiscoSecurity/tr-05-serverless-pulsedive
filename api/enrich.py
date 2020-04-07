@@ -158,10 +158,7 @@ def extract_indicators(output, unique_ids):
         for riskfactor in output['riskfactors']:
             if riskfactor['rfid'] not in unique_ids['riskfactors'].keys():
                 generated_id = f'transient:{uuid4()}'
-                unique_ids['riskfactors'][riskfactor['rfid']] = {
-                    'indicator_id': generated_id,
-                    'sightings_id': [],
-                }
+                unique_ids['riskfactors'][riskfactor['rfid']] = generated_id
                 doc = {
                     'id': generated_id,
                     'valid_time': get_valid_time(output),
@@ -175,10 +172,7 @@ def extract_indicators(output, unique_ids):
         for threat in output['threats']:
             if threat['tid'] not in unique_ids['threats'].keys():
                 generated_id = f'transient:{uuid4()}'
-                unique_ids['threats'][threat['tid']] = {
-                    'indicator_id': generated_id,
-                    'sightings_id': [],
-                }
+                unique_ids['threats'][threat['tid']] = generated_id
                 score = output['risk']
 
                 type_mapping = \
@@ -206,10 +200,7 @@ def extract_indicators(output, unique_ids):
         for feed in output['feeds']:
             if feed['fid'] not in unique_ids['feeds'].keys():
                 generated_id = f'transient:{uuid4()}'
-                unique_ids['feeds'][feed['fid']] = {
-                    'indicator_id': generated_id,
-                    'sightings_id': [],
-                }
+                unique_ids['feeds'][feed['fid']] = generated_id
                 start_time = datetime.strptime(feed['stamp_linked'],
                                                '%Y-%m-%d %H:%M:%S')
                 doc = {
@@ -229,7 +220,15 @@ def extract_indicators(output, unique_ids):
     return docs
 
 
-def extract_sightings(output, unique_ids):
+def get_relationship(source_ref, target_ref, relationship_type):
+    return {
+            'source_ref': source_ref,
+            'target_ref': target_ref,
+            'relationship_type': relationship_type,
+            }
+
+
+def extract_sightings(output, unique_indicator_ids, sightings_relationship):
     docs = []
 
     observable = {
@@ -260,8 +259,10 @@ def extract_sightings(output, unique_ids):
                                            '%Y-%m-%d %H:%M:%S')
 
             generated_id = f'transient:{uuid4()}'
-            unique_ids['riskfactors'][riskfactor['rfid']]['sightings_id'].\
-                append(generated_id)
+            ind_id = unique_indicator_ids['riskfactors'][riskfactor['rfid']]
+            sightings_relationship.append(
+                get_relationship(generated_id, ind_id, 'sighting-of')
+            )
 
             doc = {
                 'id': generated_id,
@@ -287,8 +288,11 @@ def extract_sightings(output, unique_ids):
                                            '%Y-%m-%d %H:%M:%S')
 
             generated_id = f'transient:{uuid4()}'
-            unique_ids['threats'][threat['tid']]['sightings_id'].\
-                append(generated_id)
+
+            ind_id = unique_indicator_ids['threats'][threat['tid']]
+            sightings_relationship.append(
+                get_relationship(generated_id, ind_id, 'sighting-of')
+            )
 
             doc = {
                 'id': generated_id,
@@ -315,8 +319,11 @@ def extract_sightings(output, unique_ids):
                                            '%Y-%m-%d %H:%M:%S')
 
             generated_id = f'transient:{uuid4()}'
-            unique_ids['feeds'][feed['fid']]['sightings_id'].\
-                append(generated_id)
+
+            ind_id = unique_indicator_ids['feeds'][feed['fid']]
+            sightings_relationship.append(
+                get_relationship(generated_id, ind_id, 'member-of')
+            )
 
             doc = {
                 'id': generated_id,
@@ -333,6 +340,19 @@ def extract_sightings(output, unique_ids):
             if related:
                 doc['relations'] = [relations]
             docs.append(doc)
+
+    return docs
+
+
+def extract_relationship(sightings_relationship):
+    docs = []
+    for relation in sightings_relationship:
+        doc = {
+            'id': f'transient:{uuid4()}',
+            **relation,
+            **current_app.config['CTIM_RELATIONSHIP_DEFAULTS'],
+        }
+        docs.append(doc)
 
     return docs
 
@@ -362,12 +382,19 @@ def observe_observables():
     judgements = []
     indicators = []
     sightings = []
-    unique_ids = {'riskfactors': {}, 'threats': {}, 'feeds': {}}
+
+    unique_indicator_ids = {'riskfactors': {}, 'threats': {}, 'feeds': {}}
+    sightings_relationship = []
     for output in pulsedive_outputs:
         verdicts.append(extract_verdict(output))
         judgements.append(extract_judgement(output))
-        indicators += extract_indicators(output, unique_ids)
-        sightings += extract_sightings(output, unique_ids)
+        indicators += extract_indicators(output, unique_indicator_ids)
+        sightings += extract_sightings(output,
+                                       unique_indicator_ids,
+                                       sightings_relationship
+                                       )
+    relationships = extract_relationship(sightings_relationship)
+
     relay_output = {}
 
     if judgements:
@@ -378,6 +405,8 @@ def observe_observables():
         relay_output['indicators'] = format_docs(indicators)
     if sightings:
         relay_output['sightings'] = format_docs(sightings)
+    if relationships:
+        relay_output['relationships'] = format_docs(relationships)
 
     return jsonify_data(relay_output)
 

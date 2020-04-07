@@ -110,13 +110,22 @@ def test_enrich_call_without_jwt_success(any_route,
 
         indicators = data['data']['indicators']
         assert indicators['count'] == 5
+        indicator_ids = []
         for indicator in indicators['docs']:
-            assert indicator.pop('id')
+            indicator_ids.append(indicator.pop('id'))
 
         sightings = data['data']['sightings']
         assert sightings['count'] == 5
+        sighting_ids = []
         for sighting in sightings['docs']:
-            assert sighting.pop('id')
+            sighting_ids.append(sighting.pop('id'))
+
+        relationships = data['data']['relationships']
+        assert relationships['count'] == 5
+        for i, relationship in enumerate(relationships['docs']):
+            assert relationship.pop('id')
+            assert relationship.pop('source_ref') == sighting_ids[i]
+            assert relationship.pop('target_ref') == indicator_ids[i]
 
         assert data == expected_payload
     else:
@@ -171,13 +180,22 @@ def test_enrich_call_success(any_route,
 
         indicators = data['data']['indicators']
         assert indicators['count'] == 5
+        indicator_ids = []
         for indicator in indicators['docs']:
-            assert indicator.pop('id')
+            indicator_ids.append(indicator.pop('id'))
 
         sightings = data['data']['sightings']
         assert sightings['count'] == 5
+        sighting_ids = []
         for sighting in sightings['docs']:
-            assert sighting.pop('id')
+            sighting_ids.append(sighting.pop('id'))
+
+        relationships = data['data']['relationships']
+        assert relationships['count'] == 5
+        for i, relationship in enumerate(relationships['docs']):
+            assert relationship.pop('id')
+            assert relationship.pop('source_ref') == sighting_ids[i]
+            assert relationship.pop('target_ref') == indicator_ids[i]
 
         assert data == expected_payload
     else:
