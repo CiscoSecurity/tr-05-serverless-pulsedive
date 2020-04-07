@@ -338,32 +338,32 @@ EXPECTED_PAYLOAD_OBSERVE = {
       ]
     },
     "relationships": {
-      "count": 5 ,
+      "count": 5,
       "docs": [
         {
           "relationship_type": "sighting-of",
           "schema_version": "1.0.16",
           "tlp": "white",
           "type": "relationship"
-        } ,
-        {
-          "relationship_type": "sighting-of" ,
-          "schema_version": "1.0.16" ,
-          "tlp": "white",
-          "type": "relationship"
-        } ,
+        },
         {
           "relationship_type": "sighting-of",
           "schema_version": "1.0.16",
           "tlp": "white",
           "type": "relationship"
-        } ,
+        },
         {
           "relationship_type": "sighting-of",
           "schema_version": "1.0.16",
           "tlp": "white",
           "type": "relationship"
-        } ,
+        },
+        {
+          "relationship_type": "sighting-of",
+          "schema_version": "1.0.16",
+          "tlp": "white",
+          "type": "relationship"
+        },
         {
           "relationship_type": "member-of",
           "schema_version": "1.0.16",
