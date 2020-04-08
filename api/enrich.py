@@ -231,7 +231,7 @@ def get_relationship(source_ref, target_ref, relationship_type):
 def get_related_ips(observable, ips):
     relations = []
     if ips:
-        if not isinstance(ips, list):
+        if isinstance(ips, str):
             ips = [ips]
 
         for ip in ips:
