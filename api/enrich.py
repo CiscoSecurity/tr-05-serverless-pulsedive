@@ -230,19 +230,19 @@ def get_relationship(source_ref, target_ref, relationship_type):
 
 def get_related_ips(observable, ips):
     relations = []
-    if ips:
-        if isinstance(ips, str):
-            ips = [ips]
 
-        for ip in ips:
-            relations.append(
-                {
-                            'origin': 'Pulsedive Enrichment Module',
-                            'related': {'type': 'ip', 'value': ip},
-                            'relation': 'Resolved_To',
-                            'source': observable,
-                }
-            )
+    if isinstance(ips, str):
+        ips = [ips]
+
+    for ip in ips:
+        relations.append(
+            {
+                'origin': 'Pulsedive Enrichment Module',
+                'related': {'type': 'ip', 'value': ip},
+                'relation': 'Resolved_To',
+                'source': observable,
+            }
+        )
     return relations
 
 
@@ -264,7 +264,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
 
     related_ips = get_related_ips(
         observable,
-        output['properties'].get('dns', {}).get('A')
+        output['properties'].get('dns', {}).get('A', [])
     )
 
     if output.get('riskfactors'):
