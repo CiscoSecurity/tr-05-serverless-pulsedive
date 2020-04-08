@@ -143,7 +143,7 @@ def test_enrich_call_without_jwt_but_invalid_json_failure(route,
 
 @fixture(scope='module')
 def invalid_json():
-    return [{'type': 'unknown', 'value': ''}]
+    return [{'type': 'unknown', 'value': 'https://google.com'}]
 
 
 def test_enrich_call_with_valid_jwt_but_invalid_json_failure(route,
