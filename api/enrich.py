@@ -230,19 +230,19 @@ def get_relationship(source_ref, target_ref, relationship_type):
 
 def get_related_ips(observable, ips):
     relations = []
+    if ips:
+        if type(ips) != list:
+            ips = [ips]
 
-    if ips and type(ips) != list:
-        ips = [ips]
-
-    for ip in ips:
-        relations.append(
-            {
-                        'origin': 'Pulsedive Enrichment Module',
-                        'related': {'type': 'ip', 'value': ip},
-                        'relation': 'Resolved_To',
-                        'source': observable,
-            }
-        )
+        for ip in ips:
+            relations.append(
+                {
+                            'origin': 'Pulsedive Enrichment Module',
+                            'related': {'type': 'ip', 'value': ip},
+                            'relation': 'Resolved_To',
+                            'source': observable,
+                }
+            )
     return relations
 
 
