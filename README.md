@@ -59,7 +59,7 @@ export JWT=<...>
 http POST "${URL}"/health Authorization:"Bearer ${JWT}"
 http POST "${URL}"/observe/observables Authorization:"Bearer ${JWT}" < observables.json
 ```
-##API Key
+## API Key
 
 You don't technically need an API key to access the Pulsedive API, but it helps them keep
 track of how many requests are being used. If the API key is not used with API
@@ -67,10 +67,10 @@ requests, they may use other methods of tracking requests. But, this could be in
 and the rate limit is set for free users to 30 requests per minute.
 They offer additional [pricing plans](https://pulsedive.com/about/?q=api) for increased rate limits. 
 
-##JWT Generating
+## JWT Generating
 
 Payload for encryption must have structure:
-```
+```bash
 {
 "key": "your_key_for_pulsedive_api"
 }
