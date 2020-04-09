@@ -70,7 +70,7 @@ They offer additional [pricing plans](https://pulsedive.com/about/?q=api) for in
 ## JWT Generating
 
 Payload for encryption must have structure:
-```bash
+```json
 {
 "key": "your_key_for_pulsedive_api"
 }
