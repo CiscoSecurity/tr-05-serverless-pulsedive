@@ -8,7 +8,7 @@ from ctrlibrary.threatresponse.enrich import enrich_observe_observables
     'observable,observable_type,disposition_name,disposition,severity',
     (('185.141.25.242', 'ip', 'Clean', 1, 'None'),
      ('yizaiwl.cc', 'domain', 'Malicious', 2, 'High'),
-     ('208.91.197.91', 'ip', 'Suspicious', 3, 'Medium'),
+     ('208.91.197.91', 'ip', 'Suspicious', 3, 'Low'),
      ('https://www.google.com/', 'url', 'Unknown', 5, 'Unknown'))
 )
 def test_positive_judgement(module_headers, observable, observable_type,
