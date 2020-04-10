@@ -70,11 +70,11 @@ def get_pulsedive_output(observables):
         elif not response.ok:
             raise StandardHttpError(response)
         payload = response.json()
-        if payload['threats']:
+        if payload.get('threats'):
             payload['threats'].sort(
                 key=lambda x: x['stamp_linked'], reverse=True
             )
-        if payload['feeds']:
+        if payload.get('feeds'):
             payload['feeds'].sort(
                 key=lambda x: x['stamp_linked'], reverse=True
             )
