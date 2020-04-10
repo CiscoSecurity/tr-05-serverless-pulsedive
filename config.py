@@ -14,6 +14,11 @@ class Config(object):
 
     CTIM_SCHEMA_VERSION = '1.0.16'
 
+    CTR_DEFAULT_ENTITIES_LIMIT = 100
+
+    CTR_ENTITIES_LIMIT = \
+        int(os.environ.get('CTR_ENTITIES_LIMIT', CTR_DEFAULT_ENTITIES_LIMIT))
+
     PULSEDIVE_OBSERVABLE_TYPES = {
         'url': 'URL',
         'domain': 'domain',

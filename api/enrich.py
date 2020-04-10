@@ -69,8 +69,16 @@ def get_pulsedive_output(observables):
             raise UnexpectedPulsediveError(error)
         elif not response.ok:
             raise StandardHttpError(response)
-
-        output.append(response.json())
+        payload = response.json()
+        if payload['threats']:
+            payload['threats'].sort(
+                key=lambda x: x['stamp_linked'], reverse=True
+            )
+        if payload['feeds']:
+            payload['feeds'].sort(
+                key=lambda x: x['stamp_linked'], reverse=True
+            )
+        output.append(payload)
 
     return output
 
@@ -158,7 +166,6 @@ def extract_indicators(output, unique_ids):
         for riskfactor in output['riskfactors']:
             if riskfactor['rfid'] not in unique_ids['riskfactors'].keys():
                 generated_id = f'transient:{uuid4()}'
-                unique_ids['riskfactors'][riskfactor['rfid']] = generated_id
                 doc = {
                     'id': generated_id,
                     'valid_time': get_valid_time(output),
@@ -166,13 +173,18 @@ def extract_indicators(output, unique_ids):
                     'producer': 'Pulsedive',
                     **current_app.config['CTIM_INDICATOR_DEFAULTS']
                 }
+
+                if len(docs) >= current_app.config['CTR_ENTITIES_LIMIT']:
+                    return docs
+
+                unique_ids['riskfactors'][riskfactor['rfid']] = generated_id
+
                 docs.append(doc)
 
     if output.get('threats'):
         for threat in output['threats']:
             if threat['tid'] not in unique_ids['threats'].keys():
                 generated_id = f'transient:{uuid4()}'
-                unique_ids['threats'][threat['tid']] = generated_id
                 score = output['risk']
 
                 type_mapping = \
@@ -194,13 +206,19 @@ def extract_indicators(output, unique_ids):
                         query=f"threat/?tid={threat['tid']}"),
                     **current_app.config['CTIM_INDICATOR_DEFAULTS']
                 }
+
+                if len(docs) >= current_app.config['CTR_ENTITIES_LIMIT']:
+                    return docs
+
+                unique_ids['threats'][threat['tid']] = generated_id
+
                 docs.append(doc)
 
     if output.get('feeds'):
         for feed in output['feeds']:
             if feed['fid'] not in unique_ids['feeds'].keys():
                 generated_id = f'transient:{uuid4()}'
-                unique_ids['feeds'][feed['fid']] = generated_id
+
                 start_time = datetime.strptime(feed['stamp_linked'],
                                                '%Y-%m-%d %H:%M:%S')
                 doc = {
@@ -215,6 +233,12 @@ def extract_indicators(output, unique_ids):
                         query=f"feed/?fid={feed['fid']}"),
                     **current_app.config['CTIM_INDICATOR_DEFAULTS']
                 }
+
+                if len(docs) >= current_app.config['CTR_ENTITIES_LIMIT']:
+                    return docs
+
+                unique_ids['feeds'][feed['fid']] = generated_id
+
                 docs.append(doc)
 
     return docs
@@ -274,10 +298,6 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                                            '%Y-%m-%d %H:%M:%S')
 
             generated_id = f'transient:{uuid4()}'
-            ind_id = unique_indicator_ids['riskfactors'][riskfactor['rfid']]
-            sightings_relationship.append(
-                get_relationship(generated_id, ind_id, 'sighting-of')
-            )
 
             doc = {
                 'id': generated_id,
@@ -294,6 +314,14 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                 **current_app.config['CTIM_SIGHTING_DEFAULTS']
             }
 
+            if len(docs) >= current_app.config['CTR_ENTITIES_LIMIT']:
+                return docs
+
+            ind_id = unique_indicator_ids['riskfactors'][riskfactor['rfid']]
+            sightings_relationship.append(
+                get_relationship(generated_id, ind_id, 'sighting-of')
+            )
+
             docs.append(doc)
 
     if output.get('threats'):
@@ -303,11 +331,6 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                                            '%Y-%m-%d %H:%M:%S')
 
             generated_id = f'transient:{uuid4()}'
-
-            ind_id = unique_indicator_ids['threats'][threat['tid']]
-            sightings_relationship.append(
-                get_relationship(generated_id, ind_id, 'sighting-of')
-            )
 
             doc = {
                 'id': generated_id,
@@ -323,6 +346,15 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                     query=f"threat/?tid={threat['tid']}"),
                 **current_app.config['CTIM_SIGHTING_DEFAULTS']
             }
+
+            if len(docs) >= current_app.config['CTR_ENTITIES_LIMIT']:
+                return docs
+
+            ind_id = unique_indicator_ids['threats'][threat['tid']]
+            sightings_relationship.append(
+                get_relationship(generated_id, ind_id, 'sighting-of')
+            )
+
             docs.append(doc)
 
     if output.get('feeds'):
@@ -333,11 +365,6 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                                            '%Y-%m-%d %H:%M:%S')
 
             generated_id = f'transient:{uuid4()}'
-
-            ind_id = unique_indicator_ids['feeds'][feed['fid']]
-            sightings_relationship.append(
-                get_relationship(generated_id, ind_id, 'member-of')
-            )
 
             doc = {
                 'id': generated_id,
@@ -352,6 +379,15 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                     query=f"feed/?fid={feed['fid']}"),
                 **current_app.config['CTIM_SIGHTING_DEFAULTS']
             }
+
+            if len(docs) >= current_app.config['CTR_ENTITIES_LIMIT']:
+                return docs
+
+            ind_id = unique_indicator_ids['feeds'][feed['fid']]
+            sightings_relationship.append(
+                get_relationship(generated_id, ind_id, 'member-of')
+            )
+
             docs.append(doc)
 
     return docs
