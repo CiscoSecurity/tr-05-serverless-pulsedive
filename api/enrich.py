@@ -288,10 +288,13 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
     type_mapping = \
         current_app.config["PULSEDIVE_API_THREAT_TYPES"][score]
 
-    related_ips = get_related_ips(
-        observable,
-        output['properties'].get('dns', {}).get('A', [])
-    )
+    related_ips = []
+
+    if output.get('properties'):
+        related_ips += get_related_ips(
+            observable,
+            output.get('properties').get('dns', {}).get('A', [])
+        )
 
     if output.get('riskfactors'):
         for riskfactor in output['riskfactors']:
