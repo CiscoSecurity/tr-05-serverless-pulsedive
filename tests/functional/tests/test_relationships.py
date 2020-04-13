@@ -13,7 +13,8 @@ def test_positive_relationship_detail(module_headers):
 
     Expectedresults:
         1. Check that data in response body contains expected relationships
-           for observable from Pulsedive
+           for observable from Pulsedive.
+           Each sighting has one relationship with indicator
 
     Importance: Critical
     """
@@ -29,6 +30,7 @@ def test_positive_relationship_detail(module_headers):
     sightings = entities['sightings']
     indicators = entities['indicators']
 
+    # sighting has one relationship with indicator
     assert sightings['count'] == indicators['count']
 
     sightings_id = [s['id'] for s in sightings['docs']]
@@ -71,8 +73,6 @@ def test_positive_relationship_several_observables(module_headers):
     sightings = entities['sightings']
     indicators = entities['indicators']
 
-    assert sightings['count'] >= indicators['count']
-
     sightings_id = [s['id'] for s in sightings['docs']]
     indicators_id = [i['id'] for i in indicators['docs']]
 
@@ -81,5 +81,16 @@ def test_positive_relationship_several_observables(module_headers):
         assert relationship['type'] == 'relationship'
         assert relationship['relationship_type'] in (
             'sighting-of', 'member-of')
+
         assert relationship['target_ref'] in indicators_id
         assert relationship['source_ref'] in sightings_id
+
+    # Each sighting exists in relationships
+    sighting_indicator = {r['source_ref']: r['target_ref']
+                          for r in relationships['docs']}
+    for sighting in sightings['docs']:
+        assert sighting['id'] in sighting_indicator
+
+    # Each indicator exists in relationships
+    for indicator in indicators['docs']:
+        assert indicator['id'] in {v: k for k, v in sighting_indicator.items()}
