@@ -8,9 +8,10 @@ from tests.unit.payloads_for_tests import (
     EXPECTED_PAYLOAD_INVALID_INPUT,
     EXPECTED_PAYLOAD_FORBIDDEN,
     EXPECTED_PAYLOAD_OBSERVE,
+    EXPECTED_PAYLOAD_OBSERVE_WITH_LIMIT,
     EXPECTED_PAYLOAD_REQUEST_TIMOUT,
     PULSEDIVE_RESPONSE_MOCK,
-    PULSEDIVE_REQUEST_TIMOUT
+    PULSEDIVE_REQUEST_TIMOUT,
 )
 
 
@@ -216,3 +217,48 @@ def test_enrich_call_failure(route,
 
     assert response.status_code == HTTPStatus.OK
     assert response.get_json() == EXPECTED_PAYLOAD_REQUEST_TIMOUT
+
+
+def test_enrich_call_success_limit_1(any_route,
+                                     client,
+                                     valid_jwt,
+                                     valid_json,
+                                     pd_api_request):
+    if any_route in routes():
+        client.application.config['CTR_ENTITIES_LIMIT'] = 1
+
+        pd_api_request.return_value = pd_api_response(ok=True)
+        response = client.post(any_route,
+                               headers=headers(valid_jwt),
+                               json=valid_json)
+
+        data = response.get_json()
+
+        assert response.status_code == HTTPStatus.OK
+
+        verdicts = data['data']['verdicts']
+        assert verdicts['count'] == 1
+
+        judgements = data['data']['judgements']
+        assert judgements['count'] == 1
+        assert judgements['docs'][0].pop('id')
+
+        indicators = data['data']['indicators']
+        assert indicators['count'] == 1
+        indicator_id = indicators['docs'][0].pop('id')
+
+        sightings = data['data']['sightings']
+        assert sightings['count'] == 1
+        sighting_id = sightings['docs'][0].pop('id')
+
+        relationships = data['data']['relationships']
+        assert relationships['count'] == 1
+        assert relationships['docs'][0].pop('id')
+        assert relationships['docs'][0].pop('source_ref') == sighting_id
+        assert relationships['docs'][0].pop('target_ref') == indicator_id
+
+        assert data == EXPECTED_PAYLOAD_OBSERVE_WITH_LIMIT
+    else:
+        response = client.post(any_route)
+
+        assert response.status_code == HTTPStatus.OK
