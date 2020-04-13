@@ -12,6 +12,17 @@ class Config(object):
 
     UI_URL = "https://pulsedive.com/{query}"
 
+    BROWSE_URL = "https://pulsedive.com/browse/?q="
+
+    BROWSE_QUERY = '{{"type":["artifact", "domain","ip","ipv6","url"],' \
+                   '"risk":["unknown","none","low","medium","high",' \
+                   '"critical","retired"],"lastseen":["all"],"indicator":' \
+                   '[{{"raw":{{"type":"indicator","value":' \
+                   '"{observable}"}}, "htmlsafe":{{"type":' \
+                   '"indicator","value":"{observable}"}},' \
+                   '"exact":true}}],"attribute":[],"property"' \
+                   ':[],"threat":[], "feed":[]}}'
+
     CTIM_SCHEMA_VERSION = '1.0.16'
 
     CTR_DEFAULT_ENTITIES_LIMIT = 100
@@ -22,7 +33,7 @@ class Config(object):
     PULSEDIVE_OBSERVABLE_TYPES = {
         'url': 'URL',
         'domain': 'domain',
-        'ip': 'ip',
+        'ip': 'IP',
         'ipv6': 'ipv6',
     }
 
