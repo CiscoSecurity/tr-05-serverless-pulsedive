@@ -496,7 +496,7 @@ def get_browse_pivot(observables):
 
 def encode_str(query, value):
     query = query.format(observable=value)
-    return b64encode(query.encode("ascii")).decode("utf-8")
+    return b64encode(query.encode("utf-8")).decode("utf-8")
 
 
 def get_search_pivots(value, type):
