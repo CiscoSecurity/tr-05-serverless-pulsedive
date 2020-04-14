@@ -254,17 +254,17 @@ def get_relationship(source_ref, target_ref, relationship_type):
             }
 
 
-def get_related_ips(observable, ips):
+def get_related_entities(observable, entities, type):
     relations = []
 
-    if isinstance(ips, str):
-        ips = [ips]
+    if isinstance(entities, str):
+        entities = [entities]
 
-    for ip in ips:
+    for entity in entities:
         relations.append(
             {
                 'origin': 'Pulsedive Enrichment Module',
-                'related': {'type': 'ip', 'value': ip},
+                'related': {'type': type, 'value': entity},
                 'relation': 'Resolved_To',
                 'source': observable,
             }
@@ -288,12 +288,16 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
     type_mapping = \
         current_app.config["PULSEDIVE_API_THREAT_TYPES"][score]
 
-    related_ips = []
+    related_entities = []
 
     if output.get('properties'):
-        related_ips += get_related_ips(
-            observable,
-            output.get('properties').get('dns', {}).get('A', [])
+        ips = output.get('properties').get('dns', {}).get('A', [])
+        ipv6 = output.get('properties').get('dns', {}).get('AAA', [])
+        related_entities += get_related_entities(
+            observable, ips, 'ip'
+        )
+        related_entities += get_related_entities(
+            observable, ipv6, 'ipv6'
         )
 
     if output.get('riskfactors'):
@@ -313,7 +317,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                 },
                 'description': riskfactor['description'],
                 'severity': type_mapping['severity'],
-                'relations': related_ips,
+                'relations': related_entities,
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"indicator/?iid={output['iid']}"),
                 **current_app.config['CTIM_SIGHTING_DEFAULTS']
@@ -346,7 +350,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                     'start_time': time_to_ctr_format(start_time)
                 },
                 'severity': type_mapping['severity'],
-                'relations': related_ips,
+                'relations': related_entities,
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"threat/?tid={threat['tid']}"),
                 **current_app.config['CTIM_SIGHTING_DEFAULTS']
@@ -379,7 +383,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                     'start_time': time_to_ctr_format(start_time)
                 },
                 'description': feed['name'],
-                'relations': related_ips,
+                'relations': related_entities,
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"feed/?fid={feed['fid']}"),
                 **current_app.config['CTIM_SIGHTING_DEFAULTS']
