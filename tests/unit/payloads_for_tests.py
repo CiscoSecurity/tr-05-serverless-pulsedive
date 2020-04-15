@@ -177,7 +177,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
       "docs": [
         {
           "confidence": "Medium",
-          "count": 2,
+          "count": 1,
           "description": "found in threat feeds",
           "observables": [
             {
@@ -210,7 +210,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
         },
         {
           "confidence": "Medium",
-          "count": 2,
+          "count": 1,
           "description": "registration recently updated",
           "observables": [
             {
@@ -243,7 +243,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
         },
         {
           "confidence": "Medium",
-          "count": 2,
+          "count": 1,
           "description": "Kraken Botnet",
           "observables": [
             {
@@ -276,7 +276,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
         },
         {
           "confidence": "Medium",
-          "count": 2,
+          "count": 1,
           "description": "JS Crypto Miner",
           "observables": [
             {
@@ -554,7 +554,7 @@ EXPECTED_PAYLOAD_OBSERVE_WITH_LIMIT = {
       "docs": [
         {
           "confidence": "Medium",
-          "count": 2,
+          "count": 1,
           "description": "found in threat feeds",
           "observables": [
             {

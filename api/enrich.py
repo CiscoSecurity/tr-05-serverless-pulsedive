@@ -310,7 +310,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
 
             doc = {
                 'id': generated_id,
-                'count': len(output['riskfactors']),
+                'count': 1,
                 'observables': [observable],
                 'observed_time': {
                     'start_time': time_to_ctr_format(start_time)
@@ -343,7 +343,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
 
             doc = {
                 'id': generated_id,
-                'count': len(output['threats']),
+                'count': 1,
                 'observables': [observable],
                 'description': threat['name'],
                 'observed_time': {
@@ -377,7 +377,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
 
             doc = {
                 'id': generated_id,
-                'count': len(output['feeds']),
+                'count': 1,
                 'observables': [observable],
                 'observed_time': {
                     'start_time': time_to_ctr_format(start_time)
