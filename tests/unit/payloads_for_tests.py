@@ -49,6 +49,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "schema_version": "1.0.16",
           "short_description": "found in threat feeds",
           "tlp": "white",
+          "source": "Pulsedive",
           "type": "indicator",
           "valid_time": {
             "end_time": "2020-06-30T20:47:36Z",
@@ -60,6 +61,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "schema_version": "1.0.16",
           "short_description": "registration recently updated",
           "tlp": "white",
+          "source": "Pulsedive",
           "type": "indicator",
           "valid_time": {
             "end_time": "2020-06-30T20:47:36Z",
@@ -76,6 +78,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
             "malware"
           ],
           "tlp": "white",
+          "source": "Pulsedive",
           "type": "indicator",
           "valid_time": {
             "start_time": "2019-01-01T04:01:30Z"
@@ -83,6 +86,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
         },
         {
           "producer": "Pulsedive",
+          "source": "Pulsedive",
           "schema_version": "1.0.16",
           "severity": "Medium",
           "short_description": "JS Crypto Miner",
@@ -98,8 +102,9 @@ EXPECTED_PAYLOAD_OBSERVE = {
         },
         {
           "producer": "BBcan177",
+          "source": "Pulsedive",
           "schema_version": "1.0.16",
-          "short_description": "BBcan177 DNSBL",
+          "short_description": "Feed: BBcan177 DNSBL",
           "source_uri": "https://pulsedive.com/feed/?fid=13",
           "tags": [
             "general"
@@ -310,7 +315,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
         {
           "confidence": "Medium",
           "count": 1,
-          "description": "BBcan177 DNSBL",
+          "description": "Feed: BBcan177 DNSBL",
           "observables": [
             {
               "type": "domain",
@@ -505,6 +510,7 @@ EXPECTED_PAYLOAD_OBSERVE_WITH_LIMIT = {
           "schema_version": "1.0.16",
           "short_description": "found in threat feeds",
           "tlp": "white",
+          "source": "Pulsedive",
           "type": "indicator",
           "valid_time": {
             "end_time": "2020-06-30T20:47:36Z",
