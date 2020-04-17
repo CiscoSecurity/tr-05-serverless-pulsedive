@@ -161,13 +161,17 @@ def extract_judgement(output):
     return doc
 
 
+def standardize_feed(name):
+    return f'Feed: {name.replace("Feed", "")}'
+
+
 def extract_indicators(output, unique_ids):
     docs = []
 
     if output.get('riskfactors'):
         for riskfactor in output['riskfactors']:
             if riskfactor['rfid'] not in unique_ids['riskfactors'].keys():
-                generated_id = f'transient:{uuid4()}'
+                generated_id = f'transient:indicator-{uuid4()}'
                 doc = {
                     'id': generated_id,
                     'valid_time': get_valid_time(output),
@@ -186,7 +190,7 @@ def extract_indicators(output, unique_ids):
     if output.get('threats'):
         for threat in output['threats']:
             if threat['tid'] not in unique_ids['threats'].keys():
-                generated_id = f'transient:{uuid4()}'
+                generated_id = f'transient:indicator-{uuid4()}'
                 score = output['risk']
 
                 type_mapping = \
@@ -219,7 +223,7 @@ def extract_indicators(output, unique_ids):
     if output.get('feeds'):
         for feed in output['feeds']:
             if feed['fid'] not in unique_ids['feeds'].keys():
-                generated_id = f'transient:{uuid4()}'
+                generated_id = f'transient:indicator-{uuid4()}'
 
                 start_time = datetime.strptime(feed['stamp_linked'],
                                                '%Y-%m-%d %H:%M:%S')
@@ -228,7 +232,7 @@ def extract_indicators(output, unique_ids):
                     'valid_time': {
                         'start_time': time_to_ctr_format(start_time)
                     },
-                    'short_description': feed['name'],
+                    'short_description': standardize_feed(feed['name']),
                     'producer': feed['organization'],
                     'tags': [feed['category']],
                     'source_uri': current_app.config['UI_URL'].format(
@@ -306,7 +310,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
             start_time = datetime.strptime(output['stamp_seen'],
                                            '%Y-%m-%d %H:%M:%S')
 
-            generated_id = f'transient:{uuid4()}'
+            generated_id = f'transient:sighting-{uuid4()}'
 
             doc = {
                 'id': generated_id,
@@ -339,7 +343,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
             start_time = datetime.strptime(threat['stamp_linked'],
                                            '%Y-%m-%d %H:%M:%S')
 
-            generated_id = f'transient:{uuid4()}'
+            generated_id = f'transient:sighting-{uuid4()}'
 
             doc = {
                 'id': generated_id,
@@ -373,7 +377,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
             start_time = datetime.strptime(feed['stamp_linked'],
                                            '%Y-%m-%d %H:%M:%S')
 
-            generated_id = f'transient:{uuid4()}'
+            generated_id = f'transient:sighting-{uuid4()}'
 
             doc = {
                 'id': generated_id,
@@ -382,8 +386,8 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                 'observed_time': {
                     'start_time': time_to_ctr_format(start_time)
                 },
-                'description': feed['name'],
-                'relations': related_entities,
+                'description': standardize_feed(feed['name']),
+                'relations': related_ips,
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"feed/?fid={feed['fid']}"),
                 **current_app.config['CTIM_SIGHTING_DEFAULTS']

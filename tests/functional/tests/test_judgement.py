@@ -5,14 +5,14 @@ from ctrlibrary.threatresponse.enrich import enrich_observe_observables
 
 
 @pytest.mark.parametrize(
-    'observable,observable_type,disposition_name,disposition,severity',
-    (('185.141.25.242', 'ip', 'Clean', 1, 'None'),
-     ('yizaiwl.cc', 'domain', 'Malicious', 2, 'High'),
-     ('208.91.197.91', 'ip', 'Suspicious', 3, 'Low'),
-     ('https://www.google.com/', 'url', 'Unknown', 5, 'Unknown'))
+    'observable,observable_type,disposition_name,disposition',
+    (('185.141.25.242', 'ip', 'Clean', 1),
+     ('208.91.197.91', 'ip', 'Suspicious', 3),
+     ('yizaiwl.cc', 'domain', 'Malicious', 2),
+     ('https://www.google.com/', 'url', 'Unknown', 5))
 )
 def test_positive_judgement(module_headers, observable, observable_type,
-                            disposition_name, disposition, severity):
+                            disposition_name, disposition):
     """Perform testing for enrich observe observables endpoint to get
     judgements for observable from Pulsedive
 
@@ -53,4 +53,4 @@ def test_positive_judgement(module_headers, observable, observable_type,
     assert judgement['tlp'] == 'white'
     assert judgement['priority'] == 85
     assert judgement['confidence'] == 'Medium'
-    assert judgement['severity'] == severity
+    assert judgement['severity']

@@ -52,6 +52,7 @@ class Config(object):
 
     CTIM_INDICATOR_DEFAULTS = {
         'type': 'indicator',
+        'source': 'Pulsedive',
         'tlp': 'white',
         'schema_version': CTIM_SCHEMA_VERSION,
     }
