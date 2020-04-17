@@ -2,6 +2,8 @@ from collections import defaultdict
 from functools import partial
 from datetime import datetime, timedelta
 from uuid import uuid4
+from base64 import b64encode
+from urllib.parse import quote
 
 from flask import Blueprint, current_app
 import requests
@@ -256,17 +258,17 @@ def get_relationship(source_ref, target_ref, relationship_type):
             }
 
 
-def get_related_ips(observable, ips):
+def get_related_entities(observable, entities, type):
     relations = []
 
-    if isinstance(ips, str):
-        ips = [ips]
+    if isinstance(entities, str):
+        entities = [entities]
 
-    for ip in ips:
+    for entity in entities:
         relations.append(
             {
                 'origin': 'Pulsedive Enrichment Module',
-                'related': {'type': 'ip', 'value': ip},
+                'related': {'type': type, 'value': entity},
                 'relation': 'Resolved_To',
                 'source': observable,
             }
@@ -290,10 +292,17 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
     type_mapping = \
         current_app.config["PULSEDIVE_API_THREAT_TYPES"][score]
 
-    related_ips = get_related_ips(
-        observable,
-        output['properties'].get('dns', {}).get('A', [])
-    )
+    related_entities = []
+
+    if output.get('properties'):
+        ips = output['properties'].get('dns', {}).get('A', [])
+        ipv6 = output['properties'].get('dns', {}).get('AAAA', [])
+        related_entities += get_related_entities(
+            observable, ips, 'ip'
+        )
+        related_entities += get_related_entities(
+            observable, ipv6, 'ipv6'
+        )
 
     if output.get('riskfactors'):
         for riskfactor in output['riskfactors']:
@@ -305,14 +314,14 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
 
             doc = {
                 'id': generated_id,
-                'count': len(output['riskfactors']),
+                'count': 1,
                 'observables': [observable],
                 'observed_time': {
                     'start_time': time_to_ctr_format(start_time)
                 },
                 'description': riskfactor['description'],
                 'severity': type_mapping['severity'],
-                'relations': related_ips,
+                'relations': related_entities,
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"indicator/?iid={output['iid']}"),
                 **current_app.config['CTIM_SIGHTING_DEFAULTS']
@@ -338,14 +347,14 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
 
             doc = {
                 'id': generated_id,
-                'count': len(output['threats']),
+                'count': 1,
                 'observables': [observable],
                 'description': threat['name'],
                 'observed_time': {
                     'start_time': time_to_ctr_format(start_time)
                 },
                 'severity': type_mapping['severity'],
-                'relations': related_ips,
+                'relations': related_entities,
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"threat/?tid={threat['tid']}"),
                 **current_app.config['CTIM_SIGHTING_DEFAULTS']
@@ -372,13 +381,13 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
 
             doc = {
                 'id': generated_id,
-                'count': len(output['feeds']),
+                'count': 1,
                 'observables': [observable],
                 'observed_time': {
                     'start_time': time_to_ctr_format(start_time)
                 },
                 'description': standardize_feed(feed['name']),
-                'relations': related_ips,
+                'relations': related_entities,
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"feed/?fid={feed['fid']}"),
                 **current_app.config['CTIM_SIGHTING_DEFAULTS']
@@ -464,7 +473,76 @@ def observe_observables():
     return jsonify_data(relay_output)
 
 
+def get_browse_pivot(observables):
+    pulsedive_outputs = get_pulsedive_output(observables)
+    pivots = []
+    for output in pulsedive_outputs:
+        url = current_app.config['UI_URL'].format(
+            query=f"indicator/?iid={output['iid']}")
+        value = output['indicator']
+        type = output['type']
+        pivots.append(
+            {'id': f'ref-pulsedive-detail'
+                   f'-{type}-{quote(value, safe="")}',
+             'title':
+                 (
+                  'Browse '
+                  f'{current_app.config["PULSEDIVE_OBSERVABLE_TYPES"][type]}'
+                 ),
+             'description':
+                 (
+                  'Browse this '
+                  f'{current_app.config["PULSEDIVE_OBSERVABLE_TYPES"][type]}'
+                  ' on Pulsedive'
+                 ),
+             'url': url,
+             'categories': ['Browse', 'Pulsedive'],
+             }
+        )
+    return pivots
+
+
+def encode_str(query, value):
+    query = query.format(observable=value)
+    return b64encode(query.encode("utf-8")).decode("utf-8")
+
+
+def get_search_pivots(value, type):
+    return {'id': f'ref-pulsedive-search-{type}-{quote(value, safe="")}',
+            'title':
+                (
+                 'Search for this '
+                 f'{current_app.config["PULSEDIVE_OBSERVABLE_TYPES"][type]}'
+                ),
+            'description':
+                (
+                 'Lookup this '
+                 f'{current_app.config["PULSEDIVE_OBSERVABLE_TYPES"][type]} '
+                 'on Pulsedive'
+                ),
+            'url':
+                (
+                 f'{current_app.config["BROWSE_URL"]}'
+                 f'{encode_str(current_app.config["BROWSE_QUERY"], value)}'
+                ),
+            'categories': ['Search', 'Pulsedive'],
+            }
+
+
 @enrich_api.route('/refer/observables', methods=['POST'])
 def refer_observables():
-    # Not implemented
-    return jsonify_data([])
+    relay_input = get_observables()
+
+    observables = group_observables(relay_input)
+
+    if not observables:
+        return jsonify_data([])
+
+    relay_output = []
+
+    for value, types in observables.items():
+        for type in types:
+            relay_output.append(get_search_pivots(value, type))
+    relay_output += get_browse_pivot(observables)
+
+    return jsonify_data(relay_output)

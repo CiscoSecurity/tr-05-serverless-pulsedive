@@ -182,7 +182,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
       "docs": [
         {
           "confidence": "Medium",
-          "count": 2,
+          "count": 1,
           "description": "found in threat feeds",
           "observables": [
             {
@@ -215,7 +215,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
         },
         {
           "confidence": "Medium",
-          "count": 2,
+          "count": 1,
           "description": "registration recently updated",
           "observables": [
             {
@@ -248,7 +248,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
         },
         {
           "confidence": "Medium",
-          "count": 2,
+          "count": 1,
           "description": "Kraken Botnet",
           "observables": [
             {
@@ -281,7 +281,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
         },
         {
           "confidence": "Medium",
-          "count": 2,
+          "count": 1,
           "description": "JS Crypto Miner",
           "observables": [
             {
@@ -560,7 +560,7 @@ EXPECTED_PAYLOAD_OBSERVE_WITH_LIMIT = {
       "docs": [
         {
           "confidence": "Medium",
-          "count": 2,
+          "count": 1,
           "description": "found in threat feeds",
           "observables": [
             {
@@ -612,4 +612,41 @@ EXPECTED_PAYLOAD_OBSERVE_WITH_LIMIT = {
       ]
     }
   }
+}
+
+EXPECTED_PAYLOAD_REFER = {
+  "data": [
+    {
+      "categories": [
+        "Search",
+        "Pulsedive"
+      ],
+      "description": "Lookup this domain on Pulsedive",
+      "id": "ref-pulsedive-search-domain-cisco.com",
+      "title": "Search for this domain",
+      "url": "https://pulsedive.com/browse/?q=eyJ0e"
+             "XBlIjpbImFydGlmYWN0IiwgImRvbWFpbiIsIm"
+             "lwIiwiaXB2NiIsInVybCJdLCJyaXNrIjpbInV"
+             "ua25vd24iLCJub25lIiwibG93IiwibWVkaXVt"
+             "IiwiaGlnaCIsImNyaXRpY2FsIiwicmV0aXJlZ"
+             "CJdLCJsYXN0c2VlbiI6WyJhbGwiXSwiaW5kaW"
+             "NhdG9yIjpbeyJyYXciOnsidHlwZSI6ImluZGl"
+             "jYXRvciIsInZhbHVlIjoiY2lzY28uY29tIn0sI"
+             "CJodG1sc2FmZSI6eyJ0eXBlIjoiaW5kaWNhdG9"
+             "yIiwidmFsdWUiOiJjaXNjby5jb20ifSwiZXhhY"
+             "3QiOnRydWV9XSwiYXR0cmlidXRlIjpbXSwicHJ"
+             "vcGVydHkiOltdLCJ0aHJlYXQiOltdLCAiZmVlZ"
+             "CI6W119"
+    },
+    {
+      "categories": [
+        "Browse",
+        "Pulsedive"
+      ],
+      "description": "Browse this domain on Pulsedive",
+      "id": "ref-pulsedive-detail-domain-parkingcrew.net",
+      "title": "Browse domain",
+      "url": "https://pulsedive.com/indicator/?iid=118"
+    }
+  ]
 }

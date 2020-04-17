@@ -10,6 +10,7 @@ from tests.unit.payloads_for_tests import (
     EXPECTED_PAYLOAD_OBSERVE,
     EXPECTED_PAYLOAD_OBSERVE_WITH_LIMIT,
     EXPECTED_PAYLOAD_REQUEST_TIMOUT,
+    EXPECTED_PAYLOAD_REFER,
     PULSEDIVE_RESPONSE_MOCK,
     PULSEDIVE_REQUEST_TIMOUT,
 )
@@ -17,6 +18,7 @@ from tests.unit.payloads_for_tests import (
 
 def routes():
     yield '/observe/observables'
+    yield '/refer/observables'
 
 
 @fixture(scope='module', params=routes(), ids=lambda route: f'POST {route}')
@@ -62,7 +64,7 @@ def expected_payload(any_route):
         payload = EXPECTED_PAYLOAD_OBSERVE
 
     if any_route.startswith('/refer'):
-        payload = []
+        payload = EXPECTED_PAYLOAD_REFER
 
     return payload
 
@@ -97,7 +99,7 @@ def test_enrich_call_without_jwt_success(any_route,
                                          pd_api_request,
                                          expected_payload):
 
-    if any_route in routes():
+    if any_route.startswith('/observe'):
         pd_api_request.return_value = pd_api_response(ok=True)
         response = client.post(any_route, json=valid_json)
         data = response.get_json()
@@ -134,6 +136,15 @@ def test_enrich_call_without_jwt_success(any_route,
 
     assert response.status_code == HTTPStatus.OK
 
+    if any_route.startswith('/refer'):
+        pd_api_request.return_value = pd_api_response(ok=True)
+        response = client.post(any_route, json=valid_json)
+
+        data = response.get_json()
+
+        assert response.status_code == HTTPStatus.OK
+        assert data == expected_payload
+
 
 def test_enrich_call_without_jwt_but_invalid_json_failure(route,
                                                           client,
@@ -163,7 +174,7 @@ def test_enrich_call_success(any_route,
                              valid_json,
                              pd_api_request,
                              expected_payload):
-    if any_route in routes():
+    if any_route.startswith('/observe'):
         pd_api_request.return_value = pd_api_response(ok=True)
         response = client.post(any_route,
                                headers=headers(valid_jwt),
@@ -204,6 +215,17 @@ def test_enrich_call_success(any_route,
 
         assert response.status_code == HTTPStatus.OK
 
+    if any_route.startswith('/refer'):
+        pd_api_request.return_value = pd_api_response(ok=True)
+        response = client.post(any_route,
+                               headers=headers(valid_jwt),
+                               json=valid_json)
+
+        data = response.get_json()
+
+        assert response.status_code == HTTPStatus.OK
+        assert data == expected_payload
+
 
 def test_enrich_call_failure(route,
                              client,
@@ -224,7 +246,7 @@ def test_enrich_call_success_limit_1(any_route,
                                      valid_jwt,
                                      valid_json,
                                      pd_api_request):
-    if any_route in routes():
+    if any_route.startswith('/observe'):
         client.application.config['CTR_ENTITIES_LIMIT'] = 1
 
         pd_api_request.return_value = pd_api_response(ok=True)
