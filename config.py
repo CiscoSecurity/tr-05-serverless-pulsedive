@@ -34,7 +34,7 @@ class Config(object):
         'url': 'URL',
         'domain': 'domain',
         'ip': 'IP',
-        'ipv6': 'ipv6',
+        'ipv6': 'IPv6',
     }
 
     CTIM_VERDICT_DEFAULTS = {
