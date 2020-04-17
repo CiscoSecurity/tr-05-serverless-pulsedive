@@ -387,7 +387,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                     'start_time': time_to_ctr_format(start_time)
                 },
                 'description': standardize_feed(feed['name']),
-                'relations': related_ips,
+                'relations': related_entities,
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"feed/?fid={feed['fid']}"),
                 **current_app.config['CTIM_SIGHTING_DEFAULTS']
