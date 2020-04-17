@@ -295,8 +295,8 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
     related_entities = []
 
     if output.get('properties'):
-        ips = output.get('properties').get('dns', {}).get('A', [])
-        ipv6 = output.get('properties').get('dns', {}).get('AAAA', [])
+        ips = output['properties'].get('dns', {}).get('A', [])
+        ipv6 = output['properties'].get('dns', {}).get('AAAA', [])
         related_entities += get_related_entities(
             observable, ips, 'ip'
         )
