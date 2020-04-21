@@ -30,23 +30,24 @@ def test_positive_indicator_details(module_headers):
     assert indicators['count'] == 6
 
     for indicator in indicators['docs']:
-        assert indicator['id']
+        assert indicator['id'].startswith('transient:indicator-')
         assert 'start_time' in indicator['valid_time']
         assert indicator['type'] == 'indicator'
         assert indicator['schema_version']
 
         assert indicator['short_description']
         assert indicator['tlp'] == 'white'
+        assert indicator['source'] == 'Pulsedive'
 
     indicator = [i for i in indicators['docs'] if
-                 i.get('tags') == ['general']][0]
-    assert indicator['id']
-    assert indicator['tags'] == ['general']
+                 i.get('tags') == ['abuse'] and
+                 i.get('producer') == 'ZeroDot1'][0]
+    assert indicator['id'].startswith('transient:indicator-')
+    assert indicator['tags'] == ['abuse']
     assert indicator['source_uri'].startswith(
-        'https://pulsedive.com/threat/?tid=')
-    assert indicator['producer'] == 'Pulsedive'
-    assert indicator['short_description'] == 'CryptoMining'
-    assert indicator['severity'] == 'Low'
+        'https://pulsedive.com/feed/?fid=')
+    assert indicator['producer'] == 'ZeroDot1'
+    assert indicator['short_description'] == 'Feed: ZeroDot1\'s Bad IPs '
     assert indicator['tlp'] == 'white'
 
 
@@ -83,9 +84,10 @@ def test_positive_indicators_by_type(
     assert indicators['count'] > 0
 
     for indicator in indicators['docs']:
-        assert indicator['id']
+        assert indicator['id'].startswith('transient:indicator-')
         assert 'start_time' in indicator['valid_time']
         assert indicator['type'] == 'indicator'
         assert indicator['schema_version']
         assert indicator['short_description']
         assert indicator['tlp'] == 'white'
+        assert indicator['source'] == 'Pulsedive'
