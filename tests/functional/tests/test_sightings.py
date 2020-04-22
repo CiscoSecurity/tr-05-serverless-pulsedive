@@ -17,31 +17,37 @@ def test_positive_sighting_domain(module_headers):
 
     Importance: Critical
     """
-    observable = {'type': 'domain', 'value': 'google.com'}
+    observable = {'type': 'domain', 'value': 'brehmen.com'}
     response = enrich_observe_observables(
         payload=[observable],
         **{'headers': module_headers}
     )
     sightings = get_observables(
         response['data'], 'Pulsedive')['data']['sightings']
-    assert sightings['count'] == 24
+    assert sightings['count'] == 5
 
     for sighting in sightings['docs']:
-        assert sighting['count']
-        assert sighting['id']
-
+        assert sighting['count'] == 1
+        assert sighting['id'].startswith('transient:sighting-')
         assert sighting['description']
         assert sighting['confidence'] == 'Medium'
-        assert sighting['severity'] == 'Unknown'
-
         assert 'start_time' in sighting['observed_time']
         assert sighting['schema_version']
-
         assert sighting['type'] == 'sighting'
         assert sighting['source'] == 'Pulsedive'
 
         assert len(sighting['observables']) == 1
         assert sighting['observables'][0] == observable
+
+        assert len(sighting['relations']) == 2
+        for relation in sighting['relations']:
+            assert relation['origin'] == 'Pulsedive Enrichment Module'
+            assert relation['relation'] == 'Resolved_To'
+            assert relation['source'] == {'value': 'brehmen.com',
+                                          'type': 'domain'}
+            assert relation['related']['value'] in ('81.169.145.159',
+                                                    '2a01:238:20a:202:1159::')
+            assert relation['related']['type'] in ('ip', 'ipv6')
 
 
 def test_positive_sighting_ip(module_headers):
@@ -69,8 +75,8 @@ def test_positive_sighting_ip(module_headers):
     assert sightings['count'] == 10
 
     for sighting in sightings['docs']:
-        assert sighting['count']
-        assert sighting['id']
+        assert sighting['count'] == 1
+        assert sighting['id'].startswith('transient:sighting-')
 
         assert sighting['description']
         assert sighting['confidence'] == 'Medium'
@@ -110,8 +116,8 @@ def test_positive_sighting_url(module_headers):
     assert sightings['count'] == 25
 
     for sighting in sightings['docs']:
-        assert sighting['count']
-        assert sighting['id']
+        assert sighting['count'] == 1
+        assert sighting['id'].startswith('transient:sighting-')
 
         assert sighting['description']
         assert sighting['confidence'] == 'Medium'
