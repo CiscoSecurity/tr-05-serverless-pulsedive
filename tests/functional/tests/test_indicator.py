@@ -39,9 +39,8 @@ def test_positive_indicator_details(module_headers):
         assert indicator['tlp'] == 'white'
         assert indicator['source'] == 'Pulsedive'
 
-    indicator = [i for i in indicators['docs'] if
-                 i.get('tags') == ['abuse'] and
-                 i.get('producer') == 'ZeroDot1'][0]
+    indicator = [i for i in indicators['docs'] if i.get('source_uri')
+                 == 'https://pulsedive.com/feed/?fid=60'][0]
     assert indicator['id'].startswith('transient:indicator-')
     assert indicator['tags'] == ['abuse']
     assert indicator['source_uri'].startswith(
