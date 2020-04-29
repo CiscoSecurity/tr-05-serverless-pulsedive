@@ -15,6 +15,9 @@ API_ERRORS_STANDARDISATION = {
     ("Results limited to one page "
      "(15,000 records) for free API."): "resource exhausted",
     "Request(s) still processing.": "request timeout",
+    ("API rate limit exceeded: 30 requests per minute. "
+     "Requests disabled for 1 minute. Please visit "
+     "pulsedive.com/api to increase your limit."): "too many requests"
 }
 
 
