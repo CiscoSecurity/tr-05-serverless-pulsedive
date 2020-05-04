@@ -201,7 +201,7 @@ def extract_indicators(output, unique_ids):
 
                 doc = {
                     'id': generated_id,
-                    'short_description': threat['name'],
+                    'short_description': f"Threat: {threat['name']}",
                     'producer': 'Pulsedive',
                     'valid_time': {
                         'start_time': time_to_ctr_format(start_time)
@@ -349,7 +349,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                 'id': generated_id,
                 'count': 1,
                 'observables': [observable],
-                'description': threat['name'],
+                'description': f"Threat: {threat['name']}",
                 'observed_time': {
                     'start_time': time_to_ctr_format(start_time)
                 },

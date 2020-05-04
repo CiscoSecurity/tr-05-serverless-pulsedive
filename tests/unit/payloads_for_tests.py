@@ -72,7 +72,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "producer": "Pulsedive",
           "schema_version": "1.0.16",
           "severity": "Medium",
-          "short_description": "Kraken Botnet",
+          "short_description": "Threat: Kraken Botnet",
           "source_uri": "https://pulsedive.com/threat/?tid=9",
           "tags": [
             "malware"
@@ -89,7 +89,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "source": "Pulsedive",
           "schema_version": "1.0.16",
           "severity": "Medium",
-          "short_description": "JS Crypto Miner",
+          "short_description": "Threat: JS Crypto Miner",
           "source_uri": "https://pulsedive.com/threat/?tid=108",
           "tags": [
             "abuse"
@@ -249,7 +249,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
         {
           "confidence": "Medium",
           "count": 1,
-          "description": "Kraken Botnet",
+          "description": "Threat: Kraken Botnet",
           "observables": [
             {
               "type": "domain",
@@ -282,7 +282,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
         {
           "confidence": "Medium",
           "count": 1,
-          "description": "JS Crypto Miner",
+          "description": "Threat: JS Crypto Miner",
           "observables": [
             {
               "type": "domain",
