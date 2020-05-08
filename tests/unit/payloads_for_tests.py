@@ -193,20 +193,6 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "observed_time": {
             "start_time": "2020-03-31T14:47:36Z"
           },
-          "relations": [
-            {
-              "origin": "Pulsedive Enrichment Module",
-              "related": {
-                "type": "ip",
-                "value": "185.53.179.29"
-              },
-              "relation": "Resolved_To",
-              "source": {
-                "type": "domain",
-                "value": "parkingcrew.net"
-              }
-            }
-          ],
           "schema_version": "1.0.16",
           "severity": "Medium",
           "source": "Pulsedive",
@@ -226,20 +212,6 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "observed_time": {
             "start_time": "2020-03-31T14:47:36Z"
           },
-          "relations": [
-            {
-              "origin": "Pulsedive Enrichment Module",
-              "related": {
-                "type": "ip",
-                "value": "185.53.179.29"
-              },
-              "relation": "Resolved_To",
-              "source": {
-                "type": "domain",
-                "value": "parkingcrew.net"
-              }
-            }
-          ],
           "schema_version": "1.0.16",
           "severity": "Medium",
           "source": "Pulsedive",
@@ -259,20 +231,6 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "observed_time": {
             "start_time": "2019-01-01T04:01:30Z"
           },
-          "relations": [
-            {
-              "origin": "Pulsedive Enrichment Module",
-              "related": {
-                "type": "ip",
-                "value": "185.53.179.29"
-              },
-              "relation": "Resolved_To",
-              "source": {
-                "type": "domain",
-                "value": "parkingcrew.net"
-              }
-            }
-          ],
           "schema_version": "1.0.16",
           "severity": "Medium",
           "source": "Pulsedive",
@@ -292,20 +250,6 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "observed_time": {
             "start_time": "2018-08-06T03:44:07Z"
           },
-          "relations": [
-            {
-              "origin": "Pulsedive Enrichment Module",
-              "related": {
-                "type": "ip",
-                "value": "185.53.179.29"
-              },
-              "relation": "Resolved_To",
-              "source": {
-                "type": "domain",
-                "value": "parkingcrew.net"
-              }
-            }
-          ],
           "schema_version": "1.0.16",
           "severity": "Medium",
           "source": "Pulsedive",
@@ -325,20 +269,6 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "observed_time": {
             "start_time": "2020-02-10T07:41:05Z"
           },
-          "relations": [
-            {
-              "origin": "Pulsedive Enrichment Module",
-              "related": {
-                "type": "ip",
-                "value": "185.53.179.29"
-              },
-              "relation": "Resolved_To",
-              "source": {
-                "type": "domain",
-                "value": "parkingcrew.net"
-              }
-            }
-          ],
           "schema_version": "1.0.16",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/feed/?fid=13",
@@ -571,20 +501,6 @@ EXPECTED_PAYLOAD_OBSERVE_WITH_LIMIT = {
           "observed_time": {
             "start_time": "2020-03-31T14:47:36Z"
           },
-          "relations": [
-            {
-              "origin": "Pulsedive Enrichment Module",
-              "related": {
-                "type": "ip",
-                "value": "185.53.179.29"
-              },
-              "relation": "Resolved_To",
-              "source": {
-                "type": "domain",
-                "value": "parkingcrew.net"
-              }
-            }
-          ],
           "schema_version": "1.0.16",
           "severity": "Medium",
           "source": "Pulsedive",

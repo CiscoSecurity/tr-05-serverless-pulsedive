@@ -5,13 +5,6 @@ from flask import request, current_app, jsonify
 from api.errors import JwtError, InvalidInputError
 
 
-def url_for(query, key):
-    return current_app.config["API_URL"].format(
-        query=query,
-        key=key
-    )
-
-
 def get_jwt():
     try:
         scheme, token = request.headers['Authorization'].split()

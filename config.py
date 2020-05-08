@@ -8,7 +8,7 @@ class Config(object):
 
     SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
-    API_URL = 'https://pulsedive.com/api/info.php?{query}&key={key}'
+    API_URL = 'https://pulsedive.com/api/info.php'
 
     UI_URL = "https://pulsedive.com/{query}"
 
