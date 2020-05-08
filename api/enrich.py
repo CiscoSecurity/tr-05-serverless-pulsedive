@@ -275,12 +275,20 @@ def get_related_entities(observable):
         for entity in entities:
             if (entity['type'], observable['type']) in valid_pairs\
                     and entity['risk'] != 'retired':
+                source, related = None, None
+                if observable['type'] == 'domain':
+                    source = observable
+                else:
+                    related = observable
                 relations.append(
                     {
                         'origin': 'Pulsedive Enrichment Module',
-                        'related': observable,
+                        'related': related or {
+                            'type': entity['type'],
+                            'value': entity['indicator']
+                        },
                         'relation': 'Resolved_To',
-                        'source':  {
+                        'source': source or {
                             'type': entity['type'],
                             'value': entity['indicator']
                         },
