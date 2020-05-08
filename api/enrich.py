@@ -278,12 +278,12 @@ def get_related_entities(observable):
                 relations.append(
                     {
                         'origin': 'Pulsedive Enrichment Module',
-                        'related': {
+                        'related': observable,
+                        'relation': 'Resolved_To',
+                        'source':  {
                             'type': entity['type'],
                             'value': entity['indicator']
                         },
-                        'relation': 'Resolved_To',
-                        'source': observable,
                     }
                 )
     return relations
