@@ -405,10 +405,8 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
         start_time = datetime.strptime(output['stamp_seen'],
                                        '%Y-%m-%d %H:%M:%S')
 
-        generated_id = f'transient:sighting-{uuid4()}'
-
         doc = {
-            'id': generated_id,
+            'id': f'transient:sighting-{uuid4()}',
             'count': 1,
             'observables': [observable],
             'observed_time': {
