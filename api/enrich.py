@@ -423,7 +423,9 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
             },
             'description': 'Active DNS',
             'relations': relations,
-            **current_app.config['CTIM_SIGHTING_DEFAULTS']
+            **current_app.config['CTIM_SIGHTING_DEFAULTS'],
+            'source_uri': current_app.config['UI_URL'].format(
+                query=f"indicator/?iid={output['iid']}"),
         }
 
         if len(docs) >= current_app.config['CTR_ENTITIES_LIMIT']:
