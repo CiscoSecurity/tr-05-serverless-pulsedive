@@ -24,7 +24,7 @@ def test_positive_sighting_domain(module_headers):
     )
     sightings = get_observables(
         response['data'], 'Pulsedive')['data']['sightings']
-    assert sightings['count'] == 5
+    assert sightings['count'] == 6
 
     for sighting in sightings['docs']:
         assert sighting['count'] == 1
@@ -72,7 +72,7 @@ def test_positive_sighting_ip(module_headers):
     )
     sightings = get_observables(
         response['data'], 'Pulsedive')['data']['sightings']
-    assert sightings['count'] == 10
+    assert sightings['count'] == 13
 
     for sighting in sightings['docs']:
         assert sighting['count'] == 1
