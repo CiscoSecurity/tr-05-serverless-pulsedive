@@ -68,7 +68,8 @@ def get_pulsedive_output(observables, links=False):
         response = requests.get(url, headers=header, params=params)
 
         error = response.json().get('error')
-        if error == "Indicator not found.":
+        if error in ("Indicator not found.",
+                     "Invalid request or data not found."):
             continue
 
         if error:
@@ -261,10 +262,21 @@ def get_relationship(source_ref, target_ref, relationship_type):
             'relationship_type': relationship_type,
             }
 
+def build_relations(source, related):
+    return {
+                        'origin': 'Pulsedive Enrichment Module',
+                        'related': related,
+                        'relation': 'Resolved_To',
+                        'source': source,
+                    }
 
-def get_related_entities(observable):
+
+def get_related_entities(observable):  
     output = get_pulsedive_output([observable['value']], links=True)
     relations = []
+    if not output:
+        return relations
+
     entities = output[0].get('Active DNS')
     if entities:
         if isinstance(entities, str):
@@ -275,25 +287,18 @@ def get_related_entities(observable):
         for entity in entities:
             if (entity['type'], observable['type']) in valid_pairs\
                     and entity['risk'] != 'retired':
-                source, related = None, None
                 if observable['type'] == 'domain':
-                    source = observable
+                    relations.append(build_relations(source=observable,
+                                    related={
+                            'type': entity['type'],
+                            'value': entity['indicator']
+                        }))
                 else:
-                    related = observable
-                relations.append(
-                    {
-                        'origin': 'Pulsedive Enrichment Module',
-                        'related': related or {
-                            'type': entity['type'],
-                            'value': entity['indicator']
-                        },
-                        'relation': 'Resolved_To',
-                        'source': source or {
-                            'type': entity['type'],
-                            'value': entity['indicator']
-                        },
-                    }
-                )
+                    relations.append(build_relations(source={
+                                        'type': entity['type'],
+                                        'value': entity['indicator']
+                                    },
+                                    related=observable))
     return relations
 
 
