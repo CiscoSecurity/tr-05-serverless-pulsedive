@@ -262,16 +262,8 @@ def get_relationship(source_ref, target_ref, relationship_type):
             'relationship_type': relationship_type,
             }
 
-def build_relations(source, related):
-    return {
-                        'origin': 'Pulsedive Enrichment Module',
-                        'related': related,
-                        'relation': 'Resolved_To',
-                        'source': source,
-                    }
 
-
-def get_related_entities(observable):  
+def get_related_entities(observable):
     output = get_pulsedive_output([observable['value']], links=True)
     relations = []
     if not output:
@@ -288,17 +280,21 @@ def get_related_entities(observable):
             if (entity['type'], observable['type']) in valid_pairs\
                     and entity['risk'] != 'retired':
                 if observable['type'] == 'domain':
-                    relations.append(build_relations(source=observable,
-                                    related={
-                            'type': entity['type'],
-                            'value': entity['indicator']
-                        }))
+                    relations.append(
+                        {**current_app.config['OBSERVED_RELATIONS_DEFAULTS'],
+                         "source": observable,
+                         "related": {
+                                'type': entity['type'],
+                                'value': entity['indicator']
+                                }})
                 else:
-                    relations.append(build_relations(source={
-                                        'type': entity['type'],
-                                        'value': entity['indicator']
-                                    },
-                                    related=observable))
+                    relations.append(
+                        {**current_app.config['OBSERVED_RELATIONS_DEFAULTS'],
+                         "source": {
+                                'type': entity['type'],
+                                'value': entity['indicator']
+                                },
+                         "related": observable})
     return relations
 
 

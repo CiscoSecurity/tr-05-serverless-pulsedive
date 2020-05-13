@@ -70,6 +70,11 @@ class Config(object):
         'schema_version': CTIM_SCHEMA_VERSION,
     }
 
+    OBSERVED_RELATIONS_DEFAULTS = {
+        'origin': 'Pulsedive Enrichment Module',
+        'relation': 'Resolved_To',
+    }
+
     PULSEDIVE_API_THREAT_TYPES = {
       "none": {
         "disposition": 1,
