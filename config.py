@@ -25,13 +25,13 @@ class Config(object):
 
     CTIM_SCHEMA_VERSION = '1.0.16'
 
-    CTR_ENTITIES_LIMIT_DEFAULT = 100
+    CTR_DEFAULT_ENTITIES_LIMIT = 100
 
     try:
         CTR_ENTITIES_LIMIT = int(os.environ['CTR_ENTITIES_LIMIT'])
         assert CTR_ENTITIES_LIMIT > 0
     except (KeyError, ValueError, AssertionError):
-        CTR_ENTITIES_LIMIT = CTR_ENTITIES_LIMIT_DEFAULT
+        CTR_ENTITIES_LIMIT = CTR_DEFAULT_ENTITIES_LIMIT
 
     PULSEDIVE_OBSERVABLE_TYPES = {
         'url': 'URL',
