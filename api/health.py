@@ -1,20 +1,20 @@
 import requests
-from flask import Blueprint
+from flask import Blueprint, current_app
 
 from api.errors import (UnexpectedPulsediveError,
                         StandardHttpError)
-from api.utils import url_for, jsonify_data, get_jwt
+from api.utils import jsonify_data, get_jwt
 
 health_api = Blueprint('health', __name__)
 
 
 @health_api.route('/health', methods=['POST'])
 def health():
-    key = get_jwt().get('key')
+    params = {'iid': 2, 'key': get_jwt().get('key')}
 
-    url = url_for("iid=2", key)
+    url = current_app.config["API_URL"]
 
-    response = requests.get(url)
+    response = requests.get(url, params)
 
     error = response.json().get('error')
     if error not in (None, "Indicator not found."):

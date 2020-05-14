@@ -12,6 +12,7 @@ from tests.unit.payloads_for_tests import (
     EXPECTED_PAYLOAD_REQUEST_TIMOUT,
     EXPECTED_PAYLOAD_REFER,
     PULSEDIVE_RESPONSE_MOCK,
+    PULSEDIVE_ACTIVE_DNS_RESPONCE,
     PULSEDIVE_REQUEST_TIMOUT,
 )
 
@@ -93,13 +94,15 @@ def any_route(request):
     return request.param
 
 
-def test_enrich_call_without_jwt_success(any_route,
+@mock.patch('api.enrich.get_related_entities')
+def test_enrich_call_without_jwt_success(mock_related_entities, any_route,
                                          client,
                                          valid_json,
                                          pd_api_request,
                                          expected_payload):
 
     if any_route.startswith('/observe'):
+        mock_related_entities.return_value = PULSEDIVE_ACTIVE_DNS_RESPONCE
         pd_api_request.return_value = pd_api_response(ok=True)
         response = client.post(any_route, json=valid_json)
         data = response.get_json()
@@ -118,7 +121,7 @@ def test_enrich_call_without_jwt_success(any_route,
             indicator_ids.append(indicator.pop('id'))
 
         sightings = data['data']['sightings']
-        assert sightings['count'] == 5
+        assert sightings['count'] == 6
         sighting_ids = []
         for sighting in sightings['docs']:
             sighting_ids.append(sighting.pop('id'))
@@ -168,13 +171,16 @@ def test_enrich_call_with_valid_jwt_but_invalid_json_failure(route,
     assert response.get_json() == EXPECTED_PAYLOAD_INVALID_INPUT
 
 
-def test_enrich_call_success(any_route,
+@mock.patch('api.enrich.get_related_entities')
+def test_enrich_call_success(mock_related_entities,
+                             any_route,
                              client,
                              valid_jwt,
                              valid_json,
                              pd_api_request,
                              expected_payload):
     if any_route.startswith('/observe'):
+        mock_related_entities.return_value = PULSEDIVE_ACTIVE_DNS_RESPONCE
         pd_api_request.return_value = pd_api_response(ok=True)
         response = client.post(any_route,
                                headers=headers(valid_jwt),
@@ -197,7 +203,7 @@ def test_enrich_call_success(any_route,
             indicator_ids.append(indicator.pop('id'))
 
         sightings = data['data']['sightings']
-        assert sightings['count'] == 5
+        assert sightings['count'] == 6
         sighting_ids = []
         for sighting in sightings['docs']:
             sighting_ids.append(sighting.pop('id'))

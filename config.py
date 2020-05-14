@@ -8,7 +8,7 @@ class Config(object):
 
     SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
-    API_URL = 'https://pulsedive.com/api/info.php?{query}&key={key}'
+    API_URL = 'https://pulsedive.com/api/info.php'
 
     UI_URL = "https://pulsedive.com/{query}"
 
@@ -68,6 +68,11 @@ class Config(object):
         'type': 'relationship',
         'tlp': 'white',
         'schema_version': CTIM_SCHEMA_VERSION,
+    }
+
+    OBSERVED_RELATIONS_DEFAULTS = {
+        'origin': 'Pulsedive Enrichment Module',
+        'relation': 'Resolved_To',
     }
 
     PULSEDIVE_API_THREAT_TYPES = {

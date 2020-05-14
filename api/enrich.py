@@ -15,8 +15,7 @@ from api.errors import (
 )
 
 from api.utils import (
-    url_for, get_jwt,
-    jsonify_data, get_json
+    get_jwt, jsonify_data, get_json
 )
 
 
@@ -48,7 +47,7 @@ def group_observables(relay_input):
     return observables
 
 
-def get_pulsedive_output(observables):
+def get_pulsedive_output(observables, links=False):
     output = []
     key = get_jwt().get('key')
 
@@ -58,13 +57,19 @@ def get_pulsedive_output(observables):
     }
 
     for observable in observables:
-        url = url_for(f'indicator={observable}',
-                      key)
+        url = current_app.config["API_URL"]
+        params = {
+            'indicator': observable,
+            'key': key
+                  }
+        if links:
+            params['get'] = 'links'
 
-        response = requests.get(url, headers=header)
+        response = requests.get(url, headers=header, params=params)
 
         error = response.json().get('error')
-        if error == "Indicator not found.":
+        if error in ("Indicator not found.",
+                     "Invalid request or data not found."):
             continue
 
         if error:
@@ -201,7 +206,7 @@ def extract_indicators(output, unique_ids):
 
                 doc = {
                     'id': generated_id,
-                    'short_description': threat['name'],
+                    'short_description': f"Threat: {threat['name']}",
                     'producer': 'Pulsedive',
                     'valid_time': {
                         'start_time': time_to_ctr_format(start_time)
@@ -258,21 +263,38 @@ def get_relationship(source_ref, target_ref, relationship_type):
             }
 
 
-def get_related_entities(observable, entities, type):
+def get_related_entities(observable):
+    output = get_pulsedive_output([observable['value']], links=True)
     relations = []
+    if not output:
+        return relations
 
-    if isinstance(entities, str):
-        entities = [entities]
+    entities = output[0].get('Active DNS')
+    if entities:
+        if isinstance(entities, str):
+            entities = [entities]
 
-    for entity in entities:
-        relations.append(
-            {
-                'origin': 'Pulsedive Enrichment Module',
-                'related': {'type': type, 'value': entity},
-                'relation': 'Resolved_To',
-                'source': observable,
-            }
-        )
+        valid_pairs = (('domain', 'ip'), ('ip', 'domain'), ('ipv6', 'domain'))
+
+        for entity in entities:
+            if (entity['type'], observable['type']) in valid_pairs\
+                    and entity['risk'] != 'retired':
+                if observable['type'] == 'domain':
+                    relations.append(
+                        {**current_app.config['OBSERVED_RELATIONS_DEFAULTS'],
+                         "source": observable,
+                         "related": {
+                                'type': entity['type'],
+                                'value': entity['indicator']
+                                }})
+                else:
+                    relations.append(
+                        {**current_app.config['OBSERVED_RELATIONS_DEFAULTS'],
+                         "source": {
+                                'type': entity['type'],
+                                'value': entity['indicator']
+                                },
+                         "related": observable})
     return relations
 
 
@@ -292,18 +314,6 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
     type_mapping = \
         current_app.config["PULSEDIVE_API_THREAT_TYPES"][score]
 
-    related_entities = []
-
-    if output.get('properties'):
-        ips = output['properties'].get('dns', {}).get('A', [])
-        ipv6 = output['properties'].get('dns', {}).get('AAAA', [])
-        related_entities += get_related_entities(
-            observable, ips, 'ip'
-        )
-        related_entities += get_related_entities(
-            observable, ipv6, 'ipv6'
-        )
-
     if output.get('riskfactors'):
         for riskfactor in output['riskfactors']:
 
@@ -321,7 +331,6 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                 },
                 'description': riskfactor['description'],
                 'severity': type_mapping['severity'],
-                'relations': related_entities,
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"indicator/?iid={output['iid']}"),
                 **current_app.config['CTIM_SIGHTING_DEFAULTS']
@@ -349,12 +358,11 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                 'id': generated_id,
                 'count': 1,
                 'observables': [observable],
-                'description': threat['name'],
+                'description': f"Threat: {threat['name']}",
                 'observed_time': {
                     'start_time': time_to_ctr_format(start_time)
                 },
                 'severity': type_mapping['severity'],
-                'relations': related_entities,
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"threat/?tid={threat['tid']}"),
                 **current_app.config['CTIM_SIGHTING_DEFAULTS']
@@ -371,7 +379,6 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
             docs.append(doc)
 
     if output.get('feeds'):
-
         for feed in output['feeds']:
 
             start_time = datetime.strptime(feed['stamp_linked'],
@@ -387,7 +394,6 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                     'start_time': time_to_ctr_format(start_time)
                 },
                 'description': standardize_feed(feed['name']),
-                'relations': related_entities,
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"feed/?fid={feed['fid']}"),
                 **current_app.config['CTIM_SIGHTING_DEFAULTS']
@@ -402,6 +408,30 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
             )
 
             docs.append(doc)
+
+    relations = get_related_entities(observable)
+    if relations:
+        start_time = datetime.strptime(output['stamp_seen'],
+                                       '%Y-%m-%d %H:%M:%S')
+
+        doc = {
+            'id': f'transient:sighting-{uuid4()}',
+            'count': 1,
+            'observables': [observable],
+            'observed_time': {
+                'start_time': time_to_ctr_format(start_time)
+            },
+            'description': 'Active DNS',
+            'relations': relations,
+            **current_app.config['CTIM_SIGHTING_DEFAULTS'],
+            'source_uri': current_app.config['UI_URL'].format(
+                query=f"indicator/?iid={output['iid']}"),
+        }
+
+        if len(docs) >= current_app.config['CTR_ENTITIES_LIMIT']:
+            return docs
+
+        docs.append(doc)
 
     return docs
 

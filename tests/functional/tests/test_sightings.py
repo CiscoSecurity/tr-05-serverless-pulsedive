@@ -24,7 +24,7 @@ def test_positive_sighting_domain(module_headers):
     )
     sightings = get_observables(
         response['data'], 'Pulsedive')['data']['sightings']
-    assert sightings['count'] == 5
+    assert sightings['count'] == 6
 
     for sighting in sightings['docs']:
         assert sighting['count'] == 1
@@ -38,16 +38,16 @@ def test_positive_sighting_domain(module_headers):
 
         assert len(sighting['observables']) == 1
         assert sighting['observables'][0] == observable
-
-        assert len(sighting['relations']) == 2
-        for relation in sighting['relations']:
-            assert relation['origin'] == 'Pulsedive Enrichment Module'
-            assert relation['relation'] == 'Resolved_To'
-            assert relation['source'] == {'value': 'brehmen.com',
-                                          'type': 'domain'}
-            assert relation['related']['value'] in ('81.169.145.159',
-                                                    '2a01:238:20a:202:1159::')
-            assert relation['related']['type'] in ('ip', 'ipv6')
+        if 'relations' in sighting:
+            assert len(sighting['relations']) == 1
+            for relation in sighting['relations']:
+                assert relation['origin'] == 'Pulsedive Enrichment Module'
+                assert relation['relation'] == 'Resolved_To'
+                assert relation['source'] == {'value': 'brehmen.com',
+                                              'type': 'domain'}
+                assert relation['related']['value'] in \
+                    ('81.169.145.159', '2a01:238:20a:202:1159::')
+                assert relation['related']['type'] in ('ip', 'ipv6')
 
 
 def test_positive_sighting_ip(module_headers):
@@ -72,7 +72,7 @@ def test_positive_sighting_ip(module_headers):
     )
     sightings = get_observables(
         response['data'], 'Pulsedive')['data']['sightings']
-    assert sightings['count'] == 10
+    assert sightings['count'] == 13
 
     for sighting in sightings['docs']:
         assert sighting['count'] == 1

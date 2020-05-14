@@ -20,24 +20,22 @@ def route(request):
     return request.param
 
 
-def get_expected_url(client, valid_jwt):
+def get_expected_url(client, valid_jwt=None):
     app = client.application
+    url = app.config["API_URL"]
     key = ''
     if valid_jwt:
         key = jwt.decode(valid_jwt, app.config["SECRET_KEY"])["key"]
-    url = app.config["API_URL"].format(
-        query='iid=2',
-        key=key
-    )
-    return url
+    params = {'iid': 2, 'key': key}
+    return url, params
 
 
 def test_health_call_without_jwt_success(route, client, pd_api_request):
     pd_api_request.return_value = pd_api_response(ok=True)
     response = client.post(route)
 
-    expected_url = get_expected_url(client, valid_jwt=None)
-    pd_api_request.assert_called_once_with(expected_url)
+    expected_url = get_expected_url(client)
+    pd_api_request.assert_called_once_with(*expected_url)
 
     expected_payload = {"data": {"status": "ok"}}
 
@@ -49,8 +47,8 @@ def test_health_call_without_jwt_failure(route, client, pd_api_request):
     pd_api_request.return_value = pd_api_response(ok=False)
     response = client.post(route)
 
-    expected_url = get_expected_url(client, valid_jwt=None)
-    pd_api_request.assert_called_once_with(expected_url)
+    expected_url = get_expected_url(client)
+    pd_api_request.assert_called_once_with(*expected_url)
 
     assert response.status_code == HTTPStatus.OK
     assert response.get_json() == EXPECTED_PAYLOAD_REQUEST_TIMOUT
@@ -103,7 +101,7 @@ def test_health_call_success(route, client, pd_api_request, valid_jwt):
     response = client.post(route, headers=headers(valid_jwt))
 
     expected_url = get_expected_url(client, valid_jwt)
-    pd_api_request.assert_called_once_with(expected_url)
+    pd_api_request.assert_called_once_with(*expected_url)
 
     expected_payload = {"data": {"status": "ok"}}
 
@@ -116,7 +114,7 @@ def test_health_call_failure(route, client, pd_api_request, valid_jwt):
     response = client.post(route, headers=headers(valid_jwt))
 
     expected_url = get_expected_url(client, valid_jwt)
-    pd_api_request.assert_called_once_with(expected_url)
+    pd_api_request.assert_called_once_with(*expected_url)
 
     assert response.status_code == HTTPStatus.OK
     assert response.get_json() == EXPECTED_PAYLOAD_REQUEST_TIMOUT

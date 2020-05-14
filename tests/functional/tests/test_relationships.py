@@ -30,8 +30,9 @@ def test_positive_relationship_detail(module_headers):
     sightings = entities['sightings']
     indicators = entities['indicators']
 
-    # sighting has one relationship with indicator
-    assert sightings['count'] == indicators['count']
+    # sighting and indicator not less then relationships
+    assert sightings['count']\
+        and indicators['count'] >= relationships['count']
 
     sightings_id = [s['id'] for s in sightings['docs']]
     indicators_id = [i['id'] for i in indicators['docs']]
@@ -88,9 +89,13 @@ def test_positive_relationship_several_observables(module_headers):
     # Each sighting exists in relationships
     sighting_indicator = {r['source_ref']: r['target_ref']
                           for r in relationships['docs']}
-    for sighting in sightings['docs']:
-        assert sighting['id'] in sighting_indicator
+    if sightings['count'] <= indicators['count']:
+        for sighting in sightings['docs']:
+            assert sighting['id'] in sighting_indicator
 
     # Each indicator exists in relationships
-    for indicator in indicators['docs']:
-        assert indicator['id'] in {v: k for k, v in sighting_indicator.items()}
+    if indicators['count'] <= sightings['count']:
+        for indicator in indicators['docs']:
+            assert indicator['id'] in {
+                v: k for k, v in sighting_indicator.items()
+            }

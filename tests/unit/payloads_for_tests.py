@@ -72,7 +72,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "producer": "Pulsedive",
           "schema_version": "1.0.16",
           "severity": "Medium",
-          "short_description": "Kraken Botnet",
+          "short_description": "Threat: Kraken Botnet",
           "source_uri": "https://pulsedive.com/threat/?tid=9",
           "tags": [
             "malware"
@@ -89,7 +89,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "source": "Pulsedive",
           "schema_version": "1.0.16",
           "severity": "Medium",
-          "short_description": "JS Crypto Miner",
+          "short_description": "Threat: JS Crypto Miner",
           "source_uri": "https://pulsedive.com/threat/?tid=108",
           "tags": [
             "abuse"
@@ -178,7 +178,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
       ]
     },
     "sightings": {
-      "count": 5,
+      "count": 6,
       "docs": [
         {
           "confidence": "Medium",
@@ -193,20 +193,6 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "observed_time": {
             "start_time": "2020-03-31T14:47:36Z"
           },
-          "relations": [
-            {
-              "origin": "Pulsedive Enrichment Module",
-              "related": {
-                "type": "ip",
-                "value": "185.53.179.29"
-              },
-              "relation": "Resolved_To",
-              "source": {
-                "type": "domain",
-                "value": "parkingcrew.net"
-              }
-            }
-          ],
           "schema_version": "1.0.16",
           "severity": "Medium",
           "source": "Pulsedive",
@@ -226,20 +212,6 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "observed_time": {
             "start_time": "2020-03-31T14:47:36Z"
           },
-          "relations": [
-            {
-              "origin": "Pulsedive Enrichment Module",
-              "related": {
-                "type": "ip",
-                "value": "185.53.179.29"
-              },
-              "relation": "Resolved_To",
-              "source": {
-                "type": "domain",
-                "value": "parkingcrew.net"
-              }
-            }
-          ],
           "schema_version": "1.0.16",
           "severity": "Medium",
           "source": "Pulsedive",
@@ -249,7 +221,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
         {
           "confidence": "Medium",
           "count": 1,
-          "description": "Kraken Botnet",
+          "description": "Threat: Kraken Botnet",
           "observables": [
             {
               "type": "domain",
@@ -259,20 +231,6 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "observed_time": {
             "start_time": "2019-01-01T04:01:30Z"
           },
-          "relations": [
-            {
-              "origin": "Pulsedive Enrichment Module",
-              "related": {
-                "type": "ip",
-                "value": "185.53.179.29"
-              },
-              "relation": "Resolved_To",
-              "source": {
-                "type": "domain",
-                "value": "parkingcrew.net"
-              }
-            }
-          ],
           "schema_version": "1.0.16",
           "severity": "Medium",
           "source": "Pulsedive",
@@ -282,7 +240,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
         {
           "confidence": "Medium",
           "count": 1,
-          "description": "JS Crypto Miner",
+          "description": "Threat: JS Crypto Miner",
           "observables": [
             {
               "type": "domain",
@@ -292,20 +250,6 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "observed_time": {
             "start_time": "2018-08-06T03:44:07Z"
           },
-          "relations": [
-            {
-              "origin": "Pulsedive Enrichment Module",
-              "related": {
-                "type": "ip",
-                "value": "185.53.179.29"
-              },
-              "relation": "Resolved_To",
-              "source": {
-                "type": "domain",
-                "value": "parkingcrew.net"
-              }
-            }
-          ],
           "schema_version": "1.0.16",
           "severity": "Medium",
           "source": "Pulsedive",
@@ -325,23 +269,47 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "observed_time": {
             "start_time": "2020-02-10T07:41:05Z"
           },
-          "relations": [
-            {
-              "origin": "Pulsedive Enrichment Module",
-              "related": {
-                "type": "ip",
-                "value": "185.53.179.29"
-              },
-              "relation": "Resolved_To",
-              "source": {
-                "type": "domain",
-                "value": "parkingcrew.net"
-              }
-            }
-          ],
           "schema_version": "1.0.16",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/feed/?fid=13",
+          "type": "sighting"
+        },
+        {
+          "confidence": "Medium",
+          "count": 1,
+          "description": "Active DNS",
+          "observables": [
+            {
+              "type": "domain",
+              "value": "parkingcrew.net"
+            }
+          ],
+          "observed_time": {
+            "start_time": "2020-03-31T14:47:36Z"
+          },
+          "relations": {
+            "Active DNS": [
+              {
+                "iid": 3,
+                "indicator": "187.191.98.202",
+                "risk": "low",
+                "stamp_linked": "2019-06-22 10:46:47",
+                "summary": {
+                  "properties": {
+                    "geo": {
+                      "country": "Brazil",
+                      "countrycode": "BR",
+                      "org": "Mandic S.A."
+                    }
+                  }
+                },
+                "type": "ip"
+              }
+            ]
+          },
+          "schema_version": "1.0.16",
+          "source": "Pulsedive",
+          "source_uri": "https://pulsedive.com/indicator/?iid=118",
           "type": "sighting"
         }
       ]
@@ -571,20 +539,6 @@ EXPECTED_PAYLOAD_OBSERVE_WITH_LIMIT = {
           "observed_time": {
             "start_time": "2020-03-31T14:47:36Z"
           },
-          "relations": [
-            {
-              "origin": "Pulsedive Enrichment Module",
-              "related": {
-                "type": "ip",
-                "value": "185.53.179.29"
-              },
-              "relation": "Resolved_To",
-              "source": {
-                "type": "domain",
-                "value": "parkingcrew.net"
-              }
-            }
-          ],
           "schema_version": "1.0.16",
           "severity": "Medium",
           "source": "Pulsedive",
@@ -647,6 +601,28 @@ EXPECTED_PAYLOAD_REFER = {
       "id": "ref-pulsedive-detail-domain-parkingcrew.net",
       "title": "Browse domain",
       "url": "https://pulsedive.com/indicator/?iid=118"
+    }
+  ]
+}
+
+PULSEDIVE_ACTIVE_DNS_RESPONCE = {
+  "Active DNS":
+  [
+    {
+      "iid": 3,
+      "indicator": "187.191.98.202",
+      "type": "ip",
+      "risk": "low",
+      "stamp_linked": "2019-06-22 10:46:47",
+      "summary": {
+        "properties": {
+          "geo": {
+            "country": "Brazil",
+            "org": "Mandic S.A.",
+            "countrycode": "BR"
+          }
+        }
+      }
     }
   ]
 }
