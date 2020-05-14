@@ -97,3 +97,15 @@ Payload for encryption must have structure:
 
 After encryption set your `SECRET_KEY` environment 
 variable in AWS lambda for successful decryption in Relay API.
+
+## Environment Variables
+
+Besides the common set of environment variables that have the same meaning for
+any Relay API (e.g. `SECRET_KEY`), the Pulsedive Relay API also supports the
+following ones:
+
+- `CTR_ENTITIES_LIMIT`
+  - Restricts the maximum number of CTIM entities of each type returned in a
+  single response per each requested observable.
+  - Applies to: `Indicator`, `Sighting` .
+  - Must be a positive integer. Defaults to `100` (if unset or incorrect).
