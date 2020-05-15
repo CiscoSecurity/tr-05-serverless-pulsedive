@@ -101,7 +101,6 @@ variable in AWS lambda for successful decryption in Relay API.
 ## Environment Variables
 
 - `SECRET_KEY` - string key used while `JWT` encoding. Mandatory variable.
-  
 - `CTR_ENTITIES_LIMIT` - the maximum number of entities in a response.
  Applicable to: `Sighting`, `Indicator`, `Verdict`, `Judgement`.
  Must be a positive integer.
