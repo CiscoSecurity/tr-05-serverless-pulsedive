@@ -27,8 +27,11 @@ class Config(object):
 
     CTR_DEFAULT_ENTITIES_LIMIT = 100
 
-    CTR_ENTITIES_LIMIT = \
-        int(os.environ.get('CTR_ENTITIES_LIMIT', CTR_DEFAULT_ENTITIES_LIMIT))
+    try:
+        CTR_ENTITIES_LIMIT = int(os.environ['CTR_ENTITIES_LIMIT'])
+        assert CTR_ENTITIES_LIMIT > 0
+    except (KeyError, ValueError, AssertionError):
+        CTR_ENTITIES_LIMIT = CTR_DEFAULT_ENTITIES_LIMIT
 
     PULSEDIVE_OBSERVABLE_TYPES = {
         'url': 'URL',
