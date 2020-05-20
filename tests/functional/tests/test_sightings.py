@@ -39,7 +39,7 @@ def test_positive_sighting_domain(module_headers):
         assert len(sighting['observables']) == 1
         assert sighting['observables'][0] == observable
         if 'relations' in sighting:
-            assert len(sighting['relations']) == 1
+            assert len(sighting['relations']) == 2
             for relation in sighting['relations']:
                 assert relation['origin'] == 'Pulsedive Enrichment Module'
                 assert relation['relation'] == 'Resolved_To'
