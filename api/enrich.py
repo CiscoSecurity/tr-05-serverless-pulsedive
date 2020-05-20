@@ -277,7 +277,6 @@ def get_related_entities(observable):
         return relations
 
     entities = output[0].get('Active DNS')
-
     if entities:
         if isinstance(entities, str):
             entities = [entities]
@@ -285,7 +284,6 @@ def get_related_entities(observable):
         valid_pairs = (('domain', 'ip'), ('ip', 'domain'), ('ipv6', 'domain'))
 
         for entity in entities:
-
             if (entity['type'], observable['type']) in valid_pairs\
                     and is_relevant(entity['stamp_linked']):
                 if observable['type'] == 'domain':
