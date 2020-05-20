@@ -20,6 +20,7 @@ from api.utils import (
 
 
 STORAGE_PERIOD = timedelta(days=3*365/12)
+ACTIVE_DNS_RELEVANCE_PERIOD = timedelta(days=90)
 
 enrich_api = Blueprint('enrich', __name__)
 
@@ -263,6 +264,12 @@ def get_relationship(source_ref, target_ref, relationship_type):
             }
 
 
+def is_relevant(time):
+    time_linked = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+    time_now = datetime.utcnow()
+    return time_now - time_linked < ACTIVE_DNS_RELEVANCE_PERIOD
+
+
 def get_related_entities(observable):
     output = get_pulsedive_output([observable['value']], links=True)
     relations = []
@@ -278,7 +285,7 @@ def get_related_entities(observable):
 
         for entity in entities:
             if (entity['type'], observable['type']) in valid_pairs\
-                    and entity['risk'] != 'retired':
+                    and is_relevant(entity['stamp_linked']):
                 if observable['type'] == 'domain':
                     relations.append(
                         {**current_app.config['OBSERVED_RELATIONS_DEFAULTS'],
