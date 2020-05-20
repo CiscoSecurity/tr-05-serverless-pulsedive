@@ -266,7 +266,7 @@ def get_relationship(source_ref, target_ref, relationship_type):
 
 def is_relevant(time):
     time_linked = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
-    time_now = datetime.now()
+    time_now = datetime.utcnow()
     return time_now - time_linked < ACTIVE_DNS_RELEVANCE_PERIOD
 
 
