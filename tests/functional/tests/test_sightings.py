@@ -24,15 +24,12 @@ def test_positive_sighting_domain(module_headers):
     )
     sightings = get_observables(
         response['data'], 'Pulsedive')['data']['sightings']
-    assert sightings['count'] == 6
-    active_dns_sighting = 0
+    assert len(sightings['docs']) > 0
 
     for sighting in sightings['docs']:
         assert sighting['count'] == 1
         assert sighting['id'].startswith('transient:sighting-')
         assert sighting['description']
-        if sighting['description'] == 'Active DNS':
-            active_dns_sighting += 1
         assert sighting['confidence'] == 'Medium'
         assert 'start_time' in sighting['observed_time']
         assert sighting['schema_version']
@@ -48,10 +45,14 @@ def test_positive_sighting_domain(module_headers):
                 assert relation['relation'] == 'Resolved_To'
                 assert relation['source'] == {'value': 'brehmen.com',
                                               'type': 'domain'}
-                assert relation['related']['value'] in \
-                    ('81.169.145.159', '2a01:238:20a:202:1159::')
+                assert relation['related']['value'] in (
+                    '81.169.145.159', '2a01:238:20a:202:1159::')
                 assert relation['related']['type'] in ('ip', 'ipv6')
-    assert active_dns_sighting == 1
+    assert sightings['count'] == len(sightings['docs'])
+    assert len(
+        [sighting for sighting in sightings['docs'] if
+         sighting['description'] == 'Active DNS']
+    ) == 1
 
 
 def test_positive_sighting_ip(module_headers):
@@ -76,16 +77,13 @@ def test_positive_sighting_ip(module_headers):
     )
     sightings = get_observables(
         response['data'], 'Pulsedive')['data']['sightings']
-    assert sightings['count'] == 13
-    active_dns_sighting = 0
+    assert len(sightings['docs']) > 0
 
     for sighting in sightings['docs']:
         assert sighting['count'] == 1
         assert sighting['id'].startswith('transient:sighting-')
 
         assert sighting['description']
-        if sighting['description'] == 'Active DNS':
-            active_dns_sighting += 1
         assert sighting['confidence'] == 'Medium'
 
         assert 'start_time' in sighting['observed_time']
@@ -96,7 +94,11 @@ def test_positive_sighting_ip(module_headers):
 
         assert len(sighting['observables']) == 1
         assert sighting['observables'][0] == observable
-    assert active_dns_sighting == 1
+    assert sightings['count'] == len(sightings['docs'])
+    assert len(
+        [sighting for sighting in sightings['docs'] if
+         sighting['description'] == 'Active DNS']
+    ) == 1
 
 
 def test_positive_sighting_url(module_headers):
@@ -121,7 +123,7 @@ def test_positive_sighting_url(module_headers):
     )
     sightings = get_observables(
         response['data'], 'Pulsedive')['data']['sightings']
-    assert sightings['count'] == 25
+    assert len(sightings['docs']) > 0
 
     for sighting in sightings['docs']:
         assert sighting['count'] == 1
@@ -138,3 +140,4 @@ def test_positive_sighting_url(module_headers):
 
         assert len(sighting['observables']) == 1
         assert sighting['observables'][0] == observable
+    assert sightings['count'] == len(sightings['docs'])

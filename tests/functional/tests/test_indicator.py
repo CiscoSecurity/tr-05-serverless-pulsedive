@@ -27,7 +27,7 @@ def test_positive_indicator_details(module_headers):
     )['data']
     indicators = get_observables(
         response, 'Pulsedive')['data']['indicators']
-    assert indicators['count'] == 6
+    assert len(indicators['docs']) > 0
 
     for indicator in indicators['docs']:
         assert indicator['id'].startswith('transient:indicator-')
@@ -48,6 +48,7 @@ def test_positive_indicator_details(module_headers):
     assert indicator['producer'] == 'ZeroDot1'
     assert indicator['short_description'] == 'Feed: ZeroDot1\'s Bad IPs '
     assert indicator['tlp'] == 'white'
+    assert indicators['count'] == len(indicators['docs'])
 
 
 @pytest.mark.parametrize(
@@ -80,7 +81,7 @@ def test_positive_indicators_by_type(
     )['data']
     indicators = get_observables(
         response, 'Pulsedive')['data']['indicators']
-    assert indicators['count'] > 0
+    assert len(indicators['docs']) > 0
 
     for indicator in indicators['docs']:
         assert indicator['id'].startswith('transient:indicator-')
@@ -90,3 +91,4 @@ def test_positive_indicators_by_type(
         assert indicator['short_description']
         assert indicator['tlp'] == 'white'
         assert indicator['source'] == 'Pulsedive'
+    assert indicators['count'] == len(indicators['docs'])
