@@ -31,8 +31,8 @@ def test_positive_relationship_detail(module_headers):
     indicators = entities['indicators']
 
     # sighting and indicator not less then relationships
-    assert sightings['count']\
-        and indicators['count'] >= relationships['count']
+    assert sightings['count'] and (
+        indicators['count']) >= relationships['count']
 
     sightings_id = [s['id'] for s in sightings['docs']]
     indicators_id = [i['id'] for i in indicators['docs']]
