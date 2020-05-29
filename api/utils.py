@@ -1,6 +1,6 @@
 from authlib.jose import jwt
 from authlib.jose.errors import JoseError
-from flask import request, current_app, jsonify
+from flask import request, current_app, jsonify, g
 
 from api.errors import JwtError, InvalidInputError
 
@@ -41,3 +41,27 @@ def jsonify_data(data):
 
 def jsonify_errors(error):
     return jsonify({'errors': [error]})
+
+
+def format_docs(docs):
+    return {'count': len(docs), 'docs': docs}
+
+
+def jsonify_result():
+    result = {'data': {}}
+
+    if g.get('sightings'):
+        result['data']['sightings'] = format_docs(g.sightings)
+    if g.get('indicators'):
+        result['data']['indicators'] = format_docs(g.indicators)
+    if g.get('judgements'):
+        result['data']['judgements'] = format_docs(g.judgements)
+    if g.get('verdicts'):
+        result['data']['verdicts'] = format_docs(g.verdicts)
+    if g.get('relationships'):
+        result['data']['relationships'] = format_docs(g.relationships)
+
+    if g.get('errors'):
+        result['errors'] = g.errors
+
+    return jsonify(result)

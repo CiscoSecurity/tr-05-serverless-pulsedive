@@ -1,11 +1,11 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, g
 
 from api.enrich import enrich_api
 from api.health import health_api
 from api.respond import respond_api
 
 from api.errors import TRFormattedError
-from api.utils import jsonify_errors
+from api.utils import jsonify_result
 
 
 app = Flask(__name__)
@@ -33,7 +33,8 @@ def handle_error(exception):
 
 @app.errorhandler(TRFormattedError)
 def handle_pusledive_errors(error):
-    return jsonify_errors(error.json)
+    g.errors = [error.json]
+    return jsonify_result()
 
 
 if __name__ == '__main__':

@@ -5,7 +5,7 @@ from uuid import uuid4
 from base64 import b64encode
 from urllib.parse import quote
 
-from flask import Blueprint, current_app
+from flask import Blueprint, current_app, g
 import requests
 
 from api.schemas import ObservableSchema
@@ -15,7 +15,7 @@ from api.errors import (
 )
 
 from api.utils import (
-    get_jwt, jsonify_data, get_json
+    get_jwt, jsonify_data, get_json, jsonify_result
 )
 
 
@@ -477,37 +477,24 @@ def observe_observables():
 
     pulsedive_outputs = get_pulsedive_output(observables)
 
-    verdicts = []
-    judgements = []
-    indicators = []
-    sightings = []
+    g.verdicts = []
+    g.judgements = []
+    g.indicators = []
+    g.sightings = []
 
     unique_indicator_ids = {'riskfactors': {}, 'threats': {}, 'feeds': {}}
     sightings_relationship = []
     for output in pulsedive_outputs:
-        verdicts.append(extract_verdict(output))
-        judgements.append(extract_judgement(output))
-        indicators += extract_indicators(output, unique_indicator_ids)
-        sightings += extract_sightings(output,
-                                       unique_indicator_ids,
-                                       sightings_relationship
-                                       )
-    relationships = extract_relationship(sightings_relationship)
+        g.verdicts.append(extract_verdict(output))
+        g.judgements.append(extract_judgement(output))
+        g.indicators += extract_indicators(output, unique_indicator_ids)
+        g.sightings += extract_sightings(output,
+                                         unique_indicator_ids,
+                                         sightings_relationship
+                                         )
+    g.relationships = extract_relationship(sightings_relationship)
 
-    relay_output = {}
-
-    if judgements:
-        relay_output['judgements'] = format_docs(judgements)
-    if verdicts:
-        relay_output['verdicts'] = format_docs(verdicts)
-    if indicators:
-        relay_output['indicators'] = format_docs(indicators)
-    if sightings:
-        relay_output['sightings'] = format_docs(sightings)
-    if relationships:
-        relay_output['relationships'] = format_docs(relationships)
-
-    return jsonify_data(relay_output)
+    return jsonify_result()
 
 
 def get_browse_pivot(observables):
