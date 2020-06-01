@@ -38,18 +38,13 @@ def group_observables(relay_input):
 
         # Discard any unsupported type.
         if type in current_app.config['PULSEDIVE_OBSERVABLE_TYPES']:
-            observables[value].add(type)
-
-    observables = {
-        value: sorted(types)
-        for value, types in observables.items()
-    }
+            observables[value] = type
 
     return observables
 
 
-def get_pulsedive_output(observables, links=False):
-    output = []
+def get_pulsedive_output(observable, links=False):
+    output = {}
     key = get_jwt().get('key')
 
     header = {
@@ -57,36 +52,33 @@ def get_pulsedive_output(observables, links=False):
                        '<tr-integrations-support@cisco.com>'),
     }
 
-    for observable in observables:
-        url = current_app.config["API_URL"]
-        params = {
-            'indicator': observable,
-            'key': key
-                  }
-        if links:
-            params['get'] = 'links'
+    url = current_app.config["API_URL"]
+    params = {
+        'indicator': observable,
+        'key': key
+    }
+    if links:
+        params['get'] = 'links'
 
-        response = requests.get(url, headers=header, params=params)
+    response = requests.get(url, headers=header, params=params)
 
-        error = response.json().get('error')
-        if error in ("Indicator not found.",
-                     "Invalid request or data not found."):
-            continue
+    error = response.json().get('error')
 
-        if error:
-            raise UnexpectedPulsediveError(error)
-        elif not response.ok:
-            raise StandardHttpError(response)
-        payload = response.json()
-        if payload.get('threats'):
-            payload['threats'].sort(
-                key=lambda x: x['stamp_linked'], reverse=True
-            )
-        if payload.get('feeds'):
-            payload['feeds'].sort(
-                key=lambda x: x['stamp_linked'], reverse=True
-            )
-        output.append(payload)
+    if error not in ("Indicator not found.",
+                     "Invalid request or data not found.", None):
+        raise UnexpectedPulsediveError(error)
+    elif not response.ok:
+        raise StandardHttpError(response)
+    payload = response.json()
+    if payload.get('threats'):
+        payload['threats'].sort(
+            key=lambda x: x['stamp_linked'], reverse=True
+        )
+    if payload.get('feeds'):
+        payload['feeds'].sort(
+            key=lambda x: x['stamp_linked'], reverse=True
+        )
+    output.update(payload)
 
     return output
 
@@ -271,12 +263,12 @@ def is_relevant(time):
 
 
 def get_related_entities(observable):
-    output = get_pulsedive_output([observable['value']], links=True)
+    output = get_pulsedive_output(observable['value'], links=True)
     relations = []
     if not output:
         return relations
 
-    entities = output[0].get('Active DNS')
+    entities = output.get('Active DNS')
     if entities:
         if isinstance(entities, str):
             entities = [entities]
@@ -445,7 +437,11 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
 
 def extract_relationship(sightings_relationship):
     docs = []
-    for relation in sightings_relationship:
+    s = []
+    for d in sightings_relationship:
+        if d not in s:
+            s.append(d)
+    for relation in s:
         doc = {
             'id': f'transient:{uuid4()}',
             **relation,
@@ -475,8 +471,6 @@ def observe_observables():
     if not observables:
         return jsonify_data({})
 
-    pulsedive_outputs = get_pulsedive_output(observables)
-
     g.verdicts = []
     g.judgements = []
     g.indicators = []
@@ -484,45 +478,47 @@ def observe_observables():
 
     unique_indicator_ids = {'riskfactors': {}, 'threats': {}, 'feeds': {}}
     sightings_relationship = []
-    for output in pulsedive_outputs:
-        g.verdicts.append(extract_verdict(output))
-        g.judgements.append(extract_judgement(output))
-        g.indicators += extract_indicators(output, unique_indicator_ids)
-        g.sightings += extract_sightings(output,
-                                         unique_indicator_ids,
-                                         sightings_relationship
-                                         )
-    g.relationships = extract_relationship(sightings_relationship)
+    for value in observables.values():  # ToDo
+        output = get_pulsedive_output(value)
+        if not output.get('error'):
+            g.verdicts.append(extract_verdict(output))
+            g.judgements.append(extract_judgement(output))
+            g.indicators += extract_indicators(output, unique_indicator_ids)
+            g.sightings += extract_sightings(output,
+                                             unique_indicator_ids,
+                                             sightings_relationship
+                                             )
+            g.relationships = extract_relationship(sightings_relationship)
 
     return jsonify_result()
 
 
-def get_browse_pivot(observables):
-    pulsedive_outputs = get_pulsedive_output(observables)
+def get_browse_pivot(observable):
+    output = get_pulsedive_output(observable)
     pivots = []
-    for output in pulsedive_outputs:
-        url = current_app.config['UI_URL'].format(
-            query=f"indicator/?iid={output['iid']}")
-        value = output['indicator']
-        type = output['type']
-        pivots.append(
-            {'id': f'ref-pulsedive-detail'
-                   f'-{type}-{quote(value, safe="")}',
-             'title':
-                 (
-                  'Browse '
-                  f'{current_app.config["PULSEDIVE_OBSERVABLE_TYPES"][type]}'
-                 ),
-             'description':
-                 (
-                  'Browse this '
-                  f'{current_app.config["PULSEDIVE_OBSERVABLE_TYPES"][type]}'
-                  ' on Pulsedive'
-                 ),
-             'url': url,
-             'categories': ['Browse', 'Pulsedive'],
-             }
-        )
+
+    url = current_app.config['UI_URL'].format(
+        query=f"indicator/?iid={output['iid']}")
+    value = output['indicator']
+    type = output['type']
+    pivots.append(
+        {'id': f'ref-pulsedive-detail'
+               f'-{type}-{quote(value, safe="")}',
+         'title':
+             (
+                 'Browse '
+                 f'{current_app.config["PULSEDIVE_OBSERVABLE_TYPES"][type]}'
+             ),
+         'description':
+             (
+                 'Browse this '
+                 f'{current_app.config["PULSEDIVE_OBSERVABLE_TYPES"][type]}'
+                 ' on Pulsedive'
+             ),
+         'url': url,
+         'categories': ['Browse', 'Pulsedive'],
+         }
+    )
     return pivots
 
 
@@ -564,8 +560,7 @@ def refer_observables():
 
     relay_output = []
 
-    for value, types in observables.items():
-        for type in types:
+    for value, type in observables.items():
             relay_output.append(get_search_pivots(value, type))
     relay_output += get_browse_pivot(observables)
 

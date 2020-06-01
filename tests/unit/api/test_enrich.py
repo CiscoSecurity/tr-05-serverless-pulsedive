@@ -38,13 +38,16 @@ def pd_api_request():
         yield mock_request
 
 
-def pd_api_response(*, ok):
+def pd_api_response(*, ok, links=False):
     mock_response = mock.MagicMock()
 
     mock_response.ok = ok
 
     if ok:
-        payload = PULSEDIVE_RESPONSE_MOCK
+        if not links: # Todo
+            payload = PULSEDIVE_RESPONSE_MOCK
+        else:
+            payload = PULSEDIVE_ACTIVE_DNS_RESPONCE
 
     else:
         payload = PULSEDIVE_REQUEST_TIMOUT
@@ -245,6 +248,70 @@ def test_enrich_call_failure(route,
 
     assert response.status_code == HTTPStatus.OK
     assert response.get_json() == EXPECTED_PAYLOAD_REQUEST_TIMOUT
+
+
+@fixture(scope='module')
+def valid_json_multiple():
+    return [
+        {'type': 'domain', 'value': 'cisco.com'},
+        {'type': 'ip', 'value': '0.0.0.0'},
+    ]
+
+
+@mock.patch('api.enrich.get_related_entities')
+def test_enrich_error_with_data(mock_related_entities,
+                             any_route,
+                             client,
+                             valid_jwt,
+                             valid_json_multiple,
+                             pd_api_request,
+                             expected_payload):
+    if any_route.startswith('/observe'):
+        mock_related_entities.return_value = PULSEDIVE_ACTIVE_DNS_RESPONCE
+        pd_api_request.side_effect = (pd_api_response(ok=True), pd_api_response(ok=False))
+        response = client.post(any_route,
+                               headers=headers(valid_jwt),
+                               json=valid_json_multiple)
+
+        data = response.get_json()
+        verdicts = data['data']['verdicts']
+
+        assert response.status_code == HTTPStatus.OK
+        assert verdicts['count'] == 1
+
+        judgements = data['data']['judgements']
+        assert judgements['count'] == 1
+        assert judgements['docs'][0].pop('id')
+
+        indicators = data['data']['indicators']
+        assert indicators['count'] == 5
+        indicator_ids = []
+        for indicator in indicators['docs']:
+            indicator_ids.append(indicator.pop('id'))
+
+        sightings = data['data']['sightings']
+        assert sightings['count'] == 6
+        sighting_ids = []
+        for sighting in sightings['docs']:
+            sighting_ids.append(sighting.pop('id'))
+
+        relationships = data['data']['relationships']
+        assert relationships['count'] == 5
+        for i, relationship in enumerate(relationships['docs']):
+            assert relationship.pop('id')
+            assert relationship.pop('source_ref') == sighting_ids[i]
+            assert relationship.pop('target_ref') == indicator_ids[i]
+
+        expected_response = {}
+        expected_response.update(EXPECTED_PAYLOAD_REQUEST_TIMOUT)
+        expected_response.update(expected_payload)
+
+        assert data == expected_response
+    else:
+        response = client.post(any_route)
+
+        assert response.status_code == HTTPStatus.OK
+
 
 
 def test_enrich_call_success_limit_1(any_route,
