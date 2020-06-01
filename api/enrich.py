@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 from functools import partial
 from datetime import datetime, timedelta
 from uuid import uuid4
@@ -64,7 +64,7 @@ def get_pulsedive_output(observable, links=False):
 
     error = response.json().get('error')
 
-    if error not in (current_app.config['NOT_CRITICAL_ERRORS'], None):
+    if error not in (*current_app.config['NOT_CRITICAL_ERRORS'], None):
         raise UnexpectedPulsediveError(error)
     elif not response.ok:
         raise StandardHttpError(response)
@@ -248,11 +248,14 @@ def extract_indicators(output, unique_ids):
 
 
 def get_relationship(source_ref, target_ref, relationship_type):
-    return {
-            'source_ref': source_ref,
-            'target_ref': target_ref,
-            'relationship_type': relationship_type,
-            }
+    Relationship = namedtuple(
+        'Relationship', ['source_ref', 'target_ref', 'relationship_type']
+    )
+    return Relationship(
+            source_ref=source_ref,
+            target_ref=target_ref,
+            relationship_type=relationship_type
+    )
 
 
 def is_relevant(time):
@@ -338,7 +341,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                 return docs
 
             ind_id = unique_indicator_ids['riskfactors'][riskfactor['rfid']]
-            sightings_relationship.append(
+            sightings_relationship.add(
                 get_relationship(generated_id, ind_id, 'sighting-of')
             )
 
@@ -370,7 +373,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                 return docs
 
             ind_id = unique_indicator_ids['threats'][threat['tid']]
-            sightings_relationship.append(
+            sightings_relationship.add(
                 get_relationship(generated_id, ind_id, 'sighting-of')
             )
 
@@ -401,7 +404,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                 return docs
 
             ind_id = unique_indicator_ids['feeds'][feed['fid']]
-            sightings_relationship.append(
+            sightings_relationship.add(
                 get_relationship(generated_id, ind_id, 'member-of')
             )
 
@@ -436,14 +439,12 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
 
 def extract_relationship(sightings_relationship):
     docs = []
-    s = []
-    for d in sightings_relationship:
-        if d not in s:
-            s.append(d)
-    for relation in s:
+    for relation in sightings_relationship:
         doc = {
             'id': f'transient:{uuid4()}',
-            **relation,
+            'source_ref': relation.source_ref,
+            'target_ref': relation.target_ref,
+            'relationship_type': relation.relationship_type,
             **current_app.config['CTIM_RELATIONSHIP_DEFAULTS'],
         }
         docs.append(doc)
@@ -476,7 +477,7 @@ def observe_observables():
     g.sightings = []
 
     unique_indicator_ids = {'riskfactors': {}, 'threats': {}, 'feeds': {}}
-    sightings_relationship = []
+    sightings_relationship = set()
     for value in observables.keys():
         output = get_pulsedive_output(value)
         if not output.get('error'):
