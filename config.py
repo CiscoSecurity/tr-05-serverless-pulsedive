@@ -115,3 +115,7 @@ class Config(object):
         "severity": "High"
       }
     }
+
+    NOT_CRITICAL_ERRORS = (
+        "Indicator not found.", "Invalid request or data not found."
+    )

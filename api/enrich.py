@@ -64,8 +64,7 @@ def get_pulsedive_output(observable, links=False):
 
     error = response.json().get('error')
 
-    if error not in ("Indicator not found.",
-                     "Invalid request or data not found.", None):
+    if error not in (current_app.config['NOT_CRITICAL_ERRORS'], None):
         raise UnexpectedPulsediveError(error)
     elif not response.ok:
         raise StandardHttpError(response)
@@ -478,7 +477,7 @@ def observe_observables():
 
     unique_indicator_ids = {'riskfactors': {}, 'threats': {}, 'feeds': {}}
     sightings_relationship = []
-    for value in observables.values():  # ToDo
+    for value in observables.keys():
         output = get_pulsedive_output(value)
         if not output.get('error'):
             g.verdicts.append(extract_verdict(output))
@@ -561,7 +560,7 @@ def refer_observables():
     relay_output = []
 
     for value, type in observables.items():
-            relay_output.append(get_search_pivots(value, type))
+        relay_output.append(get_search_pivots(value, type))
     relay_output += get_browse_pivot(observables)
 
     return jsonify_data(relay_output)

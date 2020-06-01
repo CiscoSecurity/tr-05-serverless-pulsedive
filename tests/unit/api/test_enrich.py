@@ -38,16 +38,13 @@ def pd_api_request():
         yield mock_request
 
 
-def pd_api_response(*, ok, links=False):
+def pd_api_response(*, ok):
     mock_response = mock.MagicMock()
 
     mock_response.ok = ok
 
     if ok:
-        if not links: # Todo
-            payload = PULSEDIVE_RESPONSE_MOCK
-        else:
-            payload = PULSEDIVE_ACTIVE_DNS_RESPONCE
+        payload = PULSEDIVE_RESPONSE_MOCK
 
     else:
         payload = PULSEDIVE_REQUEST_TIMOUT
@@ -260,15 +257,17 @@ def valid_json_multiple():
 
 @mock.patch('api.enrich.get_related_entities')
 def test_enrich_error_with_data(mock_related_entities,
-                             any_route,
-                             client,
-                             valid_jwt,
-                             valid_json_multiple,
-                             pd_api_request,
-                             expected_payload):
+                                any_route,
+                                client,
+                                valid_jwt,
+                                valid_json_multiple,
+                                pd_api_request,
+                                expected_payload):
     if any_route.startswith('/observe'):
         mock_related_entities.return_value = PULSEDIVE_ACTIVE_DNS_RESPONCE
-        pd_api_request.side_effect = (pd_api_response(ok=True), pd_api_response(ok=False))
+        pd_api_request.side_effect = (
+            pd_api_response(ok=True), pd_api_response(ok=False)
+        )
         response = client.post(any_route,
                                headers=headers(valid_jwt),
                                json=valid_json_multiple)
@@ -311,7 +310,6 @@ def test_enrich_error_with_data(mock_related_entities,
         response = client.post(any_route)
 
         assert response.status_code == HTTPStatus.OK
-
 
 
 def test_enrich_call_success_limit_1(any_route,
