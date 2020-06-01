@@ -43,6 +43,12 @@ def group_observables(relay_input):
     return observables
 
 
+def sort_entities(list_):
+    return list_.sort(
+        key=lambda x: x['stamp_linked'], reverse=True
+    )
+
+
 def get_pulsedive_output(observable, links=False):
     output = {}
     key = get_jwt().get('key')
@@ -70,13 +76,9 @@ def get_pulsedive_output(observable, links=False):
         raise StandardHttpError(response)
     payload = response.json()
     if payload.get('threats'):
-        payload['threats'].sort(
-            key=lambda x: x['stamp_linked'], reverse=True
-        )
+        sort_entities(payload['threats'])
     if payload.get('feeds'):
-        payload['feeds'].sort(
-            key=lambda x: x['stamp_linked'], reverse=True
-        )
+        sort_entities(payload['feeds'])
     output.update(payload)
 
     return output
