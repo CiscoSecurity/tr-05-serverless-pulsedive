@@ -132,7 +132,7 @@ def test_enrich_call_without_jwt_success(mock_related_entities, any_route,
             assert relationship.pop('id')
             assert relationship.pop('source_ref') in sighting_ids
             assert relationship.pop('target_ref') in indicator_ids
-            """I delete the relationship_type hereinafter
+            """I delete the relationship_type here and below
             as I changed the list to set and the order became unpredictable
             """
             assert relationship.pop('relationship_type') in (
