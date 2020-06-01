@@ -149,31 +149,26 @@ EXPECTED_PAYLOAD_OBSERVE = {
       "count": 5,
       "docs": [
         {
-          "relationship_type": "sighting-of",
           "schema_version": "1.0.16",
           "tlp": "white",
           "type": "relationship"
         },
         {
-          "relationship_type": "sighting-of",
           "schema_version": "1.0.16",
           "tlp": "white",
           "type": "relationship"
         },
         {
-          "relationship_type": "sighting-of",
           "schema_version": "1.0.16",
           "tlp": "white",
           "type": "relationship"
         },
         {
-          "relationship_type": "sighting-of",
           "schema_version": "1.0.16",
           "tlp": "white",
           "type": "relationship"
         },
         {
-          "relationship_type": "member-of",
           "schema_version": "1.0.16",
           "tlp": "white",
           "type": "relationship"

@@ -130,8 +130,14 @@ def test_enrich_call_without_jwt_success(mock_related_entities, any_route,
         assert relationships['count'] == 5
         for i, relationship in enumerate(relationships['docs']):
             assert relationship.pop('id')
-            assert relationship.pop('source_ref') == sighting_ids[i]
-            assert relationship.pop('target_ref') == indicator_ids[i]
+            assert relationship.pop('source_ref') in sighting_ids
+            assert relationship.pop('target_ref') in indicator_ids
+            """I delete the relationship_type hereinafter
+            as I changed the list to and the order became unpredictable
+            """
+            assert relationship.pop('relationship_type') in (
+                'member-of', 'sighting-of'
+            )
 
         assert data == expected_payload
     else:
@@ -212,8 +218,11 @@ def test_enrich_call_success(mock_related_entities,
         assert relationships['count'] == 5
         for i, relationship in enumerate(relationships['docs']):
             assert relationship.pop('id')
-            assert relationship.pop('source_ref') == sighting_ids[i]
-            assert relationship.pop('target_ref') == indicator_ids[i]
+            assert relationship.pop('source_ref') in sighting_ids
+            assert relationship.pop('target_ref') in indicator_ids
+            assert relationship.pop('relationship_type') in (
+                'member-of', 'sighting-of'
+            )
 
         assert data == expected_payload
     else:
@@ -298,8 +307,11 @@ def test_enrich_error_with_data(mock_related_entities,
         assert relationships['count'] == 5
         for i, relationship in enumerate(relationships['docs']):
             assert relationship.pop('id')
-            assert relationship.pop('source_ref') == sighting_ids[i]
-            assert relationship.pop('target_ref') == indicator_ids[i]
+            assert relationship.pop('source_ref') in sighting_ids
+            assert relationship.pop('target_ref') in indicator_ids
+            assert relationship.pop('relationship_type') in (
+                'member-of', 'sighting-of'
+            )
 
         expected_response = {}
         expected_response.update(EXPECTED_PAYLOAD_REQUEST_TIMOUT)
