@@ -1,11 +1,11 @@
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 from functools import partial
 from datetime import datetime, timedelta
 from uuid import uuid4
 from base64 import b64encode
 from urllib.parse import quote
 
-from flask import Blueprint, current_app
+from flask import Blueprint, current_app, g
 import requests
 
 from api.schemas import ObservableSchema
@@ -15,7 +15,7 @@ from api.errors import (
 )
 
 from api.utils import (
-    get_jwt, jsonify_data, get_json
+    get_jwt, jsonify_data, get_json, jsonify_result
 )
 
 
@@ -38,18 +38,19 @@ def group_observables(relay_input):
 
         # Discard any unsupported type.
         if type in current_app.config['PULSEDIVE_OBSERVABLE_TYPES']:
-            observables[value].add(type)
-
-    observables = {
-        value: sorted(types)
-        for value, types in observables.items()
-    }
+            observables[value] = type
 
     return observables
 
 
-def get_pulsedive_output(observables, links=False):
-    output = []
+def sort_entities(list_):
+    return list_.sort(
+        key=lambda x: x['stamp_linked'], reverse=True
+    )
+
+
+def get_pulsedive_output(observable, links=False):
+    output = {}
     key = get_jwt().get('key')
 
     header = {
@@ -57,36 +58,28 @@ def get_pulsedive_output(observables, links=False):
                        '<tr-integrations-support@cisco.com>'),
     }
 
-    for observable in observables:
-        url = current_app.config["API_URL"]
-        params = {
-            'indicator': observable,
-            'key': key
-                  }
-        if links:
-            params['get'] = 'links'
+    url = current_app.config["API_URL"]
+    params = {
+        'indicator': observable,
+        'key': key
+    }
+    if links:
+        params['get'] = 'links'
 
-        response = requests.get(url, headers=header, params=params)
+    response = requests.get(url, headers=header, params=params)
 
-        error = response.json().get('error')
-        if error in ("Indicator not found.",
-                     "Invalid request or data not found."):
-            continue
+    error = response.json().get('error')
 
-        if error:
-            raise UnexpectedPulsediveError(error)
-        elif not response.ok:
-            raise StandardHttpError(response)
-        payload = response.json()
-        if payload.get('threats'):
-            payload['threats'].sort(
-                key=lambda x: x['stamp_linked'], reverse=True
-            )
-        if payload.get('feeds'):
-            payload['feeds'].sort(
-                key=lambda x: x['stamp_linked'], reverse=True
-            )
-        output.append(payload)
+    if error not in (*current_app.config['NOT_CRITICAL_ERRORS'], None):
+        raise UnexpectedPulsediveError(error)
+    elif not response.ok:
+        raise StandardHttpError(response)
+    payload = response.json()
+    if payload.get('threats'):
+        sort_entities(payload['threats'])
+    if payload.get('feeds'):
+        sort_entities(payload['feeds'])
+    output.update(payload)
 
     return output
 
@@ -257,11 +250,14 @@ def extract_indicators(output, unique_ids):
 
 
 def get_relationship(source_ref, target_ref, relationship_type):
-    return {
-            'source_ref': source_ref,
-            'target_ref': target_ref,
-            'relationship_type': relationship_type,
-            }
+    Relationship = namedtuple(
+        'Relationship', ['source_ref', 'target_ref', 'relationship_type']
+    )
+    return Relationship(
+            source_ref=source_ref,
+            target_ref=target_ref,
+            relationship_type=relationship_type
+    )
 
 
 def is_relevant(time):
@@ -271,12 +267,12 @@ def is_relevant(time):
 
 
 def get_related_entities(observable):
-    output = get_pulsedive_output([observable['value']], links=True)
+    output = get_pulsedive_output(observable['value'], links=True)
     relations = []
     if not output:
         return relations
 
-    entities = output[0].get('Active DNS')
+    entities = output.get('Active DNS')
     if entities:
         if isinstance(entities, str):
             entities = [entities]
@@ -347,7 +343,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                 return docs
 
             ind_id = unique_indicator_ids['riskfactors'][riskfactor['rfid']]
-            sightings_relationship.append(
+            sightings_relationship.add(
                 get_relationship(generated_id, ind_id, 'sighting-of')
             )
 
@@ -379,7 +375,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                 return docs
 
             ind_id = unique_indicator_ids['threats'][threat['tid']]
-            sightings_relationship.append(
+            sightings_relationship.add(
                 get_relationship(generated_id, ind_id, 'sighting-of')
             )
 
@@ -410,7 +406,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                 return docs
 
             ind_id = unique_indicator_ids['feeds'][feed['fid']]
-            sightings_relationship.append(
+            sightings_relationship.add(
                 get_relationship(generated_id, ind_id, 'member-of')
             )
 
@@ -448,7 +444,9 @@ def extract_relationship(sightings_relationship):
     for relation in sightings_relationship:
         doc = {
             'id': f'transient:{uuid4()}',
-            **relation,
+            'source_ref': relation.source_ref,
+            'target_ref': relation.target_ref,
+            'relationship_type': relation.relationship_type,
             **current_app.config['CTIM_RELATIONSHIP_DEFAULTS'],
         }
         docs.append(doc)
@@ -475,67 +473,54 @@ def observe_observables():
     if not observables:
         return jsonify_data({})
 
-    pulsedive_outputs = get_pulsedive_output(observables)
-
-    verdicts = []
-    judgements = []
-    indicators = []
-    sightings = []
+    g.verdicts = []
+    g.judgements = []
+    g.indicators = []
+    g.sightings = []
 
     unique_indicator_ids = {'riskfactors': {}, 'threats': {}, 'feeds': {}}
-    sightings_relationship = []
-    for output in pulsedive_outputs:
-        verdicts.append(extract_verdict(output))
-        judgements.append(extract_judgement(output))
-        indicators += extract_indicators(output, unique_indicator_ids)
-        sightings += extract_sightings(output,
-                                       unique_indicator_ids,
-                                       sightings_relationship
-                                       )
-    relationships = extract_relationship(sightings_relationship)
+    sightings_relationship = set()
+    for value in observables.keys():
+        output = get_pulsedive_output(value)
+        if not output.get('error'):
+            g.verdicts.append(extract_verdict(output))
+            g.judgements.append(extract_judgement(output))
+            g.indicators += extract_indicators(output, unique_indicator_ids)
+            g.sightings += extract_sightings(output,
+                                             unique_indicator_ids,
+                                             sightings_relationship
+                                             )
+            g.relationships = extract_relationship(sightings_relationship)
 
-    relay_output = {}
-
-    if judgements:
-        relay_output['judgements'] = format_docs(judgements)
-    if verdicts:
-        relay_output['verdicts'] = format_docs(verdicts)
-    if indicators:
-        relay_output['indicators'] = format_docs(indicators)
-    if sightings:
-        relay_output['sightings'] = format_docs(sightings)
-    if relationships:
-        relay_output['relationships'] = format_docs(relationships)
-
-    return jsonify_data(relay_output)
+    return jsonify_result()
 
 
-def get_browse_pivot(observables):
-    pulsedive_outputs = get_pulsedive_output(observables)
+def get_browse_pivot(observable):
+    output = get_pulsedive_output(observable)
     pivots = []
-    for output in pulsedive_outputs:
-        url = current_app.config['UI_URL'].format(
-            query=f"indicator/?iid={output['iid']}")
-        value = output['indicator']
-        type = output['type']
-        pivots.append(
-            {'id': f'ref-pulsedive-detail'
-                   f'-{type}-{quote(value, safe="")}',
-             'title':
-                 (
-                  'Browse '
-                  f'{current_app.config["PULSEDIVE_OBSERVABLE_TYPES"][type]}'
-                 ),
-             'description':
-                 (
-                  'Browse this '
-                  f'{current_app.config["PULSEDIVE_OBSERVABLE_TYPES"][type]}'
-                  ' on Pulsedive'
-                 ),
-             'url': url,
-             'categories': ['Browse', 'Pulsedive'],
-             }
-        )
+
+    url = current_app.config['UI_URL'].format(
+        query=f"indicator/?iid={output['iid']}")
+    value = output['indicator']
+    type = output['type']
+    pivots.append(
+        {'id': f'ref-pulsedive-detail'
+               f'-{type}-{quote(value, safe="")}',
+         'title':
+             (
+                 'Browse '
+                 f'{current_app.config["PULSEDIVE_OBSERVABLE_TYPES"][type]}'
+             ),
+         'description':
+             (
+                 'Browse this '
+                 f'{current_app.config["PULSEDIVE_OBSERVABLE_TYPES"][type]}'
+                 ' on Pulsedive'
+             ),
+         'url': url,
+         'categories': ['Browse', 'Pulsedive'],
+         }
+    )
     return pivots
 
 
@@ -577,9 +562,8 @@ def refer_observables():
 
     relay_output = []
 
-    for value, types in observables.items():
-        for type in types:
-            relay_output.append(get_search_pivots(value, type))
+    for value, type in observables.items():
+        relay_output.append(get_search_pivots(value, type))
     relay_output += get_browse_pivot(observables)
 
     return jsonify_data(relay_output)

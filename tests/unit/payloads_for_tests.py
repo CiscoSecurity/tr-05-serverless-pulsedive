@@ -1,21 +1,23 @@
 EXPECTED_PAYLOAD_FORBIDDEN = {
-    "errors": [
-        {
-            "code": "permission denied",
-            "message": "Invalid Authorization Bearer JWT.",
-            "type": "fatal",
-        }
-    ]
+  "errors": [
+    {
+      "code": "permission denied",
+      "message": "Invalid Authorization Bearer JWT.",
+      "type": "fatal",
+    }
+  ],
+  "data": {}
 }
 
 EXPECTED_PAYLOAD_REQUEST_TIMOUT = {
-    "errors": [
-        {
-            "code": "request timeout",
-            "message": "Request(s) still processing.",
-            "type": "fatal",
-        }
-    ]
+  "errors": [
+    {
+      "code": "request timeout",
+      "message": "Request(s) still processing.",
+      "type": "fatal",
+    }
+  ],
+  "data": {}
 }
 
 EXPECTED_PAYLOAD_INVALID_INPUT = {
@@ -35,7 +37,8 @@ EXPECTED_PAYLOAD_INVALID_INPUT = {
                         "'sha1', 'sha256', 'url', 'user', "
                         '\'user_agent\'."]}}',
              'type': 'fatal'}
-  ]
+  ],
+  'data': {}
 }
 
 
@@ -146,31 +149,26 @@ EXPECTED_PAYLOAD_OBSERVE = {
       "count": 5,
       "docs": [
         {
-          "relationship_type": "sighting-of",
           "schema_version": "1.0.16",
           "tlp": "white",
           "type": "relationship"
         },
         {
-          "relationship_type": "sighting-of",
           "schema_version": "1.0.16",
           "tlp": "white",
           "type": "relationship"
         },
         {
-          "relationship_type": "sighting-of",
           "schema_version": "1.0.16",
           "tlp": "white",
           "type": "relationship"
         },
         {
-          "relationship_type": "sighting-of",
           "schema_version": "1.0.16",
           "tlp": "white",
           "type": "relationship"
         },
         {
-          "relationship_type": "member-of",
           "schema_version": "1.0.16",
           "tlp": "white",
           "type": "relationship"
