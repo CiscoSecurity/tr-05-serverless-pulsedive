@@ -21,12 +21,16 @@ def test_positive_indicator_details(module_headers):
     """
     observables = [{'type': 'ip', 'value': '2.2.2.2'}]
 
-    response = enrich_observe_observables(
+    response_from_all_modules = enrich_observe_observables(
         payload=observables,
         **{'headers': module_headers}
     )['data']
-    indicators = get_observables(
-        response, 'Pulsedive')['data']['indicators']
+    response_from_pulsedive_module = get_observables(
+        response_from_all_modules, 'Pulsedive')
+    assert response_from_pulsedive_module['module'] == 'Pulsedive'
+    assert response_from_pulsedive_module['module_instance_id']
+    assert response_from_pulsedive_module['module_type_id']
+    indicators = response_from_pulsedive_module['data']['indicators']
     assert len(indicators['docs']) > 0
 
     for indicator in indicators['docs']:
