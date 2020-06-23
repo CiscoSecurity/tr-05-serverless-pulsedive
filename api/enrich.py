@@ -508,16 +508,14 @@ def get_browse_pivot(observable):
             {'id': f'ref-pulsedive-detail'
                    f'-{type}-{quote(value, safe="")}',
              'title':
-                 (
-                     'Browse '
-                     f'{current_app.config["PULSEDIVE_OBSERVABLE_TYPES"][type]}'
-                 ),
+                 ('Browse '
+                  f'{current_app.config["PULSEDIVE_OBSERVABLE_TYPES"][type]}'
+                  ),
              'description':
-                 (
-                     'Browse this '
-                     f'{current_app.config["PULSEDIVE_OBSERVABLE_TYPES"][type]}'
-                     ' on Pulsedive'
-                 ),
+                 ('Browse this '
+                  f'{current_app.config["PULSEDIVE_OBSERVABLE_TYPES"][type]}'
+                  ' on Pulsedive'
+                  ),
              'url': url,
              'categories': ['Browse', 'Pulsedive'],
              }
