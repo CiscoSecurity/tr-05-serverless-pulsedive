@@ -499,28 +499,27 @@ def get_browse_pivot(observable):
     output = get_pulsedive_output(observable)
     pivots = []
 
-    url = current_app.config['UI_URL'].format(
-        query=f"indicator/?iid={output['iid']}")
-    value = output['indicator']
-    type = output['type']
-    pivots.append(
-        {'id': f'ref-pulsedive-detail'
-               f'-{type}-{quote(value, safe="")}',
-         'title':
-             (
-                 'Browse '
-                 f'{current_app.config["PULSEDIVE_OBSERVABLE_TYPES"][type]}'
-             ),
-         'description':
-             (
-                 'Browse this '
-                 f'{current_app.config["PULSEDIVE_OBSERVABLE_TYPES"][type]}'
-                 ' on Pulsedive'
-             ),
-         'url': url,
-         'categories': ['Browse', 'Pulsedive'],
-         }
-    )
+    if not output.get('error'):
+        url = current_app.config['UI_URL'].format(
+            query=f"indicator/?iid={output['iid']}")
+        value = output['indicator']
+        type = output['type']
+        pivots.append(
+            {'id': f'ref-pulsedive-detail'
+                   f'-{type}-{quote(value, safe="")}',
+             'title':
+                 ('Browse '
+                  f'{current_app.config["PULSEDIVE_OBSERVABLE_TYPES"][type]}'
+                  ),
+             'description':
+                 ('Browse this '
+                  f'{current_app.config["PULSEDIVE_OBSERVABLE_TYPES"][type]}'
+                  ' on Pulsedive'
+                  ),
+             'url': url,
+             'categories': ['Browse', 'Pulsedive'],
+             }
+        )
     return pivots
 
 
