@@ -222,8 +222,8 @@ If you want to test the live Lambda you may use any HTTP client (e.g. Postman),
 just make sure to send requests to your Lambda's `URL` with the `Authorization`
 header set to `Bearer <JWT>`.
 
-Feel free to take a look at the [observables.json](observables.json) file
-whenever you need some input data for testing purposes.
+**NOTE**. If you need input data for testing purposes you can use data from the
+observables.json file.
 
 ## Implementation Details
 
@@ -265,17 +265,18 @@ whenever you need some input data for testing purposes.
 - `url`
 
 ### JWT Payload Structure
-You don't technically need an API key to access the Pulsedive API, but it helps them keep
-track of how many requests are being used. If the API key is not used with API
-requests, they may use other methods of tracking requests. But, this could be inaccurate 
-and the rate limit is set for free users to 30 requests per minute.
-They offer additional [pricing plans](https://pulsedive.com/about/?q=api) for increased rate limits. 
-
 ```json
 {
   "key": "<PULSEDIVE_API_KEY>"
 }
 ```
+
+**NOTE**. You don't technically need an API key to access the Pulsedive API, but it helps them keep
+track of how many requests are being used. If the API key is not used with API
+requests, they may use other methods of tracking requests. But, this could be inaccurate 
+and the rate limit is set for free users to 30 requests per minute.
+They offer additional [pricing plans](https://pulsedive.com/about/?q=api) for increased rate limits. 
+
 
 ### Supported Environment Variables
 
