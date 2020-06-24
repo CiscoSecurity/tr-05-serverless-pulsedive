@@ -290,12 +290,10 @@ They offer additional [pricing plans](https://pulsedive.com/about/?q=api) for in
 
 ### CTIM Mapping Specifics
 
-Each response of Pulsedive API for some supported observable generates following CTIM entities:
+Each response of Pulsedive API for the supported observables generates the following CTIM entities:
 
-- `Judgement` and `Verdict` based on `.risk`.
-- `Indicator`, `Sighting` from `.riskfactors[]`.
-- `Indicator`, `Sighting` from `.threats[]`.
-- `Indicator`, `Sighting` from `.feeds[]`.
+- `Judgement` and `Verdict` are based on `.risk`.
+- `Indicator`, `Sighting` are taken from `.riskfactors[]`, `.threats[]`, `.feeds[]`.
 - The `Sighting` to `Indicator` from `.riskfactors[]` relation is `sighting-of`.
 - The `Sighting` to `Indicator` from `.threads[]` relation is `sighting-of`.
 - The `Sighting` to `Indicator` from `.feeds[]` relation is `member-of`.
