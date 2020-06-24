@@ -128,14 +128,7 @@ old `URL` forever.
 
 ### JWT
 
-You don't technically need an API key to access the Pulsedive API, but it helps them keep
-track of how many requests are being used. If the API key is not used with API
-requests, they may use other methods of tracking requests. But, this could be inaccurate 
-and the rate limit is set for free users to 30 requests per minute.
-They offer additional [pricing plans](https://pulsedive.com/about/?q=api) for increased rate limits. 
-
-If you decided not to use the API key, please skip all the steps associated with JWT.
-But otherwise, before you can start using the live Lambda, you have to encode your third-party
+Before you can start using the live Lambda, you have to encode your third-party
 credentials into a JWT using a generated secret key.
 
 In brief, [JSON Web Token (JWT)](https://en.wikipedia.org/wiki/JSON_Web_Token)
@@ -270,6 +263,11 @@ whenever you need some input data for testing purposes.
 - `url`
 
 ### JWT Payload Structure
+You don't technically need an API key to access the Pulsedive API, but it helps them keep
+track of how many requests are being used. If the API key is not used with API
+requests, they may use other methods of tracking requests. But, this could be inaccurate 
+and the rate limit is set for free users to 30 requests per minute.
+They offer additional [pricing plans](https://pulsedive.com/about/?q=api) for increased rate limits. 
 
 ```json
 {
