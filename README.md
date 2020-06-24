@@ -264,7 +264,7 @@ header set to `Bearer <JWT>`.
 - `domain`
 - `url`
 
-### JWT Payload Structure
+### JWT Payload Structure  
 
 ```json
 {
