@@ -1,18 +1,18 @@
 [
   {
     "type": "domain",
-    "value": "garmio.sk"
+    "value": "cisco.com"
   },
   {
     "type": "ip",
-    "value": "5.135.152.66"
+    "value": "1.1.1.1"
   },
   {
     "type": "url",
-    "value": "http://185.172.110.206/vSparkzyy.sparc"
+    "value": "https://www.cisco.com"
   },
   {
     "type": "ipv6",
-    "value": "2605:5580:3777:1357::10:254"
+    "value": "2001:420:1101:1::185"
   }
 ]
