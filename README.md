@@ -253,6 +253,8 @@ whenever you need some input data for testing purposes.
   - Accepts a list of observables and filters out unsupported ones.
   - Builds a search link per each supported observable to pivot back to the
   underlying external service and look up the observable there.
+  - Builds a browse link per each supported observable to pivot back
+   directly to the observable page if there is one.
   - Returns a list of those links.
 
 ### Supported Types of Observables
@@ -285,3 +287,14 @@ They offer additional [pricing plans](https://pulsedive.com/about/?q=api) for in
     - `Sighting`.
   - Must be a positive integer. Defaults to `100` (if unset or incorrect).
 
+### CTIM Mapping Specifics
+
+Each response of Pulsedive API for some supported observable generates following CTIM entities:
+
+- `Judgement` and `Verdict` based on `.risk`.
+- `Indicator` from `.riskfactors[]`.
+- `Indicator` from `.threats[]`.
+- `Indicator` from `.feeds[]`.
+- The `Sighting` to `Indicator` from `.riskfactors[]` relation is `sighting-of`.
+- The `Sighting` to `Indicator` from `.threads[]` relation is `sighting-of`.
+- The `Sighting` to `Indicator` from `.feeds[]` relation is `member-of`.
