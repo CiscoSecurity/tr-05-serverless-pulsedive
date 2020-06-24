@@ -1,0 +1,18 @@
+[
+  {
+    "type": "domain",
+    "value": "cisco.com"
+  },
+  {
+    "type": "ip",
+    "value": "1.1.1.1"
+  },
+  {
+    "type": "url",
+    "value": "https://www.cisco.com"
+  },
+  {
+    "type": "ipv6",
+    "value": "2001:420:1101:1::185"
+  }
+]

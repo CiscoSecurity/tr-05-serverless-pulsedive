@@ -49,7 +49,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
       "docs": [
         {
           "producer": "Pulsedive",
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "short_description": "found in threat feeds",
           "tlp": "white",
           "source": "Pulsedive",
@@ -61,7 +61,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
         },
         {
           "producer": "Pulsedive",
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "short_description": "registration recently updated",
           "tlp": "white",
           "source": "Pulsedive",
@@ -73,7 +73,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
         },
         {
           "producer": "Pulsedive",
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "severity": "Medium",
           "short_description": "Threat: Kraken Botnet",
           "source_uri": "https://pulsedive.com/threat/?tid=9",
@@ -90,7 +90,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
         {
           "producer": "Pulsedive",
           "source": "Pulsedive",
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "severity": "Medium",
           "short_description": "Threat: JS Crypto Miner",
           "source_uri": "https://pulsedive.com/threat/?tid=108",
@@ -106,7 +106,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
         {
           "producer": "BBcan177",
           "source": "Pulsedive",
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "short_description": "Feed: BBcan177 DNSBL",
           "source_uri": "https://pulsedive.com/feed/?fid=13",
           "tags": [
@@ -132,7 +132,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
             "value": "parkingcrew.net"
           },
           "priority": 85,
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "severity": "Medium",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/indicator/?iid=118",
@@ -149,27 +149,27 @@ EXPECTED_PAYLOAD_OBSERVE = {
       "count": 5,
       "docs": [
         {
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "tlp": "white",
           "type": "relationship"
         },
         {
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "tlp": "white",
           "type": "relationship"
         },
         {
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "tlp": "white",
           "type": "relationship"
         },
         {
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "tlp": "white",
           "type": "relationship"
         },
         {
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "tlp": "white",
           "type": "relationship"
         }
@@ -191,7 +191,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "observed_time": {
             "start_time": "2020-03-31T14:47:36Z"
           },
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "severity": "Medium",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/indicator/?iid=118",
@@ -210,7 +210,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "observed_time": {
             "start_time": "2020-03-31T14:47:36Z"
           },
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "severity": "Medium",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/indicator/?iid=118",
@@ -229,7 +229,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "observed_time": {
             "start_time": "2019-01-01T04:01:30Z"
           },
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "severity": "Medium",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/threat/?tid=9",
@@ -248,7 +248,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "observed_time": {
             "start_time": "2018-08-06T03:44:07Z"
           },
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "severity": "Medium",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/threat/?tid=108",
@@ -267,7 +267,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "observed_time": {
             "start_time": "2020-02-10T07:41:05Z"
           },
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/feed/?fid=13",
           "type": "sighting"
@@ -305,7 +305,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
               }
             ]
           },
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/indicator/?iid=118",
           "type": "sighting"
@@ -473,7 +473,7 @@ EXPECTED_PAYLOAD_OBSERVE_WITH_LIMIT = {
       "docs": [
         {
           "producer": "Pulsedive",
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "short_description": "found in threat feeds",
           "tlp": "white",
           "source": "Pulsedive",
@@ -497,7 +497,7 @@ EXPECTED_PAYLOAD_OBSERVE_WITH_LIMIT = {
             "value": "parkingcrew.net"
           },
           "priority": 85,
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "severity": "Medium",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/indicator/?iid=118",
@@ -515,7 +515,7 @@ EXPECTED_PAYLOAD_OBSERVE_WITH_LIMIT = {
       "docs": [
         {
           "relationship_type": "sighting-of",
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "tlp": "white",
           "type": "relationship"
         }
@@ -537,7 +537,7 @@ EXPECTED_PAYLOAD_OBSERVE_WITH_LIMIT = {
           "observed_time": {
             "start_time": "2020-03-31T14:47:36Z"
           },
-          "schema_version": "1.0.16",
+          "schema_version": "1.0.17",
           "severity": "Medium",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/indicator/?iid=118",

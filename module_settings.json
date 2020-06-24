@@ -1,0 +1,11 @@
+{
+  "name": "Pulsedive",
+  "jwt": {
+    "key": "Pulsedive API Key"
+  },
+  "region": {
+    "us": "44606d8d-fc66-4ac7-815b-4448e096180f",
+    "eu": "33b8dd88-d126-49f8-afca-3a43dee7896d",
+    "apjc": "213bd6b5-fd73-44db-9157-3b5156b01530"
+  }
+}
