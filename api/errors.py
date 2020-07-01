@@ -43,7 +43,7 @@ class StandardHttpError(TRFormattedError):
 class InvalidInputError(TRFormattedError):
     def __init__(self, message):
         super().__init__(
-            "invalid argument",
+            'invalid argument',
             f'Invalid JSON payload received. {message}'
         )
 
