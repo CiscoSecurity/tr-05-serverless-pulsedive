@@ -2,7 +2,7 @@ from authlib.jose import jwt
 from authlib.jose.errors import JoseError
 from flask import request, current_app, jsonify, g
 
-from api.errors import JwtError, InvalidInputError
+from api.errors import JwtError, InvalidInputError, PulsediveKeyError
 
 
 def get_jwt():
@@ -61,7 +61,20 @@ def jsonify_result():
     if g.get('relationships'):
         result['data']['relationships'] = format_docs(g.relationships)
 
+    if not result['data']:
+        del result['data']
+
     if g.get('errors'):
         result['errors'] = g.errors
 
     return jsonify(result)
+
+
+def key_error_handler(func):
+    def wrapper(*args, **kwargs):
+        try:
+            result = func(*args, **kwargs)
+        except KeyError:
+            raise PulsediveKeyError
+        return result
+    return wrapper

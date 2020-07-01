@@ -5,8 +5,7 @@ EXPECTED_PAYLOAD_FORBIDDEN = {
       "message": "Invalid Authorization Bearer JWT.",
       "type": "fatal",
     }
-  ],
-  "data": {}
+  ]
 }
 
 EXPECTED_PAYLOAD_REQUEST_TIMOUT = {
@@ -16,8 +15,7 @@ EXPECTED_PAYLOAD_REQUEST_TIMOUT = {
       "message": "Request(s) still processing.",
       "type": "fatal",
     }
-  ],
-  "data": {}
+  ]
 }
 
 EXPECTED_PAYLOAD_INVALID_INPUT = {
@@ -38,7 +36,6 @@ EXPECTED_PAYLOAD_INVALID_INPUT = {
                         '\'user_agent\'."]}}',
              'type': 'fatal'}
   ],
-  'data': {}
 }
 
 
@@ -623,4 +620,29 @@ PULSEDIVE_ACTIVE_DNS_RESPONCE = {
       }
     }
   ]
+}
+
+EXPECTED_RESPONSE_KEY_ERROR = {
+  "errors": [
+    {
+      "code": "key error",
+      "message": "The data structure of Pulsedive API "
+                 "has changed. The module is broken.",
+      "type": "fatal"
+    }
+  ]
+}
+
+INVALID_PULSEDIVE_RESPONSE = {
+  "iid": 3658835,
+  "type": "domain",
+  "indicator": "cisco.com",
+  "risk_recommended": "none",
+  "manualrisk": 0,
+  "retired": "No recent activity",
+  "stamp_added": "2018-12-01 16:33:36",
+  "stamp_updated": "2020-06-29 16:11:16",
+  "stamp_seen": "2019-11-13 03:36:17",
+  "stamp_probed": "2019-10-10 17:31:12",
+  "recent": 0
 }

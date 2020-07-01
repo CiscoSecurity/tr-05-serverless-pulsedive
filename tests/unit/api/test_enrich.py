@@ -14,6 +14,8 @@ from tests.unit.payloads_for_tests import (
     PULSEDIVE_RESPONSE_MOCK,
     PULSEDIVE_ACTIVE_DNS_RESPONCE,
     PULSEDIVE_REQUEST_TIMOUT,
+    EXPECTED_RESPONSE_KEY_ERROR,
+    INVALID_PULSEDIVE_RESPONSE
 )
 
 
@@ -38,16 +40,13 @@ def pd_api_request():
         yield mock_request
 
 
-def pd_api_response(*, ok):
+def pd_api_response(*, ok, payload=None):
     mock_response = mock.MagicMock()
 
     mock_response.ok = ok
 
-    if ok:
+    if ok and not payload:
         payload = PULSEDIVE_RESPONSE_MOCK
-
-    else:
-        payload = PULSEDIVE_REQUEST_TIMOUT
 
     mock_response.json = lambda: payload
 
@@ -247,7 +246,10 @@ def test_enrich_call_failure(route,
                              valid_jwt,
                              valid_json,
                              pd_api_request):
-    pd_api_request.return_value = pd_api_response(ok=False)
+    pd_api_request.return_value = pd_api_response(
+        ok=False,
+        payload=PULSEDIVE_REQUEST_TIMOUT
+    )
     response = client.post(route,
                            headers=headers(valid_jwt),
                            json=valid_json)
@@ -275,7 +277,10 @@ def test_enrich_error_with_data(mock_related_entities,
     if any_route.startswith('/observe'):
         mock_related_entities.return_value = PULSEDIVE_ACTIVE_DNS_RESPONCE
         pd_api_request.side_effect = (
-            pd_api_response(ok=True), pd_api_response(ok=False)
+            pd_api_response(ok=True), pd_api_response(
+                ok=False,
+                payload=PULSEDIVE_REQUEST_TIMOUT
+            )
         )
         response = client.post(any_route,
                                headers=headers(valid_jwt),
@@ -367,3 +372,17 @@ def test_enrich_call_success_limit_1(any_route,
         response = client.post(any_route)
 
         assert response.status_code == HTTPStatus.OK
+
+
+def test_enrich_call_with_key_error(any_route, client, valid_json,
+                                    pd_api_request):
+    if any_route.startswith('/observe'):
+        pd_api_request.return_value = pd_api_response(
+            ok=True,
+            payload=INVALID_PULSEDIVE_RESPONSE
+        )
+
+        response = client.post(any_route, json=valid_json)
+
+        assert response.status_code == HTTPStatus.OK
+        assert response.get_json() == EXPECTED_RESPONSE_KEY_ERROR

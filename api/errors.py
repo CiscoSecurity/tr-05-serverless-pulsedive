@@ -46,3 +46,13 @@ class InvalidInputError(TRFormattedError):
             "invalid argument",
             f'Invalid JSON payload received. {message}'
         )
+
+
+class PulsediveKeyError(TRFormattedError):
+    def __init__(self):
+
+        super().__init__(
+            code='key error',
+            message='The data structure of Pulsedive API has changed.'
+                    ' The module is broken.'
+        )
