@@ -15,7 +15,7 @@ from api.errors import (
 )
 
 from api.utils import (
-    get_jwt, jsonify_data, get_json, jsonify_result
+    get_jwt, jsonify_data, get_json, jsonify_result, key_error_handler
 )
 
 
@@ -106,6 +106,7 @@ def get_valid_time(output):
     return valid_time
 
 
+@key_error_handler
 def extract_verdict(output):
     score = output['risk']
 
@@ -130,6 +131,7 @@ def extract_verdict(output):
     return doc
 
 
+@key_error_handler
 def extract_judgement(output):
     score = output['risk']
 
@@ -164,6 +166,7 @@ def standardize_feed(name):
     return f'Feed: {name.replace("Feed", "")}'
 
 
+@key_error_handler
 def extract_indicators(output, unique_ids):
     docs = []
 
@@ -301,6 +304,7 @@ def get_related_entities(observable):
     return relations
 
 
+@key_error_handler
 def extract_sightings(output, unique_indicator_ids, sightings_relationship):
     docs = []
 
