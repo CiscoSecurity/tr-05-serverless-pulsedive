@@ -304,6 +304,15 @@ def get_related_entities(observable):
     return relations
 
 
+def get_observed_time(time):
+    start_time = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+    start_time = time_to_ctr_format(start_time)
+    return {
+        'start_time': start_time,
+        'end_time': start_time
+    }
+
+
 @key_error_handler
 def extract_sightings(output, unique_indicator_ids, sightings_relationship):
     docs = []
@@ -323,19 +332,13 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
 
     if output.get('riskfactors'):
         for riskfactor in output['riskfactors']:
-
-            start_time = datetime.strptime(output['stamp_seen'],
-                                           '%Y-%m-%d %H:%M:%S')
-
             generated_id = f'transient:sighting-{uuid4()}'
 
             doc = {
                 'id': generated_id,
                 'count': 1,
                 'observables': [observable],
-                'observed_time': {
-                    'start_time': time_to_ctr_format(start_time)
-                },
+                'observed_time': get_observed_time(output['stamp_seen']),
                 'description': riskfactor['description'],
                 'severity': type_mapping['severity'],
                 'source_uri': current_app.config['UI_URL'].format(
@@ -355,10 +358,6 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
 
     if output.get('threats'):
         for threat in output['threats']:
-
-            start_time = datetime.strptime(threat['stamp_linked'],
-                                           '%Y-%m-%d %H:%M:%S')
-
             generated_id = f'transient:sighting-{uuid4()}'
 
             doc = {
@@ -366,9 +365,7 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
                 'count': 1,
                 'observables': [observable],
                 'description': f"Threat: {threat['name']}",
-                'observed_time': {
-                    'start_time': time_to_ctr_format(start_time)
-                },
+                'observed_time': get_observed_time(threat['stamp_linked']),
                 'severity': type_mapping['severity'],
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"threat/?tid={threat['tid']}"),
@@ -387,19 +384,13 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
 
     if output.get('feeds'):
         for feed in output['feeds']:
-
-            start_time = datetime.strptime(feed['stamp_linked'],
-                                           '%Y-%m-%d %H:%M:%S')
-
             generated_id = f'transient:sighting-{uuid4()}'
 
             doc = {
                 'id': generated_id,
                 'count': 1,
                 'observables': [observable],
-                'observed_time': {
-                    'start_time': time_to_ctr_format(start_time)
-                },
+                'observed_time': get_observed_time(feed['stamp_linked']),
                 'description': standardize_feed(feed['name']),
                 'source_uri': current_app.config['UI_URL'].format(
                     query=f"feed/?fid={feed['fid']}"),
@@ -418,16 +409,11 @@ def extract_sightings(output, unique_indicator_ids, sightings_relationship):
 
     relations = get_related_entities(observable)
     if relations:
-        start_time = datetime.strptime(output['stamp_seen'],
-                                       '%Y-%m-%d %H:%M:%S')
-
         doc = {
             'id': f'transient:sighting-{uuid4()}',
             'count': 1,
             'observables': [observable],
-            'observed_time': {
-                'start_time': time_to_ctr_format(start_time)
-            },
+            'observed_time': get_observed_time(output['stamp_seen']),
             'description': 'Active DNS',
             'relations': relations,
             **current_app.config['CTIM_SIGHTING_DEFAULTS'],
