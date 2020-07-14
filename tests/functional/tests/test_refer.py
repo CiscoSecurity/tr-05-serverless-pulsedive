@@ -59,7 +59,7 @@ def test_positive_refer_observable(module_headers, observable,
                 f'Lookup this '
                 f'{OBSERVABLE_HUMAN_READABLE_NAME[observable_type]} '
                 f'on {MODULE_NAME}')
-            assert refer['categories'] == [f'{MODULE_NAME}', 'Search']
+            assert refer['categories'] == [MODULE_NAME, 'Search']
             assert refer['url'].startswith(f'{PULSEDIVE_URL}/browse/')
         else:
             assert refer['title'] == (
@@ -68,5 +68,5 @@ def test_positive_refer_observable(module_headers, observable,
                 f'Browse this '
                 f'{OBSERVABLE_HUMAN_READABLE_NAME[observable_type]}'
                 f' on {MODULE_NAME}')
-            assert refer['categories'] == [f'{MODULE_NAME}', 'Browse']
+            assert refer['categories'] == [MODULE_NAME, 'Browse']
             assert refer['url'].startswith(f'{PULSEDIVE_URL}/indicator/')
