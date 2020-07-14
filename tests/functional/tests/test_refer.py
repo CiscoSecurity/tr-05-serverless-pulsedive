@@ -53,10 +53,10 @@ def test_positive_refer_observable(module_headers, observable,
 
         if 'Search' in refer['title']:
             assert refer['title'] == (
-                f'Search for this '
+                'Search for this '
                 f'{OBSERVABLE_HUMAN_READABLE_NAME[observable_type]}')
             assert refer['description'] == (
-                f'Lookup this '
+                'Lookup this '
                 f'{OBSERVABLE_HUMAN_READABLE_NAME[observable_type]} '
                 f'on {MODULE_NAME}')
             assert refer['categories'] == [MODULE_NAME, 'Search']
@@ -65,7 +65,7 @@ def test_positive_refer_observable(module_headers, observable,
             assert refer['title'] == (
                 f'Browse {OBSERVABLE_HUMAN_READABLE_NAME[observable_type]}')
             assert refer['description'] == (
-                f'Browse this '
+                'Browse this '
                 f'{OBSERVABLE_HUMAN_READABLE_NAME[observable_type]}'
                 f' on {MODULE_NAME}')
             assert refer['categories'] == [MODULE_NAME, 'Browse']
