@@ -45,13 +45,12 @@ def test_positive_refer_observable(module_headers, observable,
     refers = get_observables(response, MODULE_NAME)
 
     for refer in refers:
+        assert refer['id'].startswith('ref-pulsedive')
         if observable_type == 'ip' or observable_type == 'domain':
-            assert refer['id'].startswith('ref-pulsedive') and (
-                refer['id'].endswith(f'{observable_type}-{observable}'))
+            assert refer['id'].endswith(f'{observable_type}-{observable}')
         else:
-            assert refer['id'].startswith('ref-pulsedive') and (
-                refer['id'].endswith(
-                    f'{observable_type}-{quote(observable, safe="")}'))
+            assert refer['id'].endswith(
+                f'{observable_type}-{quote(observable, safe="")}')
         assert refer['module'] == MODULE_NAME
         assert refer['module_instance_id']
         assert refer['module_type_id']
