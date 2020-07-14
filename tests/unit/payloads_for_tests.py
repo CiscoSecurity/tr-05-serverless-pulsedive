@@ -186,6 +186,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
             }
           ],
           "observed_time": {
+            "end_time": "2020-03-31T14:47:36Z",
             "start_time": "2020-03-31T14:47:36Z"
           },
           "schema_version": "1.0.17",
@@ -205,6 +206,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
             }
           ],
           "observed_time": {
+            "end_time": "2020-03-31T14:47:36Z",
             "start_time": "2020-03-31T14:47:36Z"
           },
           "schema_version": "1.0.17",
@@ -224,6 +226,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
             }
           ],
           "observed_time": {
+            "end_time": "2019-01-01T04:01:30Z",
             "start_time": "2019-01-01T04:01:30Z"
           },
           "schema_version": "1.0.17",
@@ -243,6 +246,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
             }
           ],
           "observed_time": {
+            "end_time": "2018-08-06T03:44:07Z",
             "start_time": "2018-08-06T03:44:07Z"
           },
           "schema_version": "1.0.17",
@@ -262,6 +266,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
             }
           ],
           "observed_time": {
+            "end_time": "2020-02-10T07:41:05Z",
             "start_time": "2020-02-10T07:41:05Z"
           },
           "schema_version": "1.0.17",
@@ -280,6 +285,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
             }
           ],
           "observed_time": {
+            "end_time": "2020-03-31T14:47:36Z",
             "start_time": "2020-03-31T14:47:36Z"
           },
           "relations": {
@@ -532,7 +538,8 @@ EXPECTED_PAYLOAD_OBSERVE_WITH_LIMIT = {
             }
           ],
           "observed_time": {
-            "start_time": "2020-03-31T14:47:36Z"
+            "start_time": "2020-03-31T14:47:36Z",
+            "end_time": "2020-03-31T14:47:36Z"
           },
           "schema_version": "1.0.17",
           "severity": "Medium",
