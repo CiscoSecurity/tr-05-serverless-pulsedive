@@ -41,32 +41,34 @@ def test_positive_refer_observable(module_headers, observable,
         **{'headers': module_headers}
     )['data']
 
-    refers = get_observables(response, MODULE_NAME)
+    references = get_observables(response, MODULE_NAME)
 
-    for refer in refers:
-        assert refer['id'].startswith('ref-pulsedive') and (
-            refer['id'].endswith(
+    for reference in references:
+        assert reference['id'].startswith('ref-pulsedive') and (
+            reference['id'].endswith(
                 f'{observable_type}-{quote(observable, safe="")}'))
-        assert refer['module'] == MODULE_NAME
-        assert refer['module_instance_id']
-        assert refer['module_type_id']
+        assert reference['module'] == MODULE_NAME
+        assert reference['module_instance_id']
+        assert reference['module_type_id']
 
-        if 'Search' in refer['title']:
-            assert refer['title'] == (
+        if reference['title'].startswith('Search'):
+            assert reference['title'] == (
                 'Search for this '
                 f'{OBSERVABLE_HUMAN_READABLE_NAME[observable_type]}')
-            assert refer['description'] == (
+            assert reference['description'] == (
                 'Lookup this '
                 f'{OBSERVABLE_HUMAN_READABLE_NAME[observable_type]} '
                 f'on {MODULE_NAME}')
-            assert refer['categories'] == [MODULE_NAME, 'Search']
-            assert refer['url'].startswith(f'{PULSEDIVE_URL}/browse/')
-        else:
-            assert refer['title'] == (
+            assert reference['categories'] == [MODULE_NAME, 'Search']
+            assert reference['url'].startswith(f'{PULSEDIVE_URL}/browse/')
+        elif reference['title'].startswith('Browse'):
+            assert reference['title'] == (
                 f'Browse {OBSERVABLE_HUMAN_READABLE_NAME[observable_type]}')
-            assert refer['description'] == (
+            assert reference['description'] == (
                 'Browse this '
                 f'{OBSERVABLE_HUMAN_READABLE_NAME[observable_type]}'
                 f' on {MODULE_NAME}')
-            assert refer['categories'] == [MODULE_NAME, 'Browse']
-            assert refer['url'].startswith(f'{PULSEDIVE_URL}/indicator/')
+            assert reference['categories'] == [MODULE_NAME, 'Browse']
+            assert reference['url'].startswith(f'{PULSEDIVE_URL}/indicator/')
+        else:
+            raise AssertionError(f'Unknown reference: {reference["title"]!r}.')
