@@ -36,12 +36,12 @@ def test_positive_refer_observable(module_headers, observable,
     """
     observables = [{'type': observable_type, 'value': observable}]
 
-    response = enrich_refer_observables(
+    response_from_all_modules = enrich_refer_observables(
         payload=observables,
         **{'headers': module_headers}
     )['data']
 
-    references = get_observables(response, MODULE_NAME)
+    references = get_observables(response_from_all_modules, MODULE_NAME)
 
     for reference in references:
         assert reference['id'].startswith('ref-pulsedive') and (
