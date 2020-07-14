@@ -16,7 +16,6 @@ from urllib.parse import quote
      ('brehmen.com', 'domain'),
      ('2a01:238:20a:202:1159::', 'ipv6'),
      ('http://juanthradio.com/Script/DOC/', 'url'),
-     ('2a01:238:20a:202:1159::', 'ipv6'),
      )
 )
 def test_positive_refer_observable(module_headers, observable,
