@@ -66,13 +66,13 @@ recommended AWS regions are:
 
 Finally, you have to specify which AWS profile to use for deploying your Zappa
 application by defining the `profile_name` setting in the
-[Zappa Settings](../../../Downloads/tr-05-serverless-have-i-been-pwned-CCTRI-1310/zappa_settings.json).
+[Zappa Settings](../zappa_settings.json).
 
-**NOTE.** In the [Zappa Settings](../../../Downloads/tr-05-serverless-have-i-been-pwned-CCTRI-1310/zappa_settings.json) the value of the
+**NOTE.** In the [Zappa Settings](../zappa_settings.json) the value of the
 `profile_name` setting must correspond to the profile name in the AWS
 `credentials` file. Compare: `"profile_name": "serverless"` vs `[serverless]`.
 
-**NOTE.** In the [Zappa Settings](../../../Downloads/tr-05-serverless-have-i-been-pwned-CCTRI-1310/zappa_settings.json) the value of the
+**NOTE.** In the [Zappa Settings](../zappa_settings.json) the value of the
 `aws_region` setting must correspond to the region name for the `serverless`
 profile in the AWS `config` file.
 
@@ -123,7 +123,7 @@ virtual environment into a Lambda-compatible archive, uploads the archive to S3
 and temporary stores it in an S3 bucket, keeps provisioning the other resources,
 and then deletes the archive from the S3 bucket. So that is why your user must
 have almost full access to S3 buckets starting with the `zappa-` prefix. Thus,
-make sure that in the [Zappa Settings](../../../Downloads/tr-05-serverless-have-i-been-pwned-CCTRI-1310/zappa_settings.json) the value of the
+make sure that in the [Zappa Settings](../zappa_settings.json) the value of the
 `s3_bucket` setting starts with the `zappa-` prefix. Also, make sure that the
 bucket name is globally unique (e.g. by adding some random suffix to the end)
 because the namespace of S3 is shared between all AWS accounts.
@@ -160,7 +160,7 @@ permissions for most continuous integration pipelines or production
 deployments. Instead, you will probably want to manually manage your IAM
 policies.
 
-That is why in the [Zappa Settings](../../../Downloads/tr-05-serverless-have-i-been-pwned-CCTRI-1310/zappa_settings.json) the `manage_roles`
+That is why in the [Zappa Settings](../zappa_settings.json) the `manage_roles`
 setting is set to `false`. Also, notice the `role_name` setting, it makes Zappa
 look for a custom IAM role named `tr-serverless-relay-ZappaLambdaExecutionRole`.
 The role will be automatically attached to your Lambda by Zappa. Moreover, once
@@ -251,7 +251,7 @@ simply left as-is.
 
 - `stage`. A logical group of settings representing a separate environment.
 This is not an actual setting. Instead, this is the way individual settings are
-grouped by different environments in the [Zappa Settings](../../../Downloads/tr-05-serverless-have-i-been-pwned-CCTRI-1310/zappa_settings.json).
+grouped by different environments in the [Zappa Settings](../zappa_settings.json).
 You may define as many stages as you like - we recommend having at least the
 `dev` stage (the default one).
 

@@ -1,7 +1,7 @@
 # AWS Common Errors
 
 **NOTE.** If you are reading this document then most probably you have missed
-some steps/notes from the [AWS HOWTO](HOWTO.md)/[README](../../../Downloads/tr-05-serverless-have-i-been-pwned-CCTRI-1310/README.md). So this
+some steps/notes from the [AWS HOWTO](HOWTO.md)/[README](../README.md). So this
 document itself just lists some most common types of errors and repeats the
 same instructions one more time.
 
@@ -59,7 +59,7 @@ the system. Please select a different name and try again.`
 
 Remember that S3 bucket names are globally unique even if they are physically
 located in different regions. To fix the problem, modify the value of the
-`s3_bucket` setting in the [Zappa Settings](../../../Downloads/tr-05-serverless-have-i-been-pwned-CCTRI-1310/zappa_settings.json) to be a
+`s3_bucket` setting in the [Zappa Settings](../zappa_settings.json) to be a
 globally unique bucket name (e.g. by adding some random suffix to the end).
 
 Example:
@@ -99,7 +99,7 @@ To fix the problem, follow the instructions from the
 [Custom AWS IAM Roles and Policies for Execution](HOWTO.md#custom-aws-iam-roles-and-policies-for-execution)
 section and create a role (based on the [Execution Policy](ZappaLambdaExecutionPolicy.json))
 with the name corresponding to the value of the `role_name` setting in the
-[Zappa Settings](../../../Downloads/tr-05-serverless-have-i-been-pwned-CCTRI-1310/zappa_settings.json).
+[Zappa Settings](../zappa_settings.json).
 
 ## Requirements Not Installed
 
