@@ -1,7 +1,11 @@
 import pytest
-
 from ctrlibrary.core.utils import get_observables
 from ctrlibrary.threatresponse.enrich import enrich_observe_observables
+from tests.functional.tests.constants import (
+    MODULE_NAME,
+    SOURCE,
+    CTR_ENTITIES_LIMIT, PULSEDIVE_URL
+)
 
 
 def test_positive_indicator_details(module_headers):
@@ -26,22 +30,23 @@ def test_positive_indicator_details(module_headers):
         **{'headers': module_headers}
     )['data']
     response_from_pulsedive_module = get_observables(
-        response_from_all_modules, 'Pulsedive')
-    assert response_from_pulsedive_module['module'] == 'Pulsedive'
+        response_from_all_modules, MODULE_NAME)
+
+    assert response_from_pulsedive_module['module'] == MODULE_NAME
     assert response_from_pulsedive_module['module_instance_id']
     assert response_from_pulsedive_module['module_type_id']
+
     indicators = response_from_pulsedive_module['data']['indicators']
     assert len(indicators['docs']) > 0
 
     for indicator in indicators['docs']:
         assert indicator['id'].startswith('transient:indicator-')
-        assert 'start_time' in indicator['valid_time']
+        assert indicator['valid_time']['start_time']
         assert indicator['type'] == 'indicator'
         assert indicator['schema_version']
-
         assert indicator['short_description']
         assert indicator['tlp'] == 'white'
-        assert indicator['source'] == 'Pulsedive'
+        assert indicator['source'] == SOURCE
 
     indicator = [i for i in indicators['docs'] if i.get('source_uri')
                  == 'https://pulsedive.com/feed/?fid=60'][0]
@@ -52,7 +57,8 @@ def test_positive_indicator_details(module_headers):
     assert indicator['producer'] == 'ZeroDot1'
     assert indicator['short_description'] == 'Feed: ZeroDot1\'s Bad IPs '
     assert indicator['tlp'] == 'white'
-    assert indicators['count'] == len(indicators['docs'])
+
+    assert indicators['count'] == len(indicators['docs']) <= CTR_ENTITIES_LIMIT
 
 
 @pytest.mark.parametrize(
@@ -79,20 +85,30 @@ def test_positive_indicators_by_type(
     """
     observables = [{'type': observable_type, 'value': observable}]
 
-    response = enrich_observe_observables(
+    response_from_all_modules = enrich_observe_observables(
         payload=observables,
         **{'headers': module_headers}
     )['data']
-    indicators = get_observables(
-        response, 'Pulsedive')['data']['indicators']
+    response_from_pulsedive_module = get_observables(
+        response_from_all_modules, MODULE_NAME)
+
+    assert response_from_pulsedive_module['module'] == MODULE_NAME
+    assert response_from_pulsedive_module['module_instance_id']
+    assert response_from_pulsedive_module['module_type_id']
+
+    indicators = response_from_pulsedive_module['data']['indicators']
     assert len(indicators['docs']) > 0
 
     for indicator in indicators['docs']:
         assert indicator['id'].startswith('transient:indicator-')
-        assert 'start_time' in indicator['valid_time']
+        assert indicator['valid_time']['start_time']
+        assert indicator['producer']
         assert indicator['type'] == 'indicator'
         assert indicator['schema_version']
         assert indicator['short_description']
         assert indicator['tlp'] == 'white'
-        assert indicator['source'] == 'Pulsedive'
-    assert indicators['count'] == len(indicators['docs'])
+        assert indicator['source'] == SOURCE
+        if 'source_uri' in indicator:
+            assert indicator['source_uri'].startswith(PULSEDIVE_URL)
+
+    assert indicators['count'] == len(indicators['docs']) <= CTR_ENTITIES_LIMIT

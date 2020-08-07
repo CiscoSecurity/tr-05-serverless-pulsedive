@@ -1,7 +1,11 @@
 import pytest
-
 from ctrlibrary.core.utils import get_observables
 from ctrlibrary.threatresponse.enrich import enrich_observe_observables
+from tests.functional.tests.constants import (
+    SOURCE,
+    PULSEDIVE_URL,
+    MODULE_NAME
+)
 
 
 @pytest.mark.parametrize(
@@ -29,27 +33,32 @@ def test_positive_judgement(module_headers, observable, observable_type,
     """
     observables = [{'type': observable_type, 'value': observable}]
 
-    response = enrich_observe_observables(
+    response_from_all_modules = enrich_observe_observables(
         payload=observables,
         **{'headers': module_headers}
     )['data']
-    judgements = get_observables(
-        response, 'Pulsedive')['data']['judgements']
+    response_from_pulsedive_module = get_observables(
+        response_from_all_modules, MODULE_NAME)
+
+    assert response_from_pulsedive_module['module'] == MODULE_NAME
+    assert response_from_pulsedive_module['module_instance_id']
+    assert response_from_pulsedive_module['module_type_id']
+
+    judgements = response_from_pulsedive_module['data']['judgements']
     assert judgements['count'] == 1
 
     judgement = judgements['docs'][0]
 
-    assert 'schema_version' in judgement
+    assert judgement['schema_version']
     assert judgement['type'] == 'judgement'
-    assert judgement['source'] == 'Pulsedive'
+    assert judgement['source'] == SOURCE
     assert judgement['disposition'] == disposition
     assert judgement['disposition_name'] == disposition_name
     assert judgement['observable'] == observables[0]
-    assert 'start_time' in judgement['valid_time']
+    assert judgement['valid_time']['start_time']
     assert 'end_time' in judgement['valid_time']
-    assert 'id' in judgement
-    assert judgement['source_uri'].startswith(
-        'https://pulsedive.com/indicator/?iid=')
+    assert judgement['id'].startswith('transient:judgement-')
+    assert judgement['source_uri'].startswith(PULSEDIVE_URL)
     assert judgement['tlp'] == 'white'
     assert judgement['priority'] == 85
     assert judgement['confidence'] == 'Medium'

@@ -1,4 +1,4 @@
-MODULE_NAME = 'Pulsedive'
+MODULE_NAME = SOURCE = 'Pulsedive'
 PULSEDIVE_URL = 'https://pulsedive.com'
 OBSERVABLE_HUMAN_READABLE_NAME = {
     'ip': 'IP',
@@ -6,3 +6,4 @@ OBSERVABLE_HUMAN_READABLE_NAME = {
     'url': 'URL',
     'domain': 'domain'
 }
+CTR_ENTITIES_LIMIT = 100

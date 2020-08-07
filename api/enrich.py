@@ -145,7 +145,7 @@ def extract_judgement(output):
         'type': output['type']
     }
 
-    judgement_id = f'transient:{uuid4()}'
+    judgement_id = f'transient:judgement-{uuid4()}'
 
     doc = {
         'id': judgement_id,
@@ -433,7 +433,7 @@ def extract_relationship(sightings_relationship):
     docs = []
     for relation in sightings_relationship:
         doc = {
-            'id': f'transient:{uuid4()}',
+            'id': f'transient:relationship-{uuid4()}',
             'source_ref': relation.source_ref,
             'target_ref': relation.target_ref,
             'relationship_type': relation.relationship_type,
