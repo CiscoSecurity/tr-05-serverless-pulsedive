@@ -1,4 +1,4 @@
-[![Travis CI Build Status](https://travis-ci.com/CiscoSecurity/tr-05-serverless-pulsedive.svg?branch=develop)](https://api.travis-ci.com/CiscoSecurity/tr-05-serverless-pulsedive)
+[![Travis CI Build Status](https://travis-ci.com/CiscoSecurity/tr-05-serverless-pulsedive.svg?branch=develop)](https://travis-ci.com/CiscoSecurity/tr-05-serverless-pulsedive)
 
 # Pulsedive Relay
 
