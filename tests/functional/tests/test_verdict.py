@@ -1,7 +1,7 @@
 import pytest
-
 from ctrlibrary.core.utils import get_observables
 from ctrlibrary.threatresponse.enrich import enrich_observe_observables
+from tests.functional.tests.constants import MODULE_NAME
 
 
 @pytest.mark.parametrize(
@@ -29,18 +29,24 @@ def test_positive_verdict(module_headers, observable, observable_type,
     """
     observables = [{'type': observable_type, 'value': observable}]
 
-    response = enrich_observe_observables(
+    response_from_all_modules = enrich_observe_observables(
         payload=observables,
         **{'headers': module_headers}
     )['data']
-    verdicts = get_observables(
-        response, 'Pulsedive')['data']['verdicts']
+
+    response_from_pulsedive = get_observables(response_from_all_modules,
+                                              MODULE_NAME)
+
+    assert response_from_pulsedive['module']
+    assert response_from_pulsedive['module_instance_id']
+    assert response_from_pulsedive['module_type_id']
+
+    verdicts = response_from_pulsedive['data']['verdicts']
     assert verdicts['count'] == 1
 
-    for verdict in verdicts['docs']:
-        assert verdict['type'] == 'verdict'
-        assert verdict['disposition'] == disposition
-        assert verdict['disposition_name'] == disposition_name
-        assert verdict['observable'] == observables[0]
-        assert 'start_time' in verdict['valid_time']
-        assert 'end_time' in verdict['valid_time']
+    assert verdicts['docs'][0]['type'] == 'verdict'
+    assert verdicts['docs'][0]['disposition'] == disposition
+    assert verdicts['docs'][0]['disposition_name'] == disposition_name
+    assert verdicts['docs'][0]['observable'] == observables[0]
+    assert verdicts['docs'][0]['valid_time']['start_time']
+    assert verdicts['docs'][0]['valid_time']['end_time']

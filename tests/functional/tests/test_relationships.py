@@ -1,5 +1,9 @@
 from ctrlibrary.core.utils import get_observables
 from ctrlibrary.threatresponse.enrich import enrich_observe_observables
+from tests.functional.tests.constants import (
+    MODULE_NAME,
+    CTR_ENTITIES_LIMIT
+)
 
 
 def test_positive_relationship_detail(module_headers):
@@ -18,17 +22,22 @@ def test_positive_relationship_detail(module_headers):
 
     Importance: Critical
     """
-    observable = {'type': 'ip', 'value': '1.1.1.1'}
-    response = enrich_observe_observables(
-        payload=[observable],
+    observable = [{'type': 'ip', 'value': '1.1.1.1'}]
+    response_from_all_modules = enrich_observe_observables(
+        payload=observable,
         **{'headers': module_headers}
     )
-    entities = get_observables(
-        response['data'], 'Pulsedive')['data']
+    response_from_pulsedive_module = get_observables(
+        response_from_all_modules['data'], MODULE_NAME)
 
-    relationships = entities['relationships']
-    sightings = entities['sightings']
-    indicators = entities['indicators']
+    assert response_from_pulsedive_module['module'] == MODULE_NAME
+    assert response_from_pulsedive_module['module_instance_id']
+    assert response_from_pulsedive_module['module_type_id']
+
+    relationships = response_from_pulsedive_module['data']['relationships']
+    sightings = response_from_pulsedive_module['data']['sightings']
+    indicators = response_from_pulsedive_module['data']['indicators']
+    assert len(relationships['docs']) > 0
 
     # sighting and indicator not less then relationships
     assert sightings['count'] and (
@@ -39,11 +48,16 @@ def test_positive_relationship_detail(module_headers):
 
     for relationship in relationships['docs']:
         assert relationship['schema_version']
+        assert relationship['tlp'] == 'white'
         assert relationship['type'] == 'relationship'
         assert relationship['relationship_type'] in (
             'sighting-of', 'member-of')
         assert relationship['target_ref'] in indicators_id
         assert relationship['source_ref'] in sightings_id
+        assert relationship['id'].startswith('transient:relationship-')
+
+        assert relationships['count'] == len(
+            relationships['docs']) <= CTR_ENTITIES_LIMIT
 
 
 def test_positive_relationship_several_observables(module_headers):
@@ -63,28 +77,35 @@ def test_positive_relationship_several_observables(module_headers):
     """
     observables = [{'type': 'ip', 'value': '1.1.1.1'},
                    {'type': 'ip', 'value': '2.2.2.2'}]
-    response = enrich_observe_observables(
+    response_from_all_modules = enrich_observe_observables(
         payload=observables,
         **{'headers': module_headers}
     )
-    entities = get_observables(
-        response['data'], 'Pulsedive')['data']
+    response_from_pulsedive_module = get_observables(
+        response_from_all_modules['data'], MODULE_NAME)
 
-    relationships = entities['relationships']
-    sightings = entities['sightings']
-    indicators = entities['indicators']
+    assert response_from_pulsedive_module['module'] == MODULE_NAME
+    assert response_from_pulsedive_module['module_instance_id']
+    assert response_from_pulsedive_module['module_type_id']
+
+    relationships = response_from_pulsedive_module['data']['relationships']
+    sightings = response_from_pulsedive_module['data']['sightings']
+    indicators = response_from_pulsedive_module['data']['indicators']
+    assert len(relationships['docs']) > 0
 
     sightings_id = [s['id'] for s in sightings['docs']]
     indicators_id = [i['id'] for i in indicators['docs']]
 
     for relationship in relationships['docs']:
         assert relationship['schema_version']
+        assert relationship['tlp'] == 'white'
         assert relationship['type'] == 'relationship'
         assert relationship['relationship_type'] in (
             'sighting-of', 'member-of')
 
         assert relationship['target_ref'] in indicators_id
         assert relationship['source_ref'] in sightings_id
+        assert relationship['id'].startswith('transient:relationship-')
 
     # Each sighting exists in relationships
     sighting_indicator = {r['source_ref']: r['target_ref']
@@ -99,3 +120,6 @@ def test_positive_relationship_several_observables(module_headers):
             assert indicator['id'] in {
                 v: k for k, v in sighting_indicator.items()
             }
+
+    assert relationships['count'] == len(
+        relationships['docs']) <= CTR_ENTITIES_LIMIT
