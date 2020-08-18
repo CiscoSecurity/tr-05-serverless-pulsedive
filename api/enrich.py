@@ -179,6 +179,7 @@ def extract_indicators(output, unique_ids):
                     'valid_time': get_valid_time(output),
                     'short_description': riskfactor['description'],
                     'producer': 'Pulsedive',
+                    'title': riskfactor['description'],
                     **current_app.config['CTIM_INDICATOR_DEFAULTS']
                 }
 
@@ -212,6 +213,7 @@ def extract_indicators(output, unique_ids):
                     'severity': type_mapping['severity'],
                     'source_uri': current_app.config['UI_URL'].format(
                         query=f"threat/?tid={threat['tid']}"),
+                    'title': f"Threat: {threat['name']}",
                     **current_app.config['CTIM_INDICATOR_DEFAULTS']
                 }
 
@@ -239,6 +241,7 @@ def extract_indicators(output, unique_ids):
                     'tags': [feed['category']],
                     'source_uri': current_app.config['UI_URL'].format(
                         query=f"feed/?fid={feed['fid']}"),
+                    'title': standardize_feed(feed['name']),
                     **current_app.config['CTIM_INDICATOR_DEFAULTS']
                 }
 

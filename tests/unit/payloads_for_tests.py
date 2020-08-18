@@ -48,6 +48,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "producer": "Pulsedive",
           "schema_version": "1.0.17",
           "short_description": "found in threat feeds",
+          "title": "found in threat feeds",
           "tlp": "white",
           "source": "Pulsedive",
           "type": "indicator",
@@ -60,6 +61,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "producer": "Pulsedive",
           "schema_version": "1.0.17",
           "short_description": "registration recently updated",
+          "title": "registration recently updated",
           "tlp": "white",
           "source": "Pulsedive",
           "type": "indicator",
@@ -73,6 +75,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "schema_version": "1.0.17",
           "severity": "Medium",
           "short_description": "Threat: Kraken Botnet",
+          "title": "Threat: Kraken Botnet",
           "source_uri": "https://pulsedive.com/threat/?tid=9",
           "tags": [
             "malware"
@@ -90,6 +93,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "schema_version": "1.0.17",
           "severity": "Medium",
           "short_description": "Threat: JS Crypto Miner",
+          "title": "Threat: JS Crypto Miner",
           "source_uri": "https://pulsedive.com/threat/?tid=108",
           "tags": [
             "abuse"
@@ -105,6 +109,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
           "source": "Pulsedive",
           "schema_version": "1.0.17",
           "short_description": "Feed: BBcan177 DNSBL",
+          "title": "Feed: BBcan177 DNSBL",
           "source_uri": "https://pulsedive.com/feed/?fid=13",
           "tags": [
             "general"
@@ -481,6 +486,7 @@ EXPECTED_PAYLOAD_OBSERVE_WITH_LIMIT = {
           "tlp": "white",
           "source": "Pulsedive",
           "type": "indicator",
+          "title": "found in threat feeds",
           "valid_time": {
             "end_time": "2020-06-30T20:47:36Z",
             "start_time": "2020-03-31T14:47:36Z"
