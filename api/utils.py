@@ -1,8 +1,11 @@
 from authlib.jose import jwt
 from authlib.jose.errors import JoseError
 from flask import request, current_app, jsonify, g
+from requests.exceptions import SSLError
 
-from api.errors import JwtError, InvalidInputError, PulsediveKeyError
+from api.errors import (
+    JwtError, InvalidInputError, PulsediveKeyError, PulsediveSSLError
+)
 
 
 def get_jwt():
@@ -77,4 +80,13 @@ def key_error_handler(func):
         except KeyError:
             raise PulsediveKeyError
         return result
+    return wrapper
+
+
+def ssl_error_handler(func):
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except SSLError as error:
+            raise PulsediveSSLError(error)
     return wrapper

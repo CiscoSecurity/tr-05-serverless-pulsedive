@@ -659,3 +659,15 @@ INVALID_PULSEDIVE_RESPONSE = {
   "stamp_probed": "2019-10-10 17:31:12",
   "recent": 0
 }
+
+
+EXPECTED_RESPONSE_SSL_ERROR = {
+    'errors': [
+        {
+            'code': 'unknown',
+            'message': 'Unable to verify SSL certificate: Self signed '
+                       'certificate',
+            'type': 'fatal'
+        }
+    ]
+}

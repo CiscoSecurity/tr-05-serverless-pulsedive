@@ -1,5 +1,6 @@
 from http import HTTPStatus
 from unittest import mock
+from requests.exceptions import SSLError
 
 from pytest import fixture
 
@@ -15,7 +16,8 @@ from tests.unit.payloads_for_tests import (
     PULSEDIVE_ACTIVE_DNS_RESPONCE,
     PULSEDIVE_REQUEST_TIMOUT,
     EXPECTED_RESPONSE_KEY_ERROR,
-    INVALID_PULSEDIVE_RESPONSE
+    INVALID_PULSEDIVE_RESPONSE,
+    EXPECTED_RESPONSE_SSL_ERROR
 )
 
 
@@ -386,3 +388,19 @@ def test_enrich_call_with_key_error(any_route, client, valid_json,
 
         assert response.status_code == HTTPStatus.OK
         assert response.get_json() == EXPECTED_RESPONSE_KEY_ERROR
+
+
+def test_enrich_call_ssl_error(
+        route, client, valid_jwt, pd_api_request, valid_json
+):
+    mock_exception = mock.MagicMock()
+    mock_exception.reason.args.__getitem__().verify_message \
+        = 'self signed certificate'
+    pd_api_request.side_effect = SSLError(mock_exception)
+
+    response = client.post(route, headers=headers(valid_jwt), json=valid_json)
+
+    assert response.status_code == HTTPStatus.OK
+
+    data = response.get_json()
+    assert data == EXPECTED_RESPONSE_SSL_ERROR

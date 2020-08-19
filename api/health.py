@@ -3,12 +3,13 @@ from flask import Blueprint, current_app
 
 from api.errors import (UnexpectedPulsediveError,
                         StandardHttpError)
-from api.utils import jsonify_data, get_jwt
+from api.utils import jsonify_data, get_jwt, ssl_error_handler
 
 health_api = Blueprint('health', __name__)
 
 
 @health_api.route('/health', methods=['POST'])
+@ssl_error_handler
 def health():
     params = {'iid': 2, 'key': get_jwt().get('key')}
 

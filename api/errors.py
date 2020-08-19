@@ -56,3 +56,13 @@ class PulsediveKeyError(TRFormattedError):
             message='The data structure of Pulsedive API has changed.'
                     ' The module is broken.'
         )
+
+
+class PulsediveSSLError(TRFormattedError):
+    def __init__(self, error):
+        error = error.args[0].reason.args[0]
+        reason = getattr(error, 'verify_message', error.args[0]).capitalize()
+        super().__init__(
+            code='unknown',
+            message=f'Unable to verify SSL certificate: {reason}'
+        )

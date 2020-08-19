@@ -1,5 +1,6 @@
 from http import HTTPStatus
 from unittest.mock import MagicMock, patch
+from requests.exceptions import SSLError
 
 from authlib.jose import jwt
 from pytest import fixture
@@ -7,7 +8,8 @@ from pytest import fixture
 from .utils import headers
 from tests.unit.payloads_for_tests import (
     EXPECTED_PAYLOAD_FORBIDDEN,
-    EXPECTED_PAYLOAD_REQUEST_TIMOUT
+    EXPECTED_PAYLOAD_REQUEST_TIMOUT,
+    EXPECTED_RESPONSE_SSL_ERROR
 )
 
 
@@ -118,3 +120,17 @@ def test_health_call_failure(route, client, pd_api_request, valid_jwt):
 
     assert response.status_code == HTTPStatus.OK
     assert response.get_json() == EXPECTED_PAYLOAD_REQUEST_TIMOUT
+
+
+def test_health_call_ssl_error(route, client, valid_jwt, pd_api_request):
+    mock_exception = MagicMock()
+    mock_exception.reason.args.__getitem__().verify_message \
+        = 'self signed certificate'
+    pd_api_request.side_effect = SSLError(mock_exception)
+
+    response = client.post(route, headers=headers(valid_jwt))
+
+    assert response.status_code == HTTPStatus.OK
+
+    data = response.get_json()
+    assert data == EXPECTED_RESPONSE_SSL_ERROR
