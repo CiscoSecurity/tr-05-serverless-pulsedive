@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0.16",
+  "type": "investigation",
+  "search-txt": "url:\"http://krisartechnologies.com/signup/confirmuser\"",
+  "source": "Anastasiia Rozlyvan",
+  "actions": "[{\"created-perf\":819283000000,\"updated-perf\":819283000000,\"type\":\"collect\",\"created\":\"2020-08-19T14:42:45.703Z\",\"state\":\"ok\",\"arg\":\"url:\\\"http://krisartechnologies.com/signup/confirmuser\\\"\",\"result\":[{\"value\":\"http://krisartechnologies.com/signup/confirmuser\",\"type\":\"url\"}],\"id\":\"collect-57b9a1c\",\"uuid\":\"4a8b3977-b182-44f8-aa60-84d60b3670f0\"},{\"created-perf\":820253000000,\"updated-perf\":820253000000,\"type\":\"investigate\",\"created\":\"2020-08-19T14:42:46.673Z\",\"state\":\"ok\",\"arg\":{\"type\":\"url\",\"value\":\"http://krisartechnologies.com/signup/confirmuser\"},\"result\":{\"data\":[{\"module\":\"Pulsedive\",\"module_instance_id\":\"5da906e2-6d75-40a7-a480-f072268f57a9\",\"module_type_id\":\"44606d8d-fc66-4ac7-815b-4448e096180f\",\"data\":{\"indicators\":{\"count\":3,\"docs\":[{\"tags\":[\"spam\"],\"valid_time\":{\"start_time\":\"2020-05-12T02:58:34.000Z\"},\"producer\":\"OpenPhish\",\"schema_version\":\"1.0.17\",\"type\":\"indicator\",\"source\":\"Pulsedive\",\"short_description\":\"Feed: OpenPhish\",\"title\":\"Feed: OpenPhish\",\"source_uri\":\"https://pulsedive.com/feed/?fid=22\",\"id\":\"transient:indicator-a2e56fce-c40b-4b58-b3a3-b9490a1cadbd\",\"tlp\":\"white\"},{\"valid_time\":{\"start_time\":\"2020-05-12T02:58:34.000Z\",\"end_time\":\"2020-08-16T04:48:37.000Z\"},\"producer\":\"Pulsedive\",\"schema_version\":\"1.0.17\",\"type\":\"indicator\",\"source\":\"Pulsedive\",\"short_description\":\"found in threat feeds\",\"title\":\"found in threat feeds\",\"id\":\"transient:indicator-8ff699f9-b345-4f08-8e95-b7a55d8441e0\",\"tlp\":\"white\"},{\"tags\":[\"phishing\"],\"valid_time\":{\"start_time\":\"2020-05-12T02:58:34.000Z\"},\"producer\":\"Pulsedive\",\"schema_version\":\"1.0.17\",\"type\":\"indicator\",\"source\":\"Pulsedive\",\"short_description\":\"Threat: Phishing\",\"title\":\"Threat: Phishing\",\"source_uri\":\"https://pulsedive.com/threat/?tid=67\",\"id\":\"transient:indicator-10dc4a0d-64df-4a6c-b430-d153a16e19ff\",\"severity\":\"Medium\",\"tlp\":\"white\"}]},\"verdicts\":{\"count\":1,\"docs\":[{\"type\":\"verdict\",\"disposition\":3,\"observable\":{\"value\":\"http://krisartechnologies.com/signup/confirmuser\",\"type\":\"url\"},\"disposition_name\":\"Suspicious\",\"valid_time\":{\"start_time\":\"2020-05-12T02:58:34.000Z\",\"end_time\":\"2020-08-16T04:48:37.000Z\"}}]},\"relationships\":{\"count\":3,\"docs\":[{\"tlp\":\"white\",\"schema_version\":\"1.0.17\",\"target_ref\":\"transient:indicator-8ff699f9-b345-4f08-8e95-b7a55d8441e0\",\"type\":\"relationship\",\"source_ref\":\"transient:sighting-38580db8-382c-4eca-b1a5-59334e600f99\",\"id\":\"transient:relationship-e7c7c22e-a285-4e22-b638-2bb3e7fece9c\",\"relationship_type\":\"sighting-of\"},{\"tlp\":\"white\",\"schema_version\":\"1.0.17\",\"target_ref\":\"transient:indicator-10dc4a0d-64df-4a6c-b430-d153a16e19ff\",\"type\":\"relationship\",\"source_ref\":\"transient:sighting-a73a0da0-330c-4fd6-90f6-b70cacadca91\",\"id\":\"transient:relationship-dc190e62-2129-4d19-8ced-666f3a9972a8\",\"relationship_type\":\"sighting-of\"},{\"tlp\":\"white\",\"schema_version\":\"1.0.17\",\"target_ref\":\"transient:indicator-a2e56fce-c40b-4b58-b3a3-b9490a1cadbd\",\"type\":\"relationship\",\"source_ref\":\"transient:sighting-14ce83f7-711b-4c33-b174-f13227c7ae14\",\"id\":\"transient:relationship-b749cd89-d9c7-4f01-b91f-59fa639f89ca\",\"relationship_type\":\"member-of\"}]},\"judgements\":{\"count\":1,\"docs\":[{\"valid_time\":{\"start_time\":\"2020-05-12T02:58:34.000Z\",\"end_time\":\"2020-08-16T04:48:37.000Z\"},\"schema_version\":\"1.0.17\",\"observable\":{\"value\":\"http://krisartechnologies.com/signup/confirmuser\",\"type\":\"url\"},\"type\":\"judgement\",\"source\":\"Pulsedive\",\"disposition\":3,\"source_uri\":\"https://pulsedive.com/indicator/?iid=280186\",\"disposition_name\":\"Suspicious\",\"priority\":85,\"id\":\"transient:judgement-ffc124b8-b790-45aa-8f72-a5d358a0368a\",\"severity\":\"Medium\",\"tlp\":\"white\",\"confidence\":\"Medium\"}]},\"sightings\":{\"count\":3,\"docs\":[{\"description\":\"Threat: Phishing\",\"schema_version\":\"1.0.17\",\"observables\":[{\"value\":\"http://krisartechnologies.com/signup/confirmuser\",\"type\":\"url\"}],\"type\":\"sighting\",\"source\":\"Pulsedive\",\"source_uri\":\"https://pulsedive.com/threat/?tid=67\",\"id\":\"transient:sighting-a73a0da0-330c-4fd6-90f6-b70cacadca91\",\"count\":1,\"severity\":\"Medium\",\"confidence\":\"Medium\",\"observed_time\":{\"start_time\":\"2020-05-12T02:58:34.000Z\",\"end_time\":\"2020-05-12T02:58:34.000Z\"}},{\"description\":\"found in threat feeds\",\"schema_version\":\"1.0.17\",\"observables\":[{\"value\":\"http://krisartechnologies.com/signup/confirmuser\",\"type\":\"url\"}],\"type\":\"sighting\",\"source\":\"Pulsedive\",\"source_uri\":\"https://pulsedive.com/indicator/?iid=280186\",\"id\":\"transient:sighting-38580db8-382c-4eca-b1a5-59334e600f99\",\"count\":1,\"severity\":\"Medium\",\"confidence\":\"Medium\",\"observed_time\":{\"start_time\":\"2020-05-12T02:58:34.000Z\",\"end_time\":\"2020-05-12T02:58:34.000Z\"}},{\"description\":\"Feed: OpenPhish\",\"schema_version\":\"1.0.17\",\"observables\":[{\"value\":\"http://krisartechnologies.com/signup/confirmuser\",\"type\":\"url\"}],\"type\":\"sighting\",\"source\":\"Pulsedive\",\"source_uri\":\"https://pulsedive.com/feed/?fid=22\",\"id\":\"transient:sighting-14ce83f7-711b-4c33-b174-f13227c7ae14\",\"count\":1,\"confidence\":\"Medium\",\"observed_time\":{\"start_time\":\"2020-05-12T02:58:34.000Z\",\"end_time\":\"2020-05-12T02:58:34.000Z\"}}]}}}]},\"id\":\"investigate-d3168fc9\",\"uuid\":\"b87b5866-a092-422a-beda-6064ec302f87\"}]",
+  "short_description": "Snapshot_Pulsedive_URL",
+  "id": "https://private.intel.amp.cisco.com:443/ctia/investigation/investigation-4c9f2efb-aec3-487a-b79d-16ee3b4c5a42",
+  "tlp": "amber",
+  "groups": [
+    "32e22c6d-7624-477e-8bbd-989c979b552e"
+  ],
+  "timestamp": "2020-08-19T14:43:59.057Z",
+  "nodePositions": {
+    "21fce732": {
+      "y": -25.560369157510337,
+      "category": "domain",
+      "index": 0,
+      "modules": [
+        "Pulsedive"
+      ],
+      "value": "zyc.ru",
+      "type": "domain",
+      "state": "ok",
+      "disposition": 3,
+      "disposition_name": "Suspicious",
+      "vx": 0,
+      "vy": 0,
+      "id": "21fce732",
+      "investigated": true,
+      "x": 65.13148243009329
+    },
+    "ddd4fb23": {
+      "y": 25.560369157510337,
+      "category": "ip",
+      "index": 1,
+      "value": "194.58.112.174",
+      "type": "ip",
+      "disposition": 5,
+      "disposition_name": "Unknown",
+      "vx": 0,
+      "vy": 0,
+      "id": "ddd4fb23",
+      "x": -65.13148243009329
+    },
+    "10f1991e": {
+      "y": 0.03296637880146804,
+      "category": "ip",
+      "index": 0,
+      "value": "2001:0878:0346:0001:0001:0000:0000:1003",
+      "type": "ipv6",
+      "state": "ok",
+      "disposition": 5,
+      "disposition_name": "Unknown",
+      "vx": 0,
+      "vy": 0,
+      "id": "10f1991e",
+      "investigated": true,
+      "x": 0.03296637880146804
+    },
+    "f7167f2": {
+      "y": 0.03296637880146804,
+      "category": "ip",
+      "index": 0,
+      "modules": [
+        "Pulsedive"
+      ],
+      "value": "2a02:27a8:0000:000a:0000:0000:0000:0100",
+      "type": "ipv6",
+      "state": "ok",
+      "disposition": 3,
+      "disposition_name": "Suspicious",
+      "vx": 0,
+      "vy": 0,
+      "id": "f7167f2",
+      "investigated": true,
+      "x": 0.03296637880146804
+    },
+    "e06698": {
+      "y": 0.03296637880146804,
+      "category": "url",
+      "index": 0,
+      "modules": [
+        "Pulsedive"
+      ],
+      "value": "http://krisartechnologies.com/signup/confirmuser",
+      "type": "url",
+      "state": "ok",
+      "disposition": 3,
+      "disposition_name": "Suspicious",
+      "vx": 0,
+      "vy": 0,
+      "id": "e06698",
+      "investigated": true,
+      "x": 0.03296637880146804
+    }
+  },
+  "owner": "9d64bbce-2e7c-43f0-b9d7-0e2fa3c2d88d"
+}
