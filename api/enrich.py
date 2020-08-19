@@ -15,7 +15,8 @@ from api.errors import (
 )
 
 from api.utils import (
-    get_jwt, jsonify_data, get_json, jsonify_result, key_error_handler
+    get_jwt, jsonify_data, get_json, jsonify_result,
+    key_error_handler, ssl_error_handler
 )
 
 
@@ -49,6 +50,7 @@ def sort_entities(list_):
     )
 
 
+@ssl_error_handler
 def get_pulsedive_output(observable, links=False):
     output = {}
     key = get_jwt().get('key')
