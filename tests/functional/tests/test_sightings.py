@@ -14,7 +14,7 @@ from tests.functional.tests.constants import (
     (
      ('url', 'https://www.google.com/'),
      ('ip', '1.1.1.1'),
-     ('domain', 'brehmen.com'),
+     ('domain', 'xcj10.me'),
      )
 )
 def test_positive_sighting(module_headers, observable, observable_type):
