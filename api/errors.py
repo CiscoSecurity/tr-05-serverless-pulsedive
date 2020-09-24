@@ -1,3 +1,6 @@
+from json.decoder import JSONDecodeError
+
+
 class TRFormattedError(Exception):
     def __init__(self, code, message, type_='fatal'):
         self.code = code or 'unknown'
@@ -11,33 +14,19 @@ class TRFormattedError(Exception):
                 'message': self.message}
 
 
-API_ERRORS_STANDARDISATION = {
-    ("Results limited to one page "
-     "(15,000 records) for free API."): "resource exhausted",
-    "Request(s) still processing.": "request timeout",
-    ("API rate limit exceeded: 30 requests per minute. "
-     "Requests disabled for 1 minute. Please visit "
-     "pulsedive.com/api to increase your limit."): "too many requests"
-}
-
-
 class UnexpectedPulsediveError(TRFormattedError):
-    def __init__(self, message):
-        code = API_ERRORS_STANDARDISATION.get(message)
+    def __init__(self, response):
+        code = response.reason
+        try:
+            message = response.json().get('error')
+        except JSONDecodeError:
+            message = 'The Pulsedive API error.'
         super().__init__(code, message)
 
 
 class JwtError(TRFormattedError):
     def __init__(self, message):
         super().__init__('permission denied', message)
-
-
-class StandardHttpError(TRFormattedError):
-    def __init__(self, response):
-        super().__init__(
-            response.reason,
-            'The Pulsedive API error.'
-        )
 
 
 class InvalidInputError(TRFormattedError):
@@ -50,7 +39,6 @@ class InvalidInputError(TRFormattedError):
 
 class PulsediveKeyError(TRFormattedError):
     def __init__(self):
-
         super().__init__(
             code='key error',
             message='The data structure of Pulsedive API has changed.'
