@@ -10,11 +10,11 @@ from tests.unit.payloads_for_tests import (
     EXPECTED_PAYLOAD_FORBIDDEN,
     EXPECTED_PAYLOAD_OBSERVE,
     EXPECTED_PAYLOAD_OBSERVE_WITH_LIMIT,
-    EXPECTED_PAYLOAD_REQUEST_TIMOUT,
+    EXPECTED_PAYLOAD_REQUEST_TIMEOUT,
     EXPECTED_PAYLOAD_REFER,
     PULSEDIVE_RESPONSE_MOCK,
-    PULSEDIVE_ACTIVE_DNS_RESPONCE,
-    PULSEDIVE_REQUEST_TIMOUT,
+    PULSEDIVE_ACTIVE_DNS_RESPONSE,
+    PULSEDIVE_REQUEST_TIMEOUT,
     EXPECTED_RESPONSE_KEY_ERROR,
     INVALID_PULSEDIVE_RESPONSE,
     EXPECTED_RESPONSE_SSL_ERROR
@@ -42,15 +42,18 @@ def pd_api_request():
         yield mock_request
 
 
-def pd_api_response(*, ok, payload=None):
+def pd_api_response(ok, payload=None, reason=''):
     mock_response = mock.MagicMock()
 
     mock_response.ok = ok
 
-    if ok and not payload:
-        payload = PULSEDIVE_RESPONSE_MOCK
+    if ok:
+        mock_response.status_code = HTTPStatus.OK
+        if not payload:
+            payload = PULSEDIVE_RESPONSE_MOCK
 
     mock_response.json = lambda: payload
+    mock_response.reason = reason
 
     return mock_response
 
@@ -103,7 +106,7 @@ def test_enrich_call_without_jwt_success(mock_related_entities, any_route,
                                          expected_payload):
 
     if any_route.startswith('/observe'):
-        mock_related_entities.return_value = PULSEDIVE_ACTIVE_DNS_RESPONCE
+        mock_related_entities.return_value = PULSEDIVE_ACTIVE_DNS_RESPONSE
         pd_api_request.return_value = pd_api_response(ok=True)
         response = client.post(any_route, json=valid_json)
         data = response.get_json()
@@ -187,7 +190,7 @@ def test_enrich_call_success(mock_related_entities,
                              pd_api_request,
                              expected_payload):
     if any_route.startswith('/observe'):
-        mock_related_entities.return_value = PULSEDIVE_ACTIVE_DNS_RESPONCE
+        mock_related_entities.return_value = PULSEDIVE_ACTIVE_DNS_RESPONSE
         pd_api_request.return_value = pd_api_response(ok=True)
         response = client.post(any_route,
                                headers=headers(valid_jwt),
@@ -250,14 +253,15 @@ def test_enrich_call_failure(route,
                              pd_api_request):
     pd_api_request.return_value = pd_api_response(
         ok=False,
-        payload=PULSEDIVE_REQUEST_TIMOUT
+        payload=PULSEDIVE_REQUEST_TIMEOUT,
+        reason='request timeout'
     )
     response = client.post(route,
                            headers=headers(valid_jwt),
                            json=valid_json)
 
     assert response.status_code == HTTPStatus.OK
-    assert response.get_json() == EXPECTED_PAYLOAD_REQUEST_TIMOUT
+    assert response.get_json() == EXPECTED_PAYLOAD_REQUEST_TIMEOUT
 
 
 @fixture(scope='module')
@@ -277,11 +281,12 @@ def test_enrich_error_with_data(mock_related_entities,
                                 pd_api_request,
                                 expected_payload):
     if any_route.startswith('/observe'):
-        mock_related_entities.return_value = PULSEDIVE_ACTIVE_DNS_RESPONCE
+        mock_related_entities.return_value = PULSEDIVE_ACTIVE_DNS_RESPONSE
         pd_api_request.side_effect = (
             pd_api_response(ok=True), pd_api_response(
                 ok=False,
-                payload=PULSEDIVE_REQUEST_TIMOUT
+                payload=PULSEDIVE_REQUEST_TIMEOUT,
+                reason='request timeout'
             )
         )
         response = client.post(any_route,
@@ -321,7 +326,7 @@ def test_enrich_error_with_data(mock_related_entities,
             )
 
         expected_response = {}
-        expected_response.update(EXPECTED_PAYLOAD_REQUEST_TIMOUT)
+        expected_response.update(EXPECTED_PAYLOAD_REQUEST_TIMEOUT)
         expected_response.update(expected_payload)
 
         assert data == expected_response

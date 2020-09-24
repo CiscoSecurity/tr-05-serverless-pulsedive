@@ -4,15 +4,13 @@ from datetime import datetime, timedelta
 from uuid import uuid4
 from base64 import b64encode
 from urllib.parse import quote
+from http import HTTPStatus
 
 from flask import Blueprint, current_app, g
 import requests
 
 from api.schemas import ObservableSchema
-from api.errors import (
-    UnexpectedPulsediveError,
-    StandardHttpError
-)
+from api.errors import UnexpectedPulsediveError
 
 from api.utils import (
     get_jwt, jsonify_data, get_json, jsonify_result,
@@ -70,12 +68,10 @@ def get_pulsedive_output(observable, links=False):
 
     response = requests.get(url, headers=header, params=params)
 
-    error = response.json().get('error')
+    if response.status_code not in \
+            (*current_app.config['NOT_CRITICAL_ERRORS'], HTTPStatus.OK):
+        raise UnexpectedPulsediveError(response)
 
-    if error not in (*current_app.config['NOT_CRITICAL_ERRORS'], None):
-        raise UnexpectedPulsediveError(error)
-    elif not response.ok:
-        raise StandardHttpError(response)
     payload = response.json()
     if payload.get('threats'):
         sort_entities(payload['threats'])

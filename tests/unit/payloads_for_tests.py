@@ -8,7 +8,7 @@ EXPECTED_PAYLOAD_FORBIDDEN = {
   ]
 }
 
-EXPECTED_PAYLOAD_REQUEST_TIMOUT = {
+EXPECTED_PAYLOAD_REQUEST_TIMEOUT = {
   "errors": [
     {
       "code": "request timeout",
@@ -341,7 +341,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
   }
 }
 
-PULSEDIVE_REQUEST_TIMOUT = {
+PULSEDIVE_REQUEST_TIMEOUT = {
   "error": "Request(s) still processing.",
   "status": "processing",
   "note": "status field is in beta: processing | not found | do...",
@@ -613,7 +613,7 @@ EXPECTED_PAYLOAD_REFER = {
   ]
 }
 
-PULSEDIVE_ACTIVE_DNS_RESPONCE = {
+PULSEDIVE_ACTIVE_DNS_RESPONSE = {
   "Active DNS":
   [
     {

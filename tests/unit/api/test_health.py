@@ -8,7 +8,7 @@ from pytest import fixture
 from .utils import headers
 from tests.unit.payloads_for_tests import (
     EXPECTED_PAYLOAD_FORBIDDEN,
-    EXPECTED_PAYLOAD_REQUEST_TIMOUT,
+    EXPECTED_PAYLOAD_REQUEST_TIMEOUT,
     EXPECTED_RESPONSE_SSL_ERROR
 )
 
@@ -53,7 +53,7 @@ def test_health_call_without_jwt_failure(route, client, pd_api_request):
     pd_api_request.assert_called_once_with(*expected_url)
 
     assert response.status_code == HTTPStatus.OK
-    assert response.get_json() == EXPECTED_PAYLOAD_REQUEST_TIMOUT
+    assert response.get_json() == EXPECTED_PAYLOAD_REQUEST_TIMEOUT
 
 
 @fixture(scope="function")
@@ -65,7 +65,7 @@ def pd_api_request():
 def pd_api_response(ok):
     mock_response = MagicMock()
 
-    mock_response.ok = True
+    mock_response.ok = ok
     if ok:
         payload = {
             "iid": 19,
@@ -82,6 +82,7 @@ def pd_api_response(ok):
             "recent": 0,
         }
     else:
+        mock_response.reason = 'request timeout'
         payload = {
             "error": "Request(s) still processing.",
             "status": "processing",
@@ -119,7 +120,7 @@ def test_health_call_failure(route, client, pd_api_request, valid_jwt):
     pd_api_request.assert_called_once_with(*expected_url)
 
     assert response.status_code == HTTPStatus.OK
-    assert response.get_json() == EXPECTED_PAYLOAD_REQUEST_TIMOUT
+    assert response.get_json() == EXPECTED_PAYLOAD_REQUEST_TIMEOUT
 
 
 def test_health_call_ssl_error(route, client, valid_jwt, pd_api_request):

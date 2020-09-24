@@ -64,11 +64,10 @@ def jsonify_result():
     if g.get('relationships'):
         result['data']['relationships'] = format_docs(g.relationships)
 
-    if not result['data']:
-        del result['data']
-
     if g.get('errors'):
         result['errors'] = g.errors
+        if not result['data']:
+            del result['data']
 
     return jsonify(result)
 

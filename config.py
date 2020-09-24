@@ -1,4 +1,5 @@
 import os
+from http import HTTPStatus
 
 from version import VERSION
 
@@ -117,5 +118,5 @@ class Config(object):
     }
 
     NOT_CRITICAL_ERRORS = (
-        "Indicator not found.", "Invalid request or data not found."
+        HTTPStatus.BAD_REQUEST, HTTPStatus.NOT_FOUND, HTTPStatus.NOT_ACCEPTABLE
     )
