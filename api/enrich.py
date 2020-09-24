@@ -68,8 +68,8 @@ def get_pulsedive_output(observable, links=False):
 
     response = requests.get(url, headers=header, params=params)
 
-    if response.status_code not in (
-            *current_app.config['NOT_CRITICAL_ERRORS'], HTTPStatus.OK):
+    if response.status_code not in \
+            (*current_app.config['NOT_CRITICAL_ERRORS'], HTTPStatus.OK):
         raise UnexpectedPulsediveError(response)
 
     payload = response.json()
