@@ -66,7 +66,7 @@ def test_positive_indicator_details(module_headers):
     'observable,observable_type',
     (('185.141.25.242', 'ip'),
      ('yizaiwl.cc', 'domain'),
-     ('https://www.google.com/', 'url'))
+     ('http://51jianli.cn/images', 'url'))
 )
 def test_positive_indicators_by_type(
         module_headers, observable, observable_type):
