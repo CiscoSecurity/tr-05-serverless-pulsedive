@@ -4,7 +4,8 @@ from ctrlibrary.threatresponse.enrich import enrich_observe_observables
 from tests.functional.tests.constants import (
     MODULE_NAME,
     SOURCE,
-    CTR_ENTITIES_LIMIT, PULSEDIVE_URL
+    CTR_ENTITIES_LIMIT,
+    PULSEDIVE_URL
 )
 
 

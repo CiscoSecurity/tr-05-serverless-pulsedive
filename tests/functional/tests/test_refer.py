@@ -43,6 +43,8 @@ def test_positive_refer_observable(module_headers, observable,
 
     references = get_observables(response_from_all_modules, MODULE_NAME)
 
+    assert len(references) == 2, 'You got only one entity from Pusledive'
+
     for reference in references:
         assert reference['id'].startswith('ref-pulsedive') and (
             reference['id'].endswith(
