@@ -18,7 +18,7 @@ from tests.functional.tests.constants import MODULE_NAME
 )
 def test_positive_smoke_empty_observe_observables(module_headers, observable,
                                                   observable_type):
-    """Perform testing for enrich observe observables endpoint  to check that
+    """Perform testing for enrich observe observables endpoint to check that
      observable, on which Pulsedive doesn't have information, will return empty
      data
 
