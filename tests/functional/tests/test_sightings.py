@@ -12,7 +12,7 @@ from tests.functional.tests.constants import (
 @pytest.mark.parametrize(
     'observable_type, observable',
     (
-     ('url', 'https://www.google.com/'),
+     ('url', 'http://51jianli.cn/images'),
      ('ip', '1.1.1.1'),
      ('domain', 'xcj10.me'),
      )
