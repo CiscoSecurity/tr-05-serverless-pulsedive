@@ -12,7 +12,7 @@ from tests.functional.tests.constants import (
 @pytest.mark.parametrize(
     'observable_type, observable',
     (
-     ('url', 'https://www.google.com/'),
+     ('url', 'http://51jianli.cn/images'),
      ('ip', '1.1.1.1'),
      ('domain', 'xcj10.me'),
      )
@@ -41,7 +41,7 @@ def test_positive_sighting(module_headers, observable, observable_type):
     response_from_pulsedive = get_observables(response_from_all_modules,
                                               MODULE_NAME)
 
-    assert response_from_pulsedive['module']
+    assert response_from_pulsedive['module'] == MODULE_NAME
     assert response_from_pulsedive['module_instance_id']
     assert response_from_pulsedive['module_type_id']
 

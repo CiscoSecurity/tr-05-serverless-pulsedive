@@ -12,6 +12,7 @@ __pycache__/
 .idea/
 build/
 dist/
+venv/
 
 # Properties file
 project.properties

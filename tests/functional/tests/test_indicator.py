@@ -4,7 +4,8 @@ from ctrlibrary.threatresponse.enrich import enrich_observe_observables
 from tests.functional.tests.constants import (
     MODULE_NAME,
     SOURCE,
-    CTR_ENTITIES_LIMIT, PULSEDIVE_URL
+    CTR_ENTITIES_LIMIT,
+    PULSEDIVE_URL
 )
 
 
@@ -65,7 +66,7 @@ def test_positive_indicator_details(module_headers):
     'observable,observable_type',
     (('185.141.25.242', 'ip'),
      ('yizaiwl.cc', 'domain'),
-     ('https://www.google.com/', 'url'))
+     ('http://51jianli.cn/images', 'url'))
 )
 def test_positive_indicators_by_type(
         module_headers, observable, observable_type):
