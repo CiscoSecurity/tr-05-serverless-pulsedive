@@ -1,5 +1,6 @@
 import os
 from http import HTTPStatus
+from uuid import NAMESPACE_X500
 
 from version import VERSION
 
@@ -120,3 +121,5 @@ class Config(object):
     NOT_CRITICAL_ERRORS = (
         HTTPStatus.BAD_REQUEST, HTTPStatus.NOT_FOUND, HTTPStatus.NOT_ACCEPTABLE
     )
+
+    NAMESPACE_BASE = NAMESPACE_X500
