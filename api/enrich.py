@@ -176,7 +176,9 @@ def extract_indicators(output, indicator_ids):
 
     if output.get('riskfactors'):
         for riskfactor in output['riskfactors']:
-            generated_id = get_transient_id('indicator', riskfactor['description'])
+            generated_id = get_transient_id(
+                'indicator', riskfactor['description']
+            )
             doc = {
                 'id': generated_id,
                 'valid_time': get_valid_time(output),
