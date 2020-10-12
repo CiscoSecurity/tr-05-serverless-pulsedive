@@ -174,86 +174,83 @@ def get_transient_id(entity_type, base_value=None):
 def extract_indicators(output, indicator_ids):
     docs = []
 
-    if output.get('riskfactors'):
-        for riskfactor in output['riskfactors']:
-            generated_id = get_transient_id(
-                'indicator', riskfactor['description']
-            )
-            doc = {
-                'id': generated_id,
-                'valid_time': get_valid_time(output),
-                'short_description': riskfactor['description'],
-                'producer': 'Pulsedive',
-                'title': riskfactor['description'],
-                **current_app.config['CTIM_INDICATOR_DEFAULTS']
-            }
+    for riskfactor in output.get('riskfactors', []):
+        generated_id = get_transient_id(
+            'indicator', riskfactor['description']
+        )
+        doc = {
+            'id': generated_id,
+            'valid_time': get_valid_time(output),
+            'short_description': riskfactor['description'],
+            'producer': 'Pulsedive',
+            'title': riskfactor['description'],
+            **current_app.config['CTIM_INDICATOR_DEFAULTS']
+        }
 
-            if len(docs) >= current_app.config['CTR_ENTITIES_LIMIT']:
-                return docs
+        if len(docs) >= current_app.config['CTR_ENTITIES_LIMIT']:
+            return docs
 
-            indicator_ids['riskfactors'][riskfactor['rfid']] = generated_id
+        indicator_ids['riskfactors'][riskfactor['rfid']] = generated_id
 
-            docs.append(doc)
+        docs.append(doc)
 
-    if output.get('threats'):
-        for threat in output['threats']:
-            generated_id = get_transient_id('indicator', threat['name'])
-            score = output['risk']
+    for threat in output.get('threats', []):
+        generated_id = get_transient_id('indicator', threat['name'])
+        score = output['risk']
 
-            type_mapping = \
-                current_app.config["PULSEDIVE_API_THREAT_TYPES"][score]
+        type_mapping = \
+            current_app.config["PULSEDIVE_API_THREAT_TYPES"][score]
 
-            start_time = datetime.strptime(threat['stamp_linked'],
-                                           '%Y-%m-%d %H:%M:%S')
+        start_time = datetime.strptime(threat['stamp_linked'],
+                                       '%Y-%m-%d %H:%M:%S')
 
-            doc = {
-                'id': generated_id,
-                'short_description': f"Threat: {threat['name']}",
-                'producer': 'Pulsedive',
-                'valid_time': {
-                    'start_time': time_to_ctr_format(start_time)
-                },
-                'tags': [threat['category']],
-                'severity': type_mapping['severity'],
-                'source_uri': current_app.config['UI_URL'].format(
-                    query=f"threat/?tid={threat['tid']}"),
-                'title': f"Threat: {threat['name']}",
-                **current_app.config['CTIM_INDICATOR_DEFAULTS']
-            }
+        doc = {
+            'id': generated_id,
+            'short_description': f"Threat: {threat['name']}",
+            'producer': 'Pulsedive',
+            'valid_time': {
+                'start_time': time_to_ctr_format(start_time)
+            },
+            'tags': [threat['category']],
+            'severity': type_mapping['severity'],
+            'source_uri': current_app.config['UI_URL'].format(
+                query=f"threat/?tid={threat['tid']}"),
+            'title': f"Threat: {threat['name']}",
+            **current_app.config['CTIM_INDICATOR_DEFAULTS']
+        }
 
-            if len(docs) >= current_app.config['CTR_ENTITIES_LIMIT']:
-                return docs
+        if len(docs) >= current_app.config['CTR_ENTITIES_LIMIT']:
+            return docs
 
-            indicator_ids['threats'][threat['tid']] = generated_id
+        indicator_ids['threats'][threat['tid']] = generated_id
 
-            docs.append(doc)
+        docs.append(doc)
 
-    if output.get('feeds'):
-        for feed in output['feeds']:
-            generated_id = get_transient_id('indicator', feed['name'])
+    for feed in output.get('feeds', []):
+        generated_id = get_transient_id('indicator', feed['name'])
 
-            start_time = datetime.strptime(feed['stamp_linked'],
-                                           '%Y-%m-%d %H:%M:%S')
-            doc = {
-                'id': generated_id,
-                'valid_time': {
-                    'start_time': time_to_ctr_format(start_time)
-                },
-                'short_description': standardize_feed(feed['name']),
-                'producer': feed['organization'],
-                'tags': [feed['category']],
-                'source_uri': current_app.config['UI_URL'].format(
-                    query=f"feed/?fid={feed['fid']}"),
-                'title': standardize_feed(feed['name']),
-                **current_app.config['CTIM_INDICATOR_DEFAULTS']
-            }
+        start_time = datetime.strptime(feed['stamp_linked'],
+                                       '%Y-%m-%d %H:%M:%S')
+        doc = {
+            'id': generated_id,
+            'valid_time': {
+                'start_time': time_to_ctr_format(start_time)
+            },
+            'short_description': standardize_feed(feed['name']),
+            'producer': feed['organization'],
+            'tags': [feed['category']],
+            'source_uri': current_app.config['UI_URL'].format(
+                query=f"feed/?fid={feed['fid']}"),
+            'title': standardize_feed(feed['name']),
+            **current_app.config['CTIM_INDICATOR_DEFAULTS']
+        }
 
-            if len(docs) >= current_app.config['CTR_ENTITIES_LIMIT']:
-                return docs
+        if len(docs) >= current_app.config['CTR_ENTITIES_LIMIT']:
+            return docs
 
-            indicator_ids['feeds'][feed['fid']] = generated_id
+        indicator_ids['feeds'][feed['fid']] = generated_id
 
-            docs.append(doc)
+        docs.append(doc)
 
     return docs
 
