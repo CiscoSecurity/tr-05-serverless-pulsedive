@@ -458,14 +458,15 @@ def observe_observables():
     sightings_relationship = set()
     for value in observables.keys():
         output = get_pulsedive_output(value)
-        g.verdicts.append(extract_verdict(output))
-        g.judgements.append(extract_judgement(output))
-        g.indicators += extract_indicators(output, indicator_ids)
-        g.sightings += extract_sightings(output,
-                                         indicator_ids,
-                                         sightings_relationship
-                                         )
-        g.relationships = extract_relationship(sightings_relationship)
+        if output:
+            g.verdicts.append(extract_verdict(output))
+            g.judgements.append(extract_judgement(output))
+            g.indicators += extract_indicators(output, indicator_ids)
+            g.sightings += extract_sightings(output,
+                                             indicator_ids,
+                                             sightings_relationship
+                                             )
+            g.relationships = extract_relationship(sightings_relationship)
 
     return jsonify_result()
 
