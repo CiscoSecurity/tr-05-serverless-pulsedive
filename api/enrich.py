@@ -475,7 +475,7 @@ def get_browse_pivot(observable):
     output = get_pulsedive_output(observable)
     pivots = []
 
-    if not output.get('error'):
+    if output:
         url = current_app.config['UI_URL'].format(
             query=f"indicator/?iid={output['iid']}")
         value = output['indicator']
