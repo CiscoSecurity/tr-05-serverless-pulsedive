@@ -7,9 +7,10 @@ from pytest import fixture
 
 from .utils import headers
 from tests.unit.payloads_for_tests import (
-    EXPECTED_PAYLOAD_FORBIDDEN,
+    EXPECTED_PAYLOAD_WITHOUT_JWT,
     EXPECTED_PAYLOAD_REQUEST_TIMEOUT,
-    EXPECTED_RESPONSE_SSL_ERROR
+    EXPECTED_RESPONSE_SSL_ERROR,
+    EXPECTED_PAYLOAD_INVALID_JWT
 )
 
 
@@ -22,38 +23,32 @@ def route(request):
     return request.param
 
 
-def get_expected_url(client, valid_jwt=None):
+def get_expected_url(client):
     app = client.application
-    url = app.config["API_URL"]
-    key = ''
-    if valid_jwt:
-        key = jwt.decode(valid_jwt, app.config["SECRET_KEY"])["key"]
-    params = {'iid': 2, 'key': key}
-    return url, params
+    url = app.config['API_URL']
+    return url
 
 
-def test_health_call_without_jwt_success(route, client, pd_api_request):
-    pd_api_request.return_value = pd_api_response(ok=True)
-    response = client.post(route)
+def get_params(client, valid_jwt=None):
+    app = client.application
+    key = jwt.decode(valid_jwt, app.config['SECRET_KEY'])['key']
+    return {'iid': 2, 'key': key}
 
-    expected_url = get_expected_url(client)
-    pd_api_request.assert_called_once_with(*expected_url)
 
-    expected_payload = {"data": {"status": "ok"}}
-
-    assert response.status_code == HTTPStatus.OK
-    assert response.get_json() == expected_payload
+def get_headers(client):
+    app = client.application
+    request_headers = {
+        'User-Agent': app.config['USER_AGENT']
+    }
+    return request_headers
 
 
 def test_health_call_without_jwt_failure(route, client, pd_api_request):
     pd_api_request.return_value = pd_api_response(ok=False)
     response = client.post(route)
 
-    expected_url = get_expected_url(client)
-    pd_api_request.assert_called_once_with(*expected_url)
-
     assert response.status_code == HTTPStatus.OK
-    assert response.get_json() == EXPECTED_PAYLOAD_REQUEST_TIMEOUT
+    assert response.get_json() == EXPECTED_PAYLOAD_WITHOUT_JWT
 
 
 @fixture(scope="function")
@@ -67,6 +62,7 @@ def pd_api_response(ok):
 
     mock_response.ok = ok
     if ok:
+        mock_response.status_code = HTTPStatus.OK
         payload = {
             "iid": 19,
             "type": "ip",
@@ -82,6 +78,7 @@ def pd_api_response(ok):
             "recent": 0,
         }
     else:
+        mock_response.status_code = HTTPStatus.REQUEST_TIMEOUT
         mock_response.reason = 'request timeout'
         payload = {
             "error": "Request(s) still processing.",
@@ -96,15 +93,19 @@ def pd_api_response(ok):
 
 def test_health_call_with_invalid_jwt_failure(route, client, invalid_jwt):
     response = client.post(route, headers=headers(invalid_jwt))
-    assert response.get_json() == EXPECTED_PAYLOAD_FORBIDDEN
+    assert response.get_json() == EXPECTED_PAYLOAD_INVALID_JWT
 
 
 def test_health_call_success(route, client, pd_api_request, valid_jwt):
     pd_api_request.return_value = pd_api_response(ok=True)
     response = client.post(route, headers=headers(valid_jwt))
 
-    expected_url = get_expected_url(client, valid_jwt)
-    pd_api_request.assert_called_once_with(*expected_url)
+    expected_url = get_expected_url(client)
+    pd_api_request.assert_called_once_with(
+        expected_url,
+        params=get_params(client, valid_jwt),
+        headers=get_headers(client)
+    )
 
     expected_payload = {"data": {"status": "ok"}}
 
@@ -116,8 +117,12 @@ def test_health_call_failure(route, client, pd_api_request, valid_jwt):
     pd_api_request.return_value = pd_api_response(ok=False)
     response = client.post(route, headers=headers(valid_jwt))
 
-    expected_url = get_expected_url(client, valid_jwt)
-    pd_api_request.assert_called_once_with(*expected_url)
+    expected_url = get_expected_url(client)
+    pd_api_request.assert_called_once_with(
+        expected_url,
+        params=get_params(client, valid_jwt),
+        headers=get_headers(client)
+    )
 
     assert response.status_code == HTTPStatus.OK
     assert response.get_json() == EXPECTED_PAYLOAD_REQUEST_TIMEOUT

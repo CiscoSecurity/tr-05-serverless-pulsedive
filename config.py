@@ -8,7 +8,7 @@ from version import VERSION
 class Config(object):
     VERSION = VERSION
 
-    SECRET_KEY = os.environ.get('SECRET_KEY', '')
+    SECRET_KEY = os.environ.get('SECRET_KEY', None)
 
     API_URL = 'https://pulsedive.com/api/info.php'
 
@@ -123,3 +123,6 @@ class Config(object):
     )
 
     NAMESPACE_BASE = NAMESPACE_X500
+
+    USER_AGENT = ('Cisco Threat Response Integrations '
+                  '<tr-integrations-support@cisco.com>')
