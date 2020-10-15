@@ -85,9 +85,6 @@ def perform_request(params):
     if response.status_code == HTTPStatus.OK:
         return response.json()
 
-    elif response.status_code == HTTPStatus.UNAUTHORIZED:
-        raise AuthorizationError(response.json().get('error'))
-
     elif response.status_code in current_app.config['NOT_CRITICAL_ERRORS']:
         return {}
     raise UnexpectedPulsediveError(response)
