@@ -1,5 +1,7 @@
 from json.decoder import JSONDecodeError
 
+AUTH_ERROR = 'authorization error'
+
 
 class TRFormattedError(Exception):
     def __init__(self, code, message, type_='fatal'):
@@ -24,9 +26,12 @@ class UnexpectedPulsediveError(TRFormattedError):
         super().__init__(code, message)
 
 
-class JwtError(TRFormattedError):
+class AuthorizationError(TRFormattedError):
     def __init__(self, message):
-        super().__init__('permission denied', message)
+        super().__init__(
+            AUTH_ERROR,
+            f'Authorization failed: {message}'
+        )
 
 
 class InvalidInputError(TRFormattedError):

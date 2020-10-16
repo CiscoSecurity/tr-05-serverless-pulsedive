@@ -1,9 +1,20 @@
-EXPECTED_PAYLOAD_FORBIDDEN = {
+EXPECTED_PAYLOAD_WITHOUT_JWT = {
   "errors": [
     {
-      "code": "permission denied",
-      "message": "Invalid Authorization Bearer JWT.",
-      "type": "fatal",
+      "code": "authorization error",
+      "message": "Authorization failed: Authorization header is missing",
+      "type": "fatal"
+    }
+  ]
+}
+
+EXPECTED_PAYLOAD_INVALID_JWT = {
+  "errors": [
+    {
+      "code": "authorization error",
+      "message": "Authorization failed: Failed to decode JWT with "
+                 "provided key",
+      "type": "fatal"
     }
   ]
 }

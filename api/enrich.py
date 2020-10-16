@@ -4,17 +4,13 @@ from datetime import datetime, timedelta
 from uuid import uuid4, uuid5
 from base64 import b64encode
 from urllib.parse import quote
-from http import HTTPStatus
 
 from flask import Blueprint, current_app, g
-import requests
 
 from api.schemas import ObservableSchema
-from api.errors import UnexpectedPulsediveError
-
 from api.utils import (
     get_jwt, jsonify_data, get_json, jsonify_result,
-    key_error_handler, ssl_error_handler
+    key_error_handler, ssl_error_handler, perform_request
 )
 
 
@@ -51,14 +47,7 @@ def sort_entities(list_):
 @ssl_error_handler
 def get_pulsedive_output(observable, links=False):
     output = {}
-    key = get_jwt().get('key')
-
-    header = {
-        'User-Agent': ('Cisco Threat Response Integrations '
-                       '<tr-integrations-support@cisco.com>'),
-    }
-
-    url = current_app.config["API_URL"]
+    key = get_jwt()
     params = {
         'indicator': observable,
         'key': key
@@ -66,13 +55,7 @@ def get_pulsedive_output(observable, links=False):
     if links:
         params['get'] = 'links'
 
-    response = requests.get(url, headers=header, params=params)
-
-    if response.status_code not in \
-            (*current_app.config['NOT_CRITICAL_ERRORS'], HTTPStatus.OK):
-        raise UnexpectedPulsediveError(response)
-
-    payload = response.json()
+    payload = perform_request(params)
     if payload.get('threats'):
         sort_entities(payload['threats'])
     if payload.get('feeds'):
@@ -475,7 +458,7 @@ def observe_observables():
     sightings_relationship = set()
     for value in observables.keys():
         output = get_pulsedive_output(value)
-        if not output.get('error'):
+        if output:
             g.verdicts.append(extract_verdict(output))
             g.judgements.append(extract_judgement(output))
             g.indicators += extract_indicators(output, indicator_ids)
@@ -492,7 +475,7 @@ def get_browse_pivot(observable):
     output = get_pulsedive_output(observable)
     pivots = []
 
-    if not output.get('error'):
+    if output:
         url = current_app.config['UI_URL'].format(
             query=f"indicator/?iid={output['iid']}")
         value = output['indicator']
