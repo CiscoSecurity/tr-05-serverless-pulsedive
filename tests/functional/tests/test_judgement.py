@@ -12,7 +12,7 @@ from tests.functional.tests.constants import (
     'observable,observable_type,disposition_name,disposition',
     (('13.79.174.77', 'ip', 'Clean', 1),
      ('1.0.3.4', 'ip', 'Suspicious', 3),
-     ('yizaiwl.cc', 'domain', 'Malicious', 2),
+     ('0-100-disc.foxypool.cf', 'domain', 'Malicious', 2),
      ('https://www.youtube.com/', 'url', 'Unknown', 5))
 )
 def test_positive_judgement(module_headers, observable, observable_type,
