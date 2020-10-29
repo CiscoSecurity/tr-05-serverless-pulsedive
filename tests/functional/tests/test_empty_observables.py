@@ -38,7 +38,8 @@ def test_positive_smoke_empty_observe_observables(module_headers, observable,
         **{'headers': module_headers}
     )
 
-    response_from_pulsedive = get_observables(response_from_all_modules, MODULE_NAME)
+    response_from_pulsedive = get_observables(
+        response_from_all_modules, MODULE_NAME)
 
     assert response_from_pulsedive['module'] == MODULE_NAME
     assert response_from_pulsedive['module_instance_id']
