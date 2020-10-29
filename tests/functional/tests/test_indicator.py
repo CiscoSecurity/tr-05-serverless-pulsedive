@@ -29,7 +29,7 @@ def test_positive_indicator_details(module_headers):
     response_from_all_modules = enrich_observe_observables(
         payload=observables,
         **{'headers': module_headers}
-    )['data']
+    )
     response_from_pulsedive_module = get_observables(
         response_from_all_modules, MODULE_NAME)
 
