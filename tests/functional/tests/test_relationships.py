@@ -28,7 +28,7 @@ def test_positive_relationship_detail(module_headers):
         **{'headers': module_headers}
     )
     response_from_pulsedive_module = get_observables(
-        response_from_all_modules['data'], MODULE_NAME)
+        response_from_all_modules, MODULE_NAME)
 
     assert response_from_pulsedive_module['module'] == MODULE_NAME
     assert response_from_pulsedive_module['module_instance_id']
@@ -82,7 +82,7 @@ def test_positive_relationship_several_observables(module_headers):
         **{'headers': module_headers}
     )
     response_from_pulsedive_module = get_observables(
-        response_from_all_modules['data'], MODULE_NAME)
+        response_from_all_modules, MODULE_NAME)
 
     assert response_from_pulsedive_module['module'] == MODULE_NAME
     assert response_from_pulsedive_module['module_instance_id']
