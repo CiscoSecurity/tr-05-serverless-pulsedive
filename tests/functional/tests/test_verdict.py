@@ -6,7 +6,7 @@ from tests.functional.tests.constants import MODULE_NAME
 
 @pytest.mark.parametrize(
     'observable,observable_type,disposition_name,disposition',
-    (('13.79.174.77', 'ip', 'Clean', 1),
+    (('50.63.202.50', 'ip', 'Clean', 1),
      ('0-100-disc.foxypool.cf', 'domain', 'Malicious', 2),
      ('1.0.3.4', 'ip', 'Suspicious', 3),
      ('98.159.110.20', 'ip', 'Unknown', 5))
