@@ -10,7 +10,7 @@ from tests.functional.tests.constants import (
 
 @pytest.mark.parametrize(
     'observable,observable_type,disposition_name,disposition',
-    (('13.79.174.77', 'ip', 'Clean', 1),
+    (('50.63.202.50', 'ip', 'Clean', 1),
      ('1.0.3.4', 'ip', 'Suspicious', 3),
      ('0-100-disc.foxypool.cf', 'domain', 'Malicious', 2),
      ('https://www.youtube.com/', 'url', 'Unknown', 5))
