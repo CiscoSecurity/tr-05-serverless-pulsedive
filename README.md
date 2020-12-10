@@ -144,7 +144,7 @@ somewhere) a 256-bit (i.e. 64-character) string a.k.a. the secret key.
 Once the secret key has been generated and used for encoding your third-party
 credentials into a JWT, the token has to be provided on each request to the
 application as the `Authorization: Bearer <JWT>` header (this will be
-automatically done for you if you create a corresponding module in Threat
+automatically done for you if you create a corresponding module in SecureX Threat
 Response). Unless the signature verification fails, the application will decode
 the token to restore your original third-party credentials and will try to
 authenticate to the corresponding third-party service on your behalf.
