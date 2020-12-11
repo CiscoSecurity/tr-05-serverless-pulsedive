@@ -124,5 +124,5 @@ class Config(object):
 
     NAMESPACE_BASE = NAMESPACE_X500
 
-    USER_AGENT = ('Cisco Threat Response Integrations '
+    USER_AGENT = ('SecureX Threat Response Integrations '
                   '<tr-integrations-support@cisco.com>')
