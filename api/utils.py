@@ -1,6 +1,8 @@
 import requests
-from authlib.jose import jwt
-from authlib.jose.errors import BadSignatureError, DecodeError
+import json
+import jwt
+#from authlib.jose import jwt
+#from authlib.jose.errors import BadSignatureError, DecodeError
 from flask import request, current_app, jsonify, g
 from requests.exceptions import SSLError
 from http import HTTPStatus
@@ -23,13 +25,25 @@ def get_jwt():
     expected_errors = {
         KeyError: 'Wrong JWT payload structure',
         TypeError: '<SECRET_KEY> is missing',
-        BadSignatureError: 'Failed to decode JWT with provided key',
-        DecodeError: 'Wrong JWT structure'
+        #BadSignatureError: 'Failed to decode JWT with provided key',
+        #DecodeError: 'Wrong JWT structure'
     }
 
     token = get_auth_token()
     try:
-        payload = jwt.decode(token, current_app.config['SECRET_KEY'])
+        jwks_host = jwt.decode(token, options={"verify_signature": False})['jwks_host']
+        response = requests.get(f"https://{jwks_host}/.well-known/jwks")
+        jwks = response.json()
+        
+        public_keys = {}
+        for jwk in jwks['keys']:
+            kid = jwk['kid']
+            public_keys[kid] = jwt.algorithms.RSAAlgorithm.from_jwk(json.dumps(jwk))
+        kid = jwt.get_unverified_header(token)['kid']
+        key = public_keys[kid]
+        aud = request.url_root
+        payload = jwt.decode(token, key=key, algorithms=['RS256'], audience=[aud.rstrip('/')])
+
         return payload['key']
     except tuple(expected_errors) as error:
         message = expected_errors[error.__class__]
