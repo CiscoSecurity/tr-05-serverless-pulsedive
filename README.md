@@ -204,12 +204,6 @@ header set to `Bearer <JWT>`.
 - `domain`
 - `url`
 
-**NOTE**. You do not technically need an API key to access the Pulsedive API, but it helps them keep
-track of how many requests are being used. If the API key is not used with API
-requests, they may use other methods of tracking requests. But, this could be inaccurate 
-and the rate limit is set for free users to 30 requests per minute.
-They offer additional [pricing plans](https://pulsedive.com/about/?q=api) for increased rate limits. 
-
 ### Supported Environment Variables
 
 - `CTR_ENTITIES_LIMIT`

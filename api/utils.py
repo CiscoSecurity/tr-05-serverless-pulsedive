@@ -1,6 +1,6 @@
 import requests
-import json
 import jwt
+import json
 from jwt import InvalidSignatureError, DecodeError, InvalidAudienceError
 from flask import request, current_app, jsonify, g
 from requests.exceptions import SSLError, ConnectionError, InvalidURL
@@ -13,6 +13,15 @@ from api.errors import (
     PulsediveSSLError,
     UnexpectedPulsediveError
 )
+
+
+def set_ctr_entities_limit(payload):
+    try:
+        ctr_entities_limit = int(payload['CTR_ENTITIES_LIMIT'])
+        assert ctr_entities_limit > 0
+    except (KeyError, ValueError, AssertionError):
+        ctr_entities_limit = current_app.config['CTR_DEFAULT_ENTITIES_LIMIT']
+    current_app.config['CTR_ENTITIES_LIMIT'] = ctr_entities_limit
 
 
 def get_public_key(jwks_host, token):
@@ -63,7 +72,7 @@ def get_jwt():
     token = get_auth_token()
     try:
         jwks_host = jwt.decode(
-            token, options={"verify_signature": False}
+            token, options={'verify_signature': False}
         ).get('jwks_host')
         assert jwks_host
         key = get_public_key(jwks_host, token)
@@ -71,7 +80,7 @@ def get_jwt():
         payload = jwt.decode(
             token, key=key, algorithms=['RS256'], audience=[aud.rstrip('/')]
         )
-
+        set_ctr_entities_limit(payload)
         return payload['key']
     except tuple(expected_errors) as error:
         message = expected_errors[error.__class__]

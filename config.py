@@ -8,8 +8,6 @@ from __version__ import VERSION
 class Config(object):
     VERSION = VERSION
 
-    SECRET_KEY = os.environ.get('SECRET_KEY', None)
-
     API_URL = 'https://pulsedive.com/api/info.php'
 
     UI_URL = "https://pulsedive.com/{query}"
@@ -28,12 +26,6 @@ class Config(object):
     CTIM_SCHEMA_VERSION = '1.0.17'
 
     CTR_DEFAULT_ENTITIES_LIMIT = 100
-
-    try:
-        CTR_ENTITIES_LIMIT = int(os.environ['CTR_ENTITIES_LIMIT'])
-        assert CTR_ENTITIES_LIMIT > 0
-    except (KeyError, ValueError, AssertionError):
-        CTR_ENTITIES_LIMIT = CTR_DEFAULT_ENTITIES_LIMIT
 
     PULSEDIVE_OBSERVABLE_TYPES = {
         'url': 'URL',
