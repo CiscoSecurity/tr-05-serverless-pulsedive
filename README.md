@@ -136,7 +136,7 @@ module using your Lambda's URL and Pulsedive API key:
 - EU: https://securex.eu.security.cisco.com/integrations/available/33b8dd88-d126-49f8-afca-3a43dee7896d/new
 - APJC: https://securex.apjc.security.cisco.com/integrations/available/213bd6b5-fd73-44db-9157-3b5156b01530/new  
 
-You will also be prompted to enter `CTR_ENTITIES_LIMIT` which
+You will also be prompted to enter `CTR_ENTITIES_LIMIT` variable that:
   - Restricts the maximum number of CTIM entities of each type returned in a
   single response per each requested observable.
   - Applies to the following CTIM entities:
