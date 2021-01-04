@@ -93,7 +93,7 @@ def test_enrich_call_without_jwt_failure(route,
                                          client,
                                          valid_json,
                                          get_pub_key):
-    pd_api_request.side_effect = get_pub_key()
+    pd_api_request.return_value = get_pub_key
     response = client.post(route,
                            json=valid_json)
     assert response.get_json() == EXPECTED_PAYLOAD_WITHOUT_JWT
