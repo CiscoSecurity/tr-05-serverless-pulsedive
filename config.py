@@ -25,7 +25,6 @@ class Config(object):
     CTIM_SCHEMA_VERSION = '1.0.17'
 
     CTR_DEFAULT_ENTITIES_LIMIT = 100
-    CTR_ENTITIES_LIMIT = 100
 
     PULSEDIVE_OBSERVABLE_TYPES = {
         'url': 'URL',
