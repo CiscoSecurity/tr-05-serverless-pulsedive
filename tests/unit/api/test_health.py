@@ -2,7 +2,6 @@ from http import HTTPStatus
 from unittest.mock import MagicMock, patch
 from requests.exceptions import SSLError
 
-from authlib.jose import jwt
 from pytest import fixture
 
 from .utils import headers
@@ -23,28 +22,10 @@ def route(request):
     return request.param
 
 
-def get_expected_url(client):
-    app = client.application
-    url = app.config['API_URL']
-    return url
-
-
-def get_params(client, valid_jwt=None):
-    app = client.application
-    key = jwt.decode(valid_jwt, app.config['SECRET_KEY'])['key']
-    return {'iid': 2, 'key': key}
-
-
-def get_headers(client):
-    app = client.application
-    request_headers = {
-        'User-Agent': app.config['USER_AGENT']
-    }
-    return request_headers
-
-
-def test_health_call_without_jwt_failure(route, client, pd_api_request):
-    pd_api_request.return_value = pd_api_response(ok=False)
+def test_health_call_without_jwt_failure(
+        route, client, pd_api_request, get_pub_key
+):
+    pd_api_request.side_effect = get_pub_key()
     response = client.post(route)
 
     assert response.status_code == HTTPStatus.OK
@@ -91,21 +72,21 @@ def pd_api_response(ok):
     return mock_response
 
 
-def test_health_call_with_invalid_jwt_failure(route, client, invalid_jwt):
+def test_health_call_with_invalid_jwt_failure(
+        route, client, pd_api_request, invalid_jwt, get_pub_key
+):
+    pd_api_request.return_value = get_pub_key
     response = client.post(route, headers=headers(invalid_jwt))
+
+    assert response.status_code == HTTPStatus.OK
     assert response.get_json() == EXPECTED_PAYLOAD_INVALID_JWT
 
 
-def test_health_call_success(route, client, pd_api_request, valid_jwt):
-    pd_api_request.return_value = pd_api_response(ok=True)
+def test_health_call_success(
+        route, client, pd_api_request, valid_jwt, get_pub_key
+):
+    pd_api_request.side_effect = (get_pub_key,  pd_api_response(ok=True))
     response = client.post(route, headers=headers(valid_jwt))
-
-    expected_url = get_expected_url(client)
-    pd_api_request.assert_called_once_with(
-        expected_url,
-        params=get_params(client, valid_jwt),
-        headers=get_headers(client)
-    )
 
     expected_payload = {"data": {"status": "ok"}}
 
@@ -113,26 +94,23 @@ def test_health_call_success(route, client, pd_api_request, valid_jwt):
     assert response.get_json() == expected_payload
 
 
-def test_health_call_failure(route, client, pd_api_request, valid_jwt):
-    pd_api_request.return_value = pd_api_response(ok=False)
+def test_health_call_failure(
+        route, client, pd_api_request, valid_jwt, get_pub_key
+):
+    pd_api_request.side_effect = (get_pub_key, pd_api_response(ok=False))
     response = client.post(route, headers=headers(valid_jwt))
-
-    expected_url = get_expected_url(client)
-    pd_api_request.assert_called_once_with(
-        expected_url,
-        params=get_params(client, valid_jwt),
-        headers=get_headers(client)
-    )
 
     assert response.status_code == HTTPStatus.OK
     assert response.get_json() == EXPECTED_PAYLOAD_REQUEST_TIMEOUT
 
 
-def test_health_call_ssl_error(route, client, valid_jwt, pd_api_request):
+def test_health_call_ssl_error(
+        route, client, valid_jwt, pd_api_request, get_pub_key
+):
     mock_exception = MagicMock()
     mock_exception.reason.args.__getitem__().verify_message \
         = 'self signed certificate'
-    pd_api_request.side_effect = SSLError(mock_exception)
+    pd_api_request.side_effect = (get_pub_key,  SSLError(mock_exception))
 
     response = client.post(route, headers=headers(valid_jwt))
 
