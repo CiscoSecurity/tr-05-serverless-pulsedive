@@ -297,16 +297,14 @@ def test_enrich_error_with_data(mock_related_entities,
 
 def test_enrich_call_success_limit_1(any_route,
                                      client,
-                                     valid_jwt,
+                                     valid_jwt_with_limit_1,
                                      valid_json,
                                      pd_api_request,
                                      get_pub_key):
     if any_route.startswith('/observe'):
-        client.application.config['CTR_ENTITIES_LIMIT'] = 1
-
         pd_api_request.side_effect = (get_pub_key, pd_api_response(ok=True))
         response = client.post(any_route,
-                               headers=headers(valid_jwt),
+                               headers=headers(valid_jwt_with_limit_1),
                                json=valid_json)
 
         data = response.get_json()

@@ -34,9 +34,23 @@ def valid_jwt(client):
         'aud': 'http://localhost'
     }
     return jwt.encode(
-        payload,
-        client.application.rsa_private_key,
-        algorithm='RS256',
+        payload, client.application.rsa_private_key, algorithm='RS256',
+        headers={
+            'kid': '02B1174234C29F8EFB69911438F597FF3FFEE6B7'
+        }
+    )
+
+
+@fixture(scope='session')
+def valid_jwt_with_limit_1(client):
+    payload = {
+        'key': 'my_key_for_pulsedive',
+        'jwks_host': 'visibility.amp.cisco.com',
+        'aud': 'http://localhost',
+        'CTR_ENTITIES_LIMIT': 1
+    }
+    return jwt.encode(
+        payload, client.application.rsa_private_key, algorithm='RS256',
         headers={
             'kid': '02B1174234C29F8EFB69911438F597FF3FFEE6B7'
         }
@@ -45,14 +59,16 @@ def valid_jwt(client):
 
 @fixture(scope='session')
 def invalid_jwt(valid_jwt, client):
-    payload = jwt.decode(valid_jwt, options={"verify_signature": False})
+    payload = jwt.decode(valid_jwt, options={'verify_signature': False})
 
     # Corrupt the valid JWT by tampering with its payload.
     del payload['key']
 
     payload = jwt.encode(
             payload, client.application.rsa_private_key, algorithm='RS256',
-            headers={'kid': '02B1174234C29F8EFB69911438F597FF3FFEE6B7'}
+            headers={
+                'kid': '02B1174234C29F8EFB69911438F597FF3FFEE6B7'
+            }
         )
 
     return payload
