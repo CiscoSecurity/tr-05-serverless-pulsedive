@@ -78,7 +78,10 @@ def expected_payload(any_route):
 def test_enrich_call_with_invalid_jwt_failure(route,
                                               client,
                                               invalid_jwt,
-                                              valid_json):
+                                              valid_json,
+                                              pd_api_request,
+                                              get_pub_key):
+    pd_api_request.return_value = get_pub_key
 
     response = client.post(route,
                            headers=headers(invalid_jwt),
@@ -88,7 +91,9 @@ def test_enrich_call_with_invalid_jwt_failure(route,
 
 def test_enrich_call_without_jwt_failure(route,
                                          client,
-                                         valid_json):
+                                         valid_json,
+                                         get_pub_key):
+    pd_api_request.return_value = get_pub_key
     response = client.post(route,
                            json=valid_json)
     assert response.get_json() == EXPECTED_PAYLOAD_WITHOUT_JWT
@@ -109,7 +114,9 @@ def any_route(request):
 
 def test_enrich_call_without_jwt_but_invalid_json_failure(route,
                                                           client,
-                                                          invalid_json):
+                                                          invalid_json,
+                                                          get_pub_key):
+    pd_api_request.side_effect = get_pub_key()
     response = client.post(route, json=invalid_json)
     assert response.get_json() == EXPECTED_PAYLOAD_INVALID_INPUT
 
@@ -136,10 +143,11 @@ def test_enrich_call_success(mock_related_entities,
                              valid_jwt,
                              valid_json,
                              pd_api_request,
-                             expected_payload):
+                             expected_payload,
+                             get_pub_key):
     if any_route.startswith('/observe'):
         mock_related_entities.return_value = PULSEDIVE_ACTIVE_DNS_RESPONSE
-        pd_api_request.return_value = pd_api_response(ok=True)
+        pd_api_request.side_effect = (get_pub_key,  pd_api_response(ok=True))
         response = client.post(any_route,
                                headers=headers(valid_jwt),
                                json=valid_json)
@@ -183,7 +191,7 @@ def test_enrich_call_success(mock_related_entities,
         assert response.status_code == HTTPStatus.OK
 
     if any_route.startswith('/refer'):
-        pd_api_request.return_value = pd_api_response(ok=True)
+        pd_api_request.side_effect = (get_pub_key,  pd_api_response(ok=True))
         response = client.post(any_route,
                                headers=headers(valid_jwt),
                                json=valid_json)
@@ -198,12 +206,13 @@ def test_enrich_call_failure(route,
                              client,
                              valid_jwt,
                              valid_json,
-                             pd_api_request):
-    pd_api_request.return_value = pd_api_response(
+                             pd_api_request,
+                             get_pub_key):
+    pd_api_request.side_effect = (get_pub_key, pd_api_response(
         ok=False,
         payload=PULSEDIVE_REQUEST_TIMEOUT,
         reason='request timeout'
-    )
+    ))
     response = client.post(route,
                            headers=headers(valid_jwt),
                            json=valid_json)
@@ -227,11 +236,13 @@ def test_enrich_error_with_data(mock_related_entities,
                                 valid_jwt,
                                 valid_json_multiple,
                                 pd_api_request,
-                                expected_payload):
+                                expected_payload,
+                                get_pub_key):
     if any_route.startswith('/observe'):
         mock_related_entities.return_value = PULSEDIVE_ACTIVE_DNS_RESPONSE
         pd_api_request.side_effect = (
-            pd_api_response(ok=True), pd_api_response(
+            get_pub_key, pd_api_response(ok=True),
+            get_pub_key, pd_api_response(
                 ok=False,
                 payload=PULSEDIVE_REQUEST_TIMEOUT,
                 reason='request timeout'
@@ -286,15 +297,14 @@ def test_enrich_error_with_data(mock_related_entities,
 
 def test_enrich_call_success_limit_1(any_route,
                                      client,
-                                     valid_jwt,
+                                     valid_jwt_with_limit_1,
                                      valid_json,
-                                     pd_api_request):
+                                     pd_api_request,
+                                     get_pub_key):
     if any_route.startswith('/observe'):
-        client.application.config['CTR_ENTITIES_LIMIT'] = 1
-
-        pd_api_request.return_value = pd_api_response(ok=True)
+        pd_api_request.side_effect = (get_pub_key, pd_api_response(ok=True))
         response = client.post(any_route,
-                               headers=headers(valid_jwt),
+                               headers=headers(valid_jwt_with_limit_1),
                                json=valid_json)
 
         data = response.get_json()
@@ -330,12 +340,12 @@ def test_enrich_call_success_limit_1(any_route,
 
 
 def test_enrich_call_with_key_error(any_route, client, valid_json,
-                                    pd_api_request, valid_jwt):
+                                    pd_api_request, valid_jwt, get_pub_key):
     if any_route.startswith('/observe'):
-        pd_api_request.return_value = pd_api_response(
+        pd_api_request.side_effect = (get_pub_key, pd_api_response(
             ok=True,
             payload=INVALID_PULSEDIVE_RESPONSE
-        )
+        ))
 
         response = client.post(
             any_route, json=valid_json, headers=headers(valid_jwt)
@@ -346,12 +356,12 @@ def test_enrich_call_with_key_error(any_route, client, valid_json,
 
 
 def test_enrich_call_ssl_error(
-        route, client, valid_jwt, pd_api_request, valid_json
+        route, client, valid_jwt, pd_api_request, valid_json, get_pub_key
 ):
     mock_exception = mock.MagicMock()
     mock_exception.reason.args.__getitem__().verify_message \
         = 'self signed certificate'
-    pd_api_request.side_effect = SSLError(mock_exception)
+    pd_api_request.side_effect = (get_pub_key, SSLError(mock_exception))
 
     response = client.post(route, headers=headers(valid_jwt), json=valid_json)
 

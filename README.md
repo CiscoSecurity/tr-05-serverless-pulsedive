@@ -127,74 +127,23 @@ zappa undeploy dev
 command does not change the current `URL`. The `undeploy` command destroys the
 old `URL` forever.
 
-### JWT
-
-Before you can start using the live Lambda, you have to encode your third-party
-credentials into a JWT using a generated secret key.
-
-In brief, [JSON Web Token (JWT)](https://en.wikipedia.org/wiki/JSON_Web_Token)
-is a way of encoding any JSON data into a signed token. The signature ensures
-the integrity of the data, i.e. the fact that it has not been changed in any
-way in transit between the sender and the recipient.
-
-The JWT standard supports many different algorithms for signing tokens but we
-are interested in HS256. The algorithm requires to generate (and securely store
-somewhere) a 256-bit (i.e. 64-character) string a.k.a. the secret key.
-
-Once the secret key has been generated and used for encoding your third-party
-credentials into a JWT, the token has to be provided on each request to the
-application as the `Authorization: Bearer <JWT>` header (this will be
-automatically done for you if you create a corresponding module in SecureX Threat
-Response). Unless the signature verification fails, the application will decode
-the token to restore your original third-party credentials and will try to
-authenticate to the corresponding third-party service on your behalf.
-
-We recommend taking a look at [JWT.IO](https://jwt.io/), it is a good resource
-for learning how JWTs work.
-
 ### SecureX Threat Response Module
 
-Now, the only things left to do are:
+Now, the only thing left to do is to follow one of these URLs to navigate 
+to SecureX Threat Response page in your region and create the Pulsedive
+module using your Lambda's URL and Pulsedive API key:
+- US: https://securex.us.security.cisco.com/integrations/available/44606d8d-fc66-4ac7-815b-4448e096180f/new
+- EU: https://securex.eu.security.cisco.com/integrations/available/33b8dd88-d126-49f8-afca-3a43dee7896d/new
+- APJC: https://securex.apjc.security.cisco.com/integrations/available/213bd6b5-fd73-44db-9157-3b5156b01530/new  
 
-- Generate a secret key and encode your credentials into a token. Let us name
-those `SECRET_KEY` and `JWT` respectively so that we can refer to them later
-on.
+You will also be prompted to enter `CTR_ENTITIES_LIMIT` variable that:
+  - Restricts the maximum number of CTIM entities of each type returned in a
+  single response per each requested observable.
+  - Applies to the following CTIM entities:
+    - `Indicator`,
+    - `Sighting`.
+  - Must be a positive integer. Defaults to `100` (if unset or incorrect).
 
-- Set the `SECRET_KEY` environment variable for your Lambda using the
-corresponding value from the previous step.
-
-- Create a corresponding SecureX Threat Response module based on your Lambda.
-
-To simplify the JWT-related stuff, we have prepared for you the
-[SecureX Threat Response JWT Generator](https://github.com/CiscoSecurity/tr-05-jwt-generator)
-tool that provides only a single easy-to-use `jwt` command. Since the tool is
-included into the [requirements.txt](requirements.txt) file, at this point it
-should already have been installed along with the other dependencies.
-
-Follow the steps below to finish the deployment procedure:
-
-1. Run the `jwt` command of the tool specifying a Zappa stage, e.g. `jwt dev`.
-It will prompt you to enter your third-party credentials according to the `jwt`
-structure defined in the [Module Settings](module_settings.json).
-
-2. The command will generate a `SECRET_KEY`/`JWT` pair for you based on your
-just entered credentials. Make sure to save both.
-
-3. The command will also build the link to the AWS Console page with your
-Lambda's environment variables. Go set the `SECRET_KEY` environment variable
-there. This is important since the Lambda has to know the `SECRET_KEY` so that
-it can verify and decode the `JWT` from incoming requests. If you do not
-understand how to set the `SECRET_KEY` environment variable then check the
-[AWS Environment Variables](aws/EnvironmentVariables.md) guide on passing
-arbitrary environment variables to Lambdas.
-
-4. The command will also build the links to the SecureX Threat Response pages (in all
-available regions) with the corresponding module creation forms. Select the
-link corresponding to your SecureX Threat Response region. The form there will require
-you to enter both your Lambda's `URL` and your `JWT` (along with a unique name)
-to finally create your SecureX Threat Response module.
-
-That is it! Your Serverless Relay is ready to use! Congratulations!
 
 ## Step 3: Testing (Optional)
 
@@ -263,30 +212,6 @@ header set to `Bearer <JWT>`.
 - `ipv6`
 - `domain`
 - `url`
-
-### JWT Payload Structure  
-
-```json
-{
-  "key": "<PULSEDIVE_API_KEY>"
-}
-```
-
-**NOTE**. You do not technically need an API key to access the Pulsedive API, but it helps them keep
-track of how many requests are being used. If the API key is not used with API
-requests, they may use other methods of tracking requests. But, this could be inaccurate 
-and the rate limit is set for free users to 30 requests per minute.
-They offer additional [pricing plans](https://pulsedive.com/about/?q=api) for increased rate limits. 
-
-### Supported Environment Variables
-
-- `CTR_ENTITIES_LIMIT`
-  - Restricts the maximum number of CTIM entities of each type returned in a
-  single response per each requested observable.
-  - Applies to the following CTIM entities:
-    - `Indicator`,
-    - `Sighting`.
-  - Must be a positive integer. Defaults to `100` (if unset or incorrect).
 
 ### CTIM Mapping Specifics
 

@@ -1,7 +1,11 @@
 from datetime import datetime
 
-from authlib.jose import jwt
+import jwt
 from pytest import fixture
+from unittest.mock import MagicMock
+from tests.unit.payloads_for_tests import (
+    EXPECTED_RESPONSE_OF_JWKS_ENDPOINT, PRIVATE_KEY
+)
 
 from app import app
 
@@ -14,7 +18,7 @@ def secret_key():
 
 @fixture(scope='session')
 def client(secret_key):
-    app.secret_key = secret_key
+    app.rsa_private_key = PRIVATE_KEY
 
     app.testing = True
 
@@ -24,32 +28,55 @@ def client(secret_key):
 
 @fixture(scope='session')
 def valid_jwt(client):
-    header = {'alg': 'HS256'}
-
-    payload = {'key': 'my_key_for_pulsedive'}
-
-    secret_key = client.application.secret_key
-
-    return jwt.encode(header, payload, secret_key).decode('ascii')
+    payload = {
+        'key': 'my_key_for_pulsedive',
+        'jwks_host': 'visibility.amp.cisco.com',
+        'aud': 'http://localhost'
+    }
+    return jwt.encode(
+        payload, client.application.rsa_private_key, algorithm='RS256',
+        headers={
+            'kid': '02B1174234C29F8EFB69911438F597FF3FFEE6B7'
+        }
+    )
 
 
 @fixture(scope='session')
-def invalid_jwt(valid_jwt, secret_key):
-    header, payload, signature = valid_jwt.split('.')
+def valid_jwt_with_limit_1(client):
+    payload = {
+        'key': 'my_key_for_pulsedive',
+        'jwks_host': 'visibility.amp.cisco.com',
+        'aud': 'http://localhost',
+        'CTR_ENTITIES_LIMIT': 1
+    }
+    return jwt.encode(
+        payload, client.application.rsa_private_key, algorithm='RS256',
+        headers={
+            'kid': '02B1174234C29F8EFB69911438F597FF3FFEE6B7'
+        }
+    )
 
-    def jwt_decode(s: str) -> dict:
-        from authlib.common.encoding import urlsafe_b64decode, json_loads
-        return json_loads(urlsafe_b64decode(s.encode('ascii')))
 
-    def jwt_encode(d: dict) -> str:
-        from authlib.common.encoding import json_dumps, urlsafe_b64encode
-        return urlsafe_b64encode(json_dumps(d).encode('ascii')).decode('ascii')
-
-    payload = jwt_decode(payload)
+@fixture(scope='session')
+def invalid_jwt(valid_jwt, client):
+    payload = jwt.decode(valid_jwt, options={'verify_signature': False})
 
     # Corrupt the valid JWT by tampering with its payload.
-    payload['superuser'] = True
+    del payload['key']
 
-    payload = jwt_encode(payload)
+    payload = jwt.encode(
+            payload, client.application.rsa_private_key, algorithm='RS256',
+            headers={
+                'kid': '02B1174234C29F8EFB69911438F597FF3FFEE6B7'
+            }
+        )
 
-    return '.'.join([header, payload, signature])
+    return payload
+
+
+@fixture(scope='session')
+def get_pub_key():
+    mock_response = MagicMock()
+    payload = EXPECTED_RESPONSE_OF_JWKS_ENDPOINT
+    mock_response.json = lambda: payload
+    return mock_response
