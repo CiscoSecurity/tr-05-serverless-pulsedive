@@ -26,10 +26,10 @@ def set_ctr_entities_limit(payload):
 
 def get_public_key(jwks_host, token):
     expected_errors = {
-        ConnectionError: 'Wrong jwks_host in JWT payload '
+        ConnectionError: 'Wrong jwks_host in JWT payload. '
                          'Make sure domain follows the '
                          'visibility.<region>.cisco.com structure',
-        InvalidURL: 'Wrong jwks_host in JWT payload '
+        InvalidURL: 'Wrong jwks_host in JWT payload. '
                     'Make sure domain follows the '
                     'visibility.<region>.cisco.com structure',
     }
