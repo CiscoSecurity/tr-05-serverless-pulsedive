@@ -70,7 +70,7 @@ def get_jwt():
     }
 
     token = get_auth_token()
-    print(token)
+
     try:
         jwks_host = jwt.decode(
             token, options={'verify_signature': False}
