@@ -22,7 +22,7 @@ class Config(object):
                    '"exact":true}}],"attribute":[],"property"' \
                    ':[],"threat":[], "feed":[]}}'
 
-    CTIM_SCHEMA_VERSION = '1.0.17'
+    CTIM_SCHEMA_VERSION = '1.0.22'
 
     CTR_DEFAULT_ENTITIES_LIMIT = 100
 
