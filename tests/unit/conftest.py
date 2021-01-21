@@ -80,3 +80,13 @@ def get_pub_key():
     payload = EXPECTED_RESPONSE_OF_JWKS_ENDPOINT
     mock_response.json = lambda: payload
     return mock_response
+
+
+@fixture(scope='module')
+def expected_payload_unsupported_type(route):
+    payload_to_route_match = {
+        '/deliberate/observables': {},
+        '/refer/observables': {'data': []},
+        '/observe/observables': {'data': {}}
+    }
+    return payload_to_route_match[route]

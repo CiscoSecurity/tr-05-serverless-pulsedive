@@ -6,7 +6,6 @@ from pytest import fixture
 
 from .utils import headers
 from tests.unit.payloads_for_tests import (
-    EXPECTED_PAYLOAD_INVALID_INPUT,
     EXPECTED_PAYLOAD_WITHOUT_JWT,
     EXPECTED_PAYLOAD_INVALID_JWT,
     EXPECTED_PAYLOAD_OBSERVE,
@@ -112,28 +111,26 @@ def any_route(request):
     return request.param
 
 
-def test_enrich_call_without_jwt_but_invalid_json_failure(route,
-                                                          client,
-                                                          invalid_json,
-                                                          get_pub_key):
+def test_enrich_call_without_jwt_with_unsupported_type_success(
+        route, client, unsupported_type_json, get_pub_key,
+        expected_payload_unsupported_type):
     pd_api_request.side_effect = get_pub_key()
-    response = client.post(route, json=invalid_json)
-    assert response.get_json() == EXPECTED_PAYLOAD_INVALID_INPUT
+    response = client.post(route, json=unsupported_type_json)
+    assert response.get_json() == expected_payload_unsupported_type
 
 
 @fixture(scope='module')
-def invalid_json():
+def unsupported_type_json():
     return [{'type': 'unknown', 'value': 'https://google.com'}]
 
 
-def test_enrich_call_with_valid_jwt_but_invalid_json_failure(route,
-                                                             client,
-                                                             valid_jwt,
-                                                             invalid_json):
+def test_enrich_call_with_unsupported_type_success(
+        route, client, valid_jwt, unsupported_type_json,
+        expected_payload_unsupported_type):
     response = client.post(route,
                            headers=headers(valid_jwt),
-                           json=invalid_json)
-    assert response.get_json() == EXPECTED_PAYLOAD_INVALID_INPUT
+                           json=unsupported_type_json)
+    assert response.get_json() == expected_payload_unsupported_type
 
 
 @mock.patch('api.enrich.get_related_entities')
