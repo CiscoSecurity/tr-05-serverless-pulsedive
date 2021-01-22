@@ -23,9 +23,9 @@ def route(request):
 
 
 def test_health_call_without_jwt_failure(
-        route, client, pd_api_request, get_pub_key
+        route, client, pd_api_request, get_public_key
 ):
-    pd_api_request.side_effect = get_pub_key()
+    pd_api_request.side_effect = get_public_key()
     response = client.post(route)
 
     assert response.status_code == HTTPStatus.OK
@@ -73,9 +73,9 @@ def pd_api_response(ok):
 
 
 def test_health_call_with_invalid_jwt_failure(
-        route, client, pd_api_request, invalid_jwt, get_pub_key
+        route, client, pd_api_request, invalid_jwt, get_public_key
 ):
-    pd_api_request.return_value = get_pub_key
+    pd_api_request.return_value = get_public_key
     response = client.post(route, headers=headers(invalid_jwt))
 
     assert response.status_code == HTTPStatus.OK
@@ -83,9 +83,9 @@ def test_health_call_with_invalid_jwt_failure(
 
 
 def test_health_call_success(
-        route, client, pd_api_request, valid_jwt, get_pub_key
+        route, client, pd_api_request, valid_jwt, get_public_key
 ):
-    pd_api_request.side_effect = (get_pub_key,  pd_api_response(ok=True))
+    pd_api_request.side_effect = (get_public_key, pd_api_response(ok=True))
     response = client.post(route, headers=headers(valid_jwt))
 
     expected_payload = {"data": {"status": "ok"}}
@@ -95,9 +95,9 @@ def test_health_call_success(
 
 
 def test_health_call_failure(
-        route, client, pd_api_request, valid_jwt, get_pub_key
+        route, client, pd_api_request, valid_jwt, get_public_key
 ):
-    pd_api_request.side_effect = (get_pub_key, pd_api_response(ok=False))
+    pd_api_request.side_effect = (get_public_key, pd_api_response(ok=False))
     response = client.post(route, headers=headers(valid_jwt))
 
     assert response.status_code == HTTPStatus.OK
@@ -105,12 +105,12 @@ def test_health_call_failure(
 
 
 def test_health_call_ssl_error(
-        route, client, valid_jwt, pd_api_request, get_pub_key
+        route, client, valid_jwt, pd_api_request, get_public_key
 ):
     mock_exception = MagicMock()
     mock_exception.reason.args.__getitem__().verify_message \
         = 'self signed certificate'
-    pd_api_request.side_effect = (get_pub_key,  SSLError(mock_exception))
+    pd_api_request.side_effect = (get_public_key, SSLError(mock_exception))
 
     response = client.post(route, headers=headers(valid_jwt))
 

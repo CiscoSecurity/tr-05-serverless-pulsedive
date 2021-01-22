@@ -28,28 +28,6 @@ EXPECTED_PAYLOAD_REQUEST_TIMEOUT = {
   ]
 }
 
-EXPECTED_PAYLOAD_INVALID_INPUT = {
-  'errors': [
-    {'code': 'invalid argument',
-             'message': 'Invalid JSON payload received. {0: {\'type\': ["Must '
-                        "be one of: 'amp_computer_guid', "
-                        "'certificate_common_name', 'certificate_issuer', "
-                        "'certificate_serial', 'cisco_mid', 'device', "
-                        "'domain', 'email', 'email_messageid', "
-                        "'email_subject', 'file_name', 'file_path', "
-                        "'hostname', 'imei', 'imsi', 'ip', 'ipv6', "
-                        "'mac_address', 'md5', 'ms_machine_id', 'mutex', "
-                        "'ngfw_id', 'ngfw_name', 'odns_identity', "
-                        "'odns_identity_label', 'orbital_node_id', "
-                        "'pki_serial', 'process_name', 'registry_key', "
-                        "'registry_name', 'registry_path', 's1_agent_id', "
-                        "'sha1', 'sha256', 'url', 'user', "
-                        '\'user_agent\'."]}}',
-             'type': 'fatal'}
-  ],
-}
-
-
 EXPECTED_PAYLOAD_OBSERVE = {
   "data": {
     "indicators": {
@@ -57,7 +35,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
       "docs": [
         {
           "producer": "Pulsedive",
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "short_description": "found in threat feeds",
           "title": "found in threat feeds",
           "tlp": "white",
@@ -70,7 +48,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
         },
         {
           "producer": "Pulsedive",
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "short_description": "registration recently updated",
           "title": "registration recently updated",
           "tlp": "white",
@@ -83,7 +61,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
         },
         {
           "producer": "Pulsedive",
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "severity": "Medium",
           "short_description": "Threat: Kraken Botnet",
           "title": "Threat: Kraken Botnet",
@@ -101,7 +79,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
         {
           "producer": "Pulsedive",
           "source": "Pulsedive",
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "severity": "Medium",
           "short_description": "Threat: JS Crypto Miner",
           "title": "Threat: JS Crypto Miner",
@@ -118,7 +96,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
         {
           "producer": "BBcan177",
           "source": "Pulsedive",
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "short_description": "Feed: BBcan177 DNSBL",
           "title": "Feed: BBcan177 DNSBL",
           "source_uri": "https://pulsedive.com/feed/?fid=13",
@@ -145,7 +123,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
             "value": "parkingcrew.net"
           },
           "priority": 85,
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "severity": "Medium",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/indicator/?iid=118",
@@ -162,27 +140,27 @@ EXPECTED_PAYLOAD_OBSERVE = {
       "count": 5,
       "docs": [
         {
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "tlp": "white",
           "type": "relationship"
         },
         {
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "tlp": "white",
           "type": "relationship"
         },
         {
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "tlp": "white",
           "type": "relationship"
         },
         {
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "tlp": "white",
           "type": "relationship"
         },
         {
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "tlp": "white",
           "type": "relationship"
         }
@@ -205,7 +183,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
             "end_time": "2020-03-31T14:47:36Z",
             "start_time": "2020-03-31T14:47:36Z"
           },
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "severity": "Medium",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/indicator/?iid=118",
@@ -225,7 +203,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
             "end_time": "2020-03-31T14:47:36Z",
             "start_time": "2020-03-31T14:47:36Z"
           },
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "severity": "Medium",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/indicator/?iid=118",
@@ -245,7 +223,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
             "end_time": "2019-01-01T04:01:30Z",
             "start_time": "2019-01-01T04:01:30Z"
           },
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "severity": "Medium",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/threat/?tid=9",
@@ -265,7 +243,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
             "end_time": "2018-08-06T03:44:07Z",
             "start_time": "2018-08-06T03:44:07Z"
           },
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "severity": "Medium",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/threat/?tid=108",
@@ -285,7 +263,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
             "end_time": "2020-02-10T07:41:05Z",
             "start_time": "2020-02-10T07:41:05Z"
           },
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/feed/?fid=13",
           "type": "sighting"
@@ -324,7 +302,7 @@ EXPECTED_PAYLOAD_OBSERVE = {
               }
             ]
           },
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/indicator/?iid=118",
           "type": "sighting"
@@ -492,7 +470,7 @@ EXPECTED_PAYLOAD_OBSERVE_WITH_LIMIT = {
       "docs": [
         {
           "producer": "Pulsedive",
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "short_description": "found in threat feeds",
           "tlp": "white",
           "source": "Pulsedive",
@@ -517,7 +495,7 @@ EXPECTED_PAYLOAD_OBSERVE_WITH_LIMIT = {
             "value": "parkingcrew.net"
           },
           "priority": 85,
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "severity": "Medium",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/indicator/?iid=118",
@@ -535,7 +513,7 @@ EXPECTED_PAYLOAD_OBSERVE_WITH_LIMIT = {
       "docs": [
         {
           "relationship_type": "sighting-of",
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "tlp": "white",
           "type": "relationship"
         }
@@ -558,7 +536,7 @@ EXPECTED_PAYLOAD_OBSERVE_WITH_LIMIT = {
             "start_time": "2020-03-31T14:47:36Z",
             "end_time": "2020-03-31T14:47:36Z"
           },
-          "schema_version": "1.0.17",
+          "schema_version": "1.0.22",
           "severity": "Medium",
           "source": "Pulsedive",
           "source_uri": "https://pulsedive.com/indicator/?iid=118",

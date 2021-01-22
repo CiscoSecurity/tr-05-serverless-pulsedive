@@ -75,8 +75,17 @@ def invalid_jwt(valid_jwt, client):
 
 
 @fixture(scope='session')
-def get_pub_key():
+def get_public_key():
     mock_response = MagicMock()
     payload = EXPECTED_RESPONSE_OF_JWKS_ENDPOINT
     mock_response.json = lambda: payload
     return mock_response
+
+
+@fixture(scope='module')
+def expected_payload_unsupported_type(route):
+    payload_to_route_match = {
+        '/refer/observables': {'data': []},
+        '/observe/observables': {'data': {}}
+    }
+    return payload_to_route_match[route]
