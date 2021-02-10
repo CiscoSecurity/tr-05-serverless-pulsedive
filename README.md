@@ -46,7 +46,7 @@ In order to build the application, we need to use a `Dockerfile`.
  1. Open a terminal.  Build the container image using the `docker build` command.
 
 ```
-docker build -t tr-05-pulsedive
+docker build -t tr-05-pulsedive .
 ```
 
  2. Once the container is built, and an image is successfully created, start your container using the `docker run` command and specify the name of the image we have just created.  By default, the container will listen for HTTP requests using port 9090.
@@ -64,7 +64,7 @@ docker logs tr-05-pulsedive
  4. Once the container has started correctly, open your web browser to http://localhost:9090.  You should see a response from the container.
 
 ```
-    curl http://localhost:9090
+curl http://localhost:9090
 ```
 
 ## Implementation Details
