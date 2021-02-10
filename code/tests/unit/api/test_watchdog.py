@@ -1,5 +1,4 @@
 from http import HTTPStatus
-
 from pytest import fixture
 
 

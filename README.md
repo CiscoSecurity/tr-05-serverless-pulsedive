@@ -63,8 +63,9 @@ docker logs tr-05-pulsedive
 
  4. Once the container has started correctly, open your web browser to http://localhost:9090.  You should see a response from the container.
 
+```
     curl http://localhost:9090
-
+```
 
 ## Implementation Details
 
@@ -181,6 +182,12 @@ application (modern IDEs can automatically do that for you). You can deactivate
 a previously activated virtual environment by simply typing `deactivate` in
 your command-line shell.
 
+Open the `code` folder in your terminal.
+
+```
+cd code
+```
+
 Finally, install the libraries required for the application to function from
 the [requirements.txt](code/requirements.txt) file:
 
@@ -191,11 +198,7 @@ pip install --upgrade --requirement requirements.txt
 ## Step 2: Application Deployment
 
 ### AWS Lambda Function
-
-Open the code folder in your terminal.
-```
-cd code
-```
+Make sure the folder `code` is open in your terminal. 
 To `deploy` your application to AWS as a Lambda function for the first time,
 run the following command:
 ```
