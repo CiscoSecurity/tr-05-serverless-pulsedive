@@ -1,11 +1,11 @@
 from http import HTTPStatus
+import json
 from uuid import NAMESPACE_X500
-
-from __version__ import VERSION
 
 
 class Config(object):
-    VERSION = VERSION
+    settings = json.load(open('container_settings.json', 'r'))
+    VERSION = settings["VERSION"]
 
     API_URL = 'https://pulsedive.com/api/info.php'
 
