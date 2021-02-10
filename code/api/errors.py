@@ -59,3 +59,11 @@ class PulsediveSSLError(TRFormattedError):
             code='unknown',
             message=f'Unable to verify SSL certificate: {reason}'
         )
+
+
+class PulsediveWatchdogError(TRFormattedError):
+    def __init__(self):
+        super().__init__(
+            code='health check failed',
+            message='Invalid Health Check'
+        )
