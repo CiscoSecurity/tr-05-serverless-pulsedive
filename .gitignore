@@ -1,18 +1,15 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-
-# Coverage information
-/.coverage
-/htmlcov/
-.pytest_cache/
+# macOS
+.DS_Store
 
 # PyCharm
 .idea/
-build/
-dist/
+
+# Python
+__pycache__/
 venv/
+
+# dotenv
+.env
 
 # Properties file
 project.properties
