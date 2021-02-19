@@ -3,7 +3,7 @@
     "default_name": "Pulsedive",
     "short_description": "Pulsedive threat intelligence enriches any domain, URL, or IP. Scan new indicators, pivot to search on any data point, and investigate threats.",
     "description": "Pulsedive threat intelligence offers a community platform that scans, enriches, and scores millions of indicators of compromise, setting the foundation for powerful threat investigation and research capabilities. Register for a free account and API key to access the intelligence sourced and contextualized from dozens of feeds and submitted by users all over the world.\n\nAdditionally, leverage Pulsedive to run passive or active scans on any indicator, investigate shared threat properties and attributes, and pull related threat news/summaries from the web.\n## Snapshot of Pulsedive's API\n\n### Retrieve Indicator Data\n- Risk scores and risk factors\n- Registration timeline\n- Source feeds and comments\n- Associated threats\n- Ports and protocols\n- Web technologies\n- WHOIS registration\n- Location data\n- DNS records\n- Query strings\n- HTTP headers\n- SSL certificate metadata\n- Cookies\n- Meta tags\n- Mail servers\n- Redirects\n- Related domains and urls\n\n### Retrieve Threat Data\n- Related news\n- Comments\n- Risky properties\n- Source feeds\n- Indicators\n\n### Retrieve Feed Data\n- Name and organization\n- Threats\n- Indicators\n\n### Explore (Search) Our Database\n- Create queries using almost any data point(s) to pivot across indicators, threats, or feeds.\n\n### Scan Indicators\n- Perform passive or active scans of hosts to retrieve live data on-demand.",
-    "tips": "When configuring the Pulsedive module, you must first gather some information from your Pulsedive account, deploy the [Pulsedive Serverless Relay](https://github.com/CiscoSecurity/tr-05-serverless-pulsedive), and then add the Pulsedive module in SecureX Threat Response   \n\n1. Log into Pulsedive, click **ACCOUNT**\n2. Copy the **API KEY** into a file, or leave the tab open\n3. Deploy [Pulsedive Serverless Relay](https://github.com/CiscoSecurity/tr-05-serverless-pulsedive#pulsedive-relay-api)\n4. Complete the **Add New Pulsedive Integration Module** form:\n    - **Module Name** - Leave the default name or enter a name that is meaningful to you\n    - **URL** - The URL of the Pulsedive Serverless Relay\n    - **API Key** - Enter the Pulsedive API Key\n    - **Entities Limit** - Enter the limit that restricts the maximum number of CTIM entities of each type returned in a single response per each requested observable. Must be a positive integer. Defaults to 100 (if unset or incorrect)\n5. Click **Save** to complete the Pulsedive module configuration",
+    "tips": "When configuring this integration, you must first gather some information from your Pulsedive account.\n\n1. Log into Pulsedive, click **ACCOUNT**\n2. Copy the **API KEY** into a file, or leave the tab open\n\n3. Complete the **Add New Pulsedive Integration Module** form:\n    - **Module Name** - Leave the default name or enter a name that is meaningful to you\n    - **API Key** - Enter the Pulsedive API Key\n    - **Entities Limit** - Enter the limit that restricts the maximum number of CTIM entities of each type returned in a single response per each requested observable. Must be a positive integer. Defaults to 100 (if unset or incorrect)\n4. Click **Save** to complete the Pulsedive module configuration.",
     "external_references": [
         {
             "label": "About",
@@ -15,13 +15,6 @@
         }
     ],
     "configuration_spec": [
-        {
-            "key": "url",
-            "type": "string",
-            "label": "URL",
-            "tooltip": "The base URL of the Serverless Relay",
-            "required": true
-        },
         {
             "key": "custom_key",
             "type": "api_key",
@@ -62,8 +55,5 @@
         "configuration-token-alg": "RS256",
         "custom_jwks_host": "visibility.amp.cisco.com"
     },
-    "flags": [
-        "serverless"
-    ],
     "logo": "data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6IzMwOTRjMjt9LmNscy0ye2ZpbGw6IzA2OTt9PC9zdHlsZT48L2RlZnM+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTAuNTMsMjkuNzZjLS4xNy0uMjQsMi4zOC0yLjc3LDIuNTYtM2EyNC45MywyNC45MywwLDAsMSw3LjA3LTUuMWM2LTIuNzgsMTQuNTEtMi4wNiwyMC4wOSwxLjUsMTAuMTYsNi40OCw5LjQ4LDIwLDMuODQsMjkuMjRINjcuNzhzLTItNS4yMS0zLjIzLTcuNzhjLS40NC0uODctMS40My0zLjUxLTIuMzMtMS42NHMtMS42OCwzLjU0LTIuNDcsNS4zM2MtMS45MSw0LjMtMy43MSw4LjY2LTUuNTgsMTMtLjE4LjQyLS41Ni45Mi0xLC43M2EuODUuODUsMCwwLDEtLjM4LS41OGMtMi42NS04LjQ2LTUtMTctNy42Mi0yNS40OC0uMTctLjUyLS4zMy0xLS41LTEuNTdTNDQsMzAuODcsNDMsMzEuMzRhMS4yMSwxLjIxLDAsMCwwLS41MS41NCwxMC41MiwxMC41MiwwLDAsMC0uNTMsMS4xOWMtLjc1LDEuOTItMS40NiwzLjg1LTIuMTgsNS43Ny0uNiwxLjU3LTEuMTcsMy4xNS0xLjc1LDQuNzMtLjkyLDIuNTUtMS44MSw1LjExLTIuNzcsNy42NCwwLC4xMi0uMzcsMS4yMy0uNTMsMS4yM0gxNi41Yy0uMzEsMC0xLjI4LTIuMTMtMS40MS0yLjM3YTMxLjIzLDMxLjIzLDAsMCwxLTIuMjMtNC43NiwxOS40MiwxOS40MiwwLDAsMS0uNDItMTEsMTcuMzcsMTcuMzcsMCwwLDEsNi4xNy05Ljc3LDIyLjQ4LDIyLjQ4LDAsMCwxLDExLjEzLTQuMjVBMjMuNiwyMy42LDAsMCwxLDUwLjUzLDI5Ljc2WiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTIxLjA1LDU4LjM1SDM4LjU0Yy43My0yLjgxLDEuNTQtNS42MSwyLjM4LTguMzkuNC0xLjMxLjgxLTIuNjIsMS4yMi0zLjkzYS43My43MywwLDAsMSwuNTMtLjQyLjY5LjY5LDAsMCwxLC41OS4zNWMuODgsMi43Nyw1LjMxLDE4LjI0LDUuMzEsMTguMjQuNzYsMi4zOSwxLjU0LDQuNzgsMi40LDcuMTQuMzcsMSwxLjI4LDMuODQsMS44MSwzLjg0czEuMzgtMi4yLDEuNTktMi42NGMuOTQtMS45NCwxLjc2LTMuOTQsMi41Ny01Ljk0LDEuNTItMy43MiwzLjMzLTcuNDgsNC43MS0xMS4yNmExMy43NiwxMy43NiwwLDAsMSwxLTIuMjdjLjExLS4xOC4yNS0uMzguNDUtLjQycy43NS40OC44OC43OGwxLjY0LDQuNjhMNzksNTguMzVTNjguNzksNjkuMjIsNjUuNDgsNzIuNTMsNTEuNzcsODYsNTAuNTksODYsMzcuMzYsNzQuNDIsMzUuOTQsNzMsMjEuMDUsNTguMzUsMjEuMDUsNTguMzVaIi8+PC9zdmc+"
 }
