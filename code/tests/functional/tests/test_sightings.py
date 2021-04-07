@@ -14,7 +14,7 @@ from tests.functional.tests.constants import (
     (
      ('url', 'http://51jianli.cn/images'),
      ('ip', '1.1.1.1'),
-     ('domain', 'xcj10.me'),
+     ('domain', 'yk.cnxc.tk'),
      )
 )
 def test_positive_sighting(module_headers, observable, observable_type):
@@ -65,7 +65,7 @@ def test_positive_sighting(module_headers, observable, observable_type):
         assert sighting['observables'] == observables
         if sighting['description'] == 'Active DNS':
             for relation in sighting['relations']:
-                assert relation['origin'] == f'{MODULE_NAME} Enrichment Module'
+                assert relation['origin'] == f'{SOURCE} Enrichment Module'
                 assert relation['relation'] == 'Resolved_To'
 
                 if observable_type == 'domain':

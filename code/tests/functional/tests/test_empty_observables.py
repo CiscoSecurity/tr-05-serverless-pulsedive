@@ -4,7 +4,10 @@ from ctrlibrary.threatresponse.enrich import (
     enrich_observe_observables,
     enrich_refer_observables
 )
-from tests.functional.tests.constants import MODULE_NAME
+from tests.functional.tests.constants import (
+    MODULE_NAME,
+    SOURCE
+)
 
 
 @pytest.mark.parametrize(
@@ -91,4 +94,4 @@ def test_positive_smoke_empty_refer_observables(module_headers, observable,
     assert response_from_pulsedive['module_instance_id']
     assert response_from_pulsedive['module_type_id']
 
-    assert response_from_pulsedive['categories'] == [MODULE_NAME, 'Search']
+    assert response_from_pulsedive['categories'] == [SOURCE, 'Search']

@@ -1,4 +1,5 @@
-MODULE_NAME = SOURCE = 'Pulsedive'
+MODULE_NAME = 'PulsediveConfToken'
+SOURCE = 'Pulsedive'
 PULSEDIVE_URL = 'https://pulsedive.com'
 OBSERVABLE_HUMAN_READABLE_NAME = {
     'ip': 'IP',
