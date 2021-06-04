@@ -1,12 +1,12 @@
-import requests
-import jwt
 import json
-
-from json.decoder import JSONDecodeError
-from jwt import InvalidSignatureError, DecodeError, InvalidAudienceError
-from flask import request, current_app, jsonify, g
-from requests.exceptions import SSLError, ConnectionError, InvalidURL
 from http import HTTPStatus
+from json.decoder import JSONDecodeError
+
+import jwt
+import requests
+from flask import request, current_app, jsonify, g
+from jwt import InvalidSignatureError, DecodeError, InvalidAudienceError
+from requests.exceptions import SSLError, ConnectionError, InvalidURL
 
 from api.errors import (
     AuthorizationError,
