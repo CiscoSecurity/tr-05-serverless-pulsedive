@@ -1,10 +1,12 @@
-import requests
-import jwt
 import json
-from jwt import InvalidSignatureError, DecodeError, InvalidAudienceError
-from flask import request, current_app, jsonify, g
-from requests.exceptions import SSLError, ConnectionError, InvalidURL
 from http import HTTPStatus
+from json.decoder import JSONDecodeError
+
+import jwt
+import requests
+from flask import request, current_app, jsonify, g
+from jwt import InvalidSignatureError, DecodeError, InvalidAudienceError
+from requests.exceptions import SSLError, ConnectionError, InvalidURL
 
 from api.errors import (
     AuthorizationError,
@@ -30,6 +32,9 @@ def get_public_key(jwks_host, token):
                          'Make sure domain follows the '
                          'visibility.<region>.cisco.com structure',
         InvalidURL: 'Wrong jwks_host in JWT payload. '
+                    'Make sure domain follows the '
+                    'visibility.<region>.cisco.com structure',
+        JSONDecodeError: 'Wrong jwks_host in JWT payload. '
                     'Make sure domain follows the '
                     'visibility.<region>.cisco.com structure',
     }
