@@ -4,8 +4,7 @@ from ctrlibrary.threatresponse.enrich import enrich_refer_observables
 from tests.functional.tests.constants import (
     MODULE_NAME,
     PULSEDIVE_URL,
-    OBSERVABLE_HUMAN_READABLE_NAME,
-    REFER_NAME
+    OBSERVABLE_HUMAN_READABLE_NAME
 )
 from urllib.parse import quote
 
@@ -61,8 +60,8 @@ def test_positive_refer_observable(module_headers, observable,
             assert reference['description'] == (
                 'Lookup this '
                 f'{OBSERVABLE_HUMAN_READABLE_NAME[observable_type]} '
-                f'on {REFER_NAME}')
-            assert reference['categories'] == [REFER_NAME, 'Search']
+                f'on {MODULE_NAME}')
+            assert reference['categories'] == [MODULE_NAME, 'Search']
             assert reference['url'].startswith(f'{PULSEDIVE_URL}/browse/')
         elif reference['title'].startswith('Browse'):
             assert reference['title'] == (
@@ -70,8 +69,8 @@ def test_positive_refer_observable(module_headers, observable,
             assert reference['description'] == (
                 'Browse this '
                 f'{OBSERVABLE_HUMAN_READABLE_NAME[observable_type]}'
-                f' on {REFER_NAME}')
-            assert reference['categories'] == [REFER_NAME, 'Browse']
+                f' on {MODULE_NAME}')
+            assert reference['categories'] == [MODULE_NAME, 'Browse']
             assert reference['url'].startswith(f'{PULSEDIVE_URL}/indicator/')
         else:
             raise AssertionError(f'Unknown reference: {reference["title"]!r}.')
