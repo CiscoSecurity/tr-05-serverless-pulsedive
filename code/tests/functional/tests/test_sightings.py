@@ -14,8 +14,7 @@ from tests.functional.tests.constants import (
     (
      ('url', 'http://51jianli.cn/images'),
      ('ip', '1.1.1.1'),
-     ('domain', 'yk.cnxc.tk'),
-     )
+     ('domain', 'baidu.com')
 )
 def test_positive_sighting(module_headers, observable, observable_type):
     """Perform testing for enrich observe observables endpoint to get
