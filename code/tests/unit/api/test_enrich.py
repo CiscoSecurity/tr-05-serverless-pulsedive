@@ -62,9 +62,6 @@ def pd_api_response(ok, payload=None, reason=''):
 def expected_payload(any_route):
     payload = None
 
-    if any_route.startswith('/deliberate'):
-        payload = {}
-
     if any_route.startswith('/observe'):
         payload = EXPECTED_PAYLOAD_OBSERVE
 
@@ -99,7 +96,6 @@ def test_enrich_call_without_jwt_failure(route,
 
 
 def all_routes():
-    yield '/deliberate/observables'
     yield '/observe/observables'
     yield '/refer/observables'
 
